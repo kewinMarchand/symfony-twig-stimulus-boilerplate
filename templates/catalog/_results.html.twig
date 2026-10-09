@@ -1,0 +1,108 @@
+{%- set filters = state.query.filters -%}
+<div class="catalog__layout">
+    {% if result %}
+        {{ include('catalog/_filters.html.twig') }}
+    {% endif %}
+    <div class="catalog__main">
+        {% if error %}
+            <div class="alert alert--error" data-testid="catalog-error">
+                {{ include('core/ui/_icon.html.twig', {name: 'circle-alert'}) }}
+                <p>{{ error }}</p>
+                <a class="button button--outlined" href="{{ category_path ~ state.queryString() }}" data-testid="catalog-retry">
+                    {{ include('core/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
+                    <span>Réessayer</span>
+                </a>
+            </div>
+        {% else %}
+            <div class="catalog__toolbar">
+                <button type="button" class="button button--outlined catalog__filters-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="catalog-filters" data-catalog-target="opener" data-action="catalog#openFilters" data-testid="catalog-filters-open">
+                    {{ include('core/ui/_icon.html.twig', {name: 'sliders-horizontal'}) }}
+                    <span>Filtrer{% if filters.activeCount > 0 %} ({{ filters.activeCount }}<span class="visually-hidden"> filtres actifs</span>){% endif %}</span>
+                </button>
+                <p class="catalog__count" role="status" data-catalog-target="count" data-testid="catalog-results-count">{{ product_count }} produit{{ product_count > 1 ? 's' }}</p>
+                <div class="catalog__sort">
+                    <label for="catalog-sort">Trier par</label>
+                    <select id="catalog-sort" name="tri" form="catalog-filters-form" data-action="catalog#apply" data-testid="catalog-sort">
+                        {% for sort in enum('App\\Domain\\Catalog\\Model\\ProductSort').cases() %}
+                            <option value="{{ sort.value }}"{% if sort == state.query.sort %} selected{% endif %}>{{ sort.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <nav class="catalog__views" aria-label="Affichage">
+                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\UI\\Http\\Catalog\\ListView').Grid).queryString() }}"{% if state.view.value == 'grille' %} aria-current="page"{% endif %} data-testid="catalog-view-grid">
+                        {{ include('core/ui/_icon.html.twig', {name: 'layout-grid'}) }}
+                        <span>Grille</span>
+                    </a>
+                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\UI\\Http\\Catalog\\ListView').List).queryString() }}"{% if state.view.value == 'liste' %} aria-current="page"{% endif %} data-testid="catalog-view-list">
+                        {{ include('core/ui/_icon.html.twig', {name: 'list'}) }}
+                        <span>Liste</span>
+                    </a>
+                </nav>
+            </div>
+
+            {% if filters.activeCount > 0 %}
+                <div class="catalog__active" data-testid="catalog-active-filters">
+                    <ul class="chips" role="list" aria-label="Filtres actifs">
+                        {% for exposure in filters.exposures %}
+                            {{ include('catalog/_active_filter.html.twig', {label: exposure.label, href: category_path ~ state.withoutExposure(exposure).queryString()}) }}
+                        {% endfor %}
+                        {% for size in filters.sizes %}
+                            {{ include('catalog/_active_filter.html.twig', {label: size.label, href: category_path ~ state.withoutSize(size).queryString()}) }}
+                        {% endfor %}
+                        {% if filters.priceMin is not null %}
+                            {{ include('catalog/_active_filter.html.twig', {label: 'Prix minimum ' ~ filters.priceMin ~ ' €', href: category_path ~ state.withoutPriceMin().queryString()}) }}
+                        {% endif %}
+                        {% if filters.priceMax is not null %}
+                            {{ include('catalog/_active_filter.html.twig', {label: 'Prix maximum ' ~ filters.priceMax ~ ' €', href: category_path ~ state.withoutPriceMax().queryString()}) }}
+                        {% endif %}
+                        {% if filters.inStockOnly %}
+                            {{ include('catalog/_active_filter.html.twig', {label: 'En stock', href: category_path ~ state.withoutInStock().queryString()}) }}
+                        {% endif %}
+                    </ul>
+                    <a class="catalog__clear" href="{{ category_path ~ state.cleared().queryString() }}" data-catalog-focus="title" data-testid="catalog-clear-filters">Tout effacer</a>
+                </div>
+            {% endif %}
+
+            <div class="catalog__loading" role="status" aria-label="Chargement des produits">
+                {% for i in 1..4 %}<span class="skeleton skeleton--card"></span>{% endfor %}
+            </div>
+
+            {% if result.page.items is empty %}
+                <div class="alert alert--info" data-testid="catalog-empty">
+                    <p>Aucun produit ne correspond à ces filtres.</p>
+                    <a class="button button--outlined" href="{{ category_path ~ state.cleared().queryString() }}" data-catalog-focus="title">Tout effacer</a>
+                </div>
+            {% else %}
+                <ul class="product-list product-list--{{ state.view.value }}" role="list">
+                    {% for product in result.page.items %}
+                        <li class="product-list__item">
+                            <article class="product" id="{{ product.slug }}" data-testid="catalog-product">
+                                <picture>
+                                    {% for format in ['avif', 'webp'] %}
+                                        <source type="image/{{ format }}" sizes="(min-width: 480px) 280px, 100vw" srcset="{{ asset('images/product-' ~ product.image ~ '-400.' ~ format) }} 400w, {{ asset('images/product-' ~ product.image ~ '-800.' ~ format) }} 800w">
+                                    {% endfor %}
+                                    <img class="product__image" src="{{ asset('images/product-' ~ product.image ~ '-800.webp') }}" alt="{{ product.name }}" width="800" height="800"{% if loop.first %} fetchpriority="high"{% elseif loop.index > 4 %} loading="lazy" decoding="async"{% endif %}>
+                                </picture>
+                                <div class="product__body">
+                                    <h2 class="product__name">{{ product.name }}</h2>
+                                    <p class="product__price" data-testid="catalog-product-price" data-price="{{ product.price }}">{{ product.price|price }}</p>
+                                    <dl class="product__details">
+                                        <div><dt>Exposition</dt><dd>{{ product.exposure.label }}</dd></div>
+                                        <div><dt>Taille</dt><dd>{{ product.size.label }}</dd></div>
+                                    </dl>
+                                    {% if not product.inStock %}
+                                        <p class="badge">Rupture de stock</p>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if result.page.pageCount > 1 %}
+                {{ include('catalog/_pagination.html.twig', {current: result.page.page, page_count: result.page.pageCount}) }}
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<ul>
+    {% for category in categories %}
+        {% set slugs = parents|merge([category.slug]) %}
+        <li>
+            <a href="{{ path('catalog', {path: slugs|join('/')}) }}">{{ category.name }}</a>
+            {% if category.children is not empty %}
+                {{ include('legal/_category_tree.html.twig', {categories: category.children, parents: slugs}) }}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

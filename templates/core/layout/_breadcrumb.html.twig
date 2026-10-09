@@ -1,0 +1,15 @@
+{% if not seo.breadcrumb.empty %}
+    <nav class="breadcrumb" aria-label="Fil d'Ariane" data-testid="layout-breadcrumb">
+        <ol>
+            {% for item in seo.breadcrumb.items %}
+                <li>
+                    {%- if item.path is not null -%}
+                        <a href="{{ item.path }}">{{ item.label }}</a>
+                    {%- else -%}
+                        <span aria-current="page">{{ item.label }}</span>
+                    {%- endif -%}
+                </li>
+            {% endfor %}
+        </ol>
+    </nav>
+{% endif %}

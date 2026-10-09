@@ -1,0 +1,2 @@
+{#- Seul point d'appel de ux_icon() : name = icône lucide, icon_label optionnel pour une icône porteuse de sens -#}
+{{- ux_icon('lucide:' ~ name, icon_label|default(false) ? {role: 'img', 'aria-label': icon_label} : {'aria-hidden': 'true', focusable: 'false'}) -}}

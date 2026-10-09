@@ -1,0 +1,79 @@
+{%- set facets = result.facets -%}
+<aside id="catalog-filters" class="catalog__filters" aria-labelledby="catalog-filters-title" data-catalog-target="panel" data-action="keydown->catalog#trapFocus" data-testid="catalog-filters">
+    <div class="catalog__filters-header">
+        <h2 id="catalog-filters-title">Filtres</h2>
+        <button type="button" class="button button--outlined catalog__filters-close" data-action="catalog#closeFilters">
+            {{ include('core/ui/_icon.html.twig', {name: 'x'}) }}
+            <span>Fermer</span>
+        </button>
+    </div>
+    <form id="catalog-filters-form" class="catalog__form" method="get" action="{{ category_path }}" data-catalog-target="form">
+        {% if state.view.value == 'liste' %}<input type="hidden" name="vue" value="liste">{% endif %}
+
+        {% if category.children is not empty %}
+            <details class="facet" open>
+                <summary>Catégorie</summary>
+                <ul class="facet__links" role="list">
+                    {% for child in category.children %}
+                        <li><a href="{{ path('catalog', {path: (path ? path ~ '/' : '') ~ child.slug}) }}" data-turbo-frame="_top">{{ child.name }} <span class="facet__count">({{ facets.categories[child.slug] }})</span></a></li>
+                    {% endfor %}
+                </ul>
+            </details>
+        {% endif %}
+
+        <details class="facet" open>
+            <summary>Exposition</summary>
+            <fieldset>
+                <legend class="visually-hidden">Exposition</legend>
+                {% for exposure in enum('App\\Domain\\Catalog\\Model\\Exposure').cases() %}
+                    {% set count = facets.exposures[exposure.value] %}
+                    {% set checked = exposure in filters.exposures %}
+                    <div class="check">
+                        <input type="checkbox" id="filter-exposure-{{ exposure.value }}" name="exposition" value="{{ exposure.value }}"{% if checked %} checked{% endif %}{% if count == 0 and not checked %} disabled{% endif %} data-action="catalog#apply" data-testid="catalog-filter-exposure-{{ exposure.value }}">
+                        <label for="filter-exposure-{{ exposure.value }}">{{ exposure.label }} <span class="facet__count">({{ count }})</span></label>
+                    </div>
+                {% endfor %}
+            </fieldset>
+        </details>
+
+        <details class="facet" open>
+            <summary>Taille</summary>
+            <fieldset>
+                <legend class="visually-hidden">Taille</legend>
+                {% for size in enum('App\\Domain\\Catalog\\Model\\Size').cases() %}
+                    {% set count = facets.sizes[size.value] %}
+                    {% set checked = size in filters.sizes %}
+                    <div class="check">
+                        <input type="checkbox" id="filter-size-{{ size.value }}" name="taille" value="{{ size.value }}"{% if checked %} checked{% endif %}{% if count == 0 and not checked %} disabled{% endif %} data-action="catalog#apply" data-testid="catalog-filter-size-{{ size.value }}">
+                        <label for="filter-size-{{ size.value }}">{{ size.label }} <span class="facet__count">({{ count }})</span></label>
+                    </div>
+                {% endfor %}
+            </fieldset>
+        </details>
+
+        <details class="facet" open>
+            <summary>Prix</summary>
+            <fieldset class="facet__price">
+                <legend class="visually-hidden">Prix en euros</legend>
+                <div class="field">
+                    <label for="filter-price-min">Minimum (€)</label>
+                    <input type="number" id="filter-price-min" name="prix_min" min="0" step="1" inputmode="numeric" value="{{ filters.priceMin }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-min">
+                </div>
+                <div class="field">
+                    <label for="filter-price-max">Maximum (€)</label>
+                    <input type="number" id="filter-price-max" name="prix_max" min="0" step="1" inputmode="numeric" value="{{ filters.priceMax }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-max">
+                </div>
+            </fieldset>
+        </details>
+
+        <div class="switch">
+            <input type="checkbox" role="switch" id="filter-in-stock" name="en_stock" value="1"{% if filters.inStockOnly %} checked{% endif %} data-action="catalog#apply" data-testid="catalog-filter-in-stock">
+            <label for="filter-in-stock">En stock uniquement</label>
+        </div>
+
+        <button type="submit" class="button catalog__apply">Appliquer les filtres</button>
+    </form>
+    <div class="catalog__filters-footer">
+        <button type="button" class="button" data-action="catalog#closeFilters">Voir les {{ result.page.total }} produits</button>
+    </div>
+</aside>

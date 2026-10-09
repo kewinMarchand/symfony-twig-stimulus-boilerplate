@@ -1,0 +1,26 @@
+<turbo-frame id="tasks">
+    {% if error %}
+        <div class="alert alert--error" data-testid="tasks-error">
+            {{ include('core/ui/_icon.html.twig', {name: 'circle-alert'}) }}
+            <p>{{ error }}</p>
+            <form method="get" action="{{ path('tasks_list') }}">
+                <button type="submit" class="button button--outlined" data-testid="tasks-retry">
+                    {{ include('core/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
+                    <span>Réessayer</span>
+                </button>
+            </form>
+        </div>
+    {% elseif tasks is empty %}
+        <p class="alert alert--info" data-testid="tasks-empty">Aucune tâche pour l’instant. Tout est à jour.</p>
+    {% else %}
+        <ul class="task-list" role="list" data-testid="tasks-list">
+            {% for task in tasks %}
+                <li class="task" data-testid="tasks-item">
+                    {{ include('core/ui/_icon.html.twig', {name: task.done ? 'circle-check' : 'list-todo'}) }}
+                    <span class="task__title">{{ task.title }}</span>
+                    <span class="task__status">{{ task.done ? 'Terminée' : 'À faire' }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</turbo-frame>

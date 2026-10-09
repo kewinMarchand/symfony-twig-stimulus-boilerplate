@@ -1,0 +1,14 @@
+name: symfony-twig-stimulus-boilerplate
+
+services:
+  php:
+    build:
+      context: .
+      target: prod
+    image: symfony-twig-stimulus-boilerplate:prod
+    ports:
+      - '127.0.0.1:${HTTP_PORT:-8095}:8080'
+    environment:
+      SITE_URL: http://localhost:${HTTP_PORT:-8095}
+      APP_SECRET: ${APP_SECRET:?APP_SECRET requis pour l'image de production}
+      MAINTENANCE: ${MAINTENANCE:-0}

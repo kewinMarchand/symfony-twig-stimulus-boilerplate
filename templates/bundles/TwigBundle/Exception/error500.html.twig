@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% set seo = seo_page({title: 'Une erreur est survenue', description: 'Une erreur inattendue nous empêche d’afficher cette page. Réessayez dans quelques instants ou revenez à l’accueil du site.', robots: 'noindex', canonical: false, breadcrumb: [{label: 'Une erreur est survenue'}]}) %}
+
+{% block body %}
+    <h1>Une erreur est survenue</h1>
+    <p class="lead">Nous n’avons pas pu afficher cette page. Réessayez dans quelques instants.</p>
+    <ul class="error-links" role="list">
+        <li><a class="button" href="{{ app.request.requestUri }}" data-testid="error-retry">Réessayer</a></li>
+        <li><a class="button button--outlined" href="{{ path('home') }}" data-testid="error-home-link">Retour à l’accueil</a></li>
+    </ul>
+{% endblock %}

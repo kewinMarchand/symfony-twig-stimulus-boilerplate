@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% set seo = seo_page({title: 'Plan du site', description: 'Plan du site ' ~ site.name ~ ' : liste de toutes les pages, navigation principale et informations légales.'}) %}
+
+{% block body %}
+    <article class="prose">
+        <h1>Plan du site</h1>
+        <h2>Navigation principale</h2>
+        <ul data-testid="legal-sitemap-main">
+            {% for item in site.navigation.main %}
+                <li><a href="{{ path(item.route) }}">{{ item.label }}</a></li>
+            {% endfor %}
+        </ul>
+        <h2>Catalogue</h2>
+        {{ include('legal/_category_tree.html.twig', {categories: catalog_tree().root.children, parents: []}) }}
+        <h2>Informations légales</h2>
+        <ul data-testid="legal-sitemap-legal">
+            {% for item in site.navigation.legal %}
+                <li><a href="{{ path(item.route) }}">{{ item.label }}</a></li>
+            {% endfor %}
+        </ul>
+    </article>
+{% endblock %}

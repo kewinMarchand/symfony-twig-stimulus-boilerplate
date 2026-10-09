@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <section class="hero" aria-labelledby="home-title" data-testid="home-hero">
+        {{ include('core/ui/_picture.html.twig', {name: 'hero', widths: [640, 1280, 1920], sizes: '100vw', class: 'hero__image', priority: true}) }}
+        <div class="hero__content container">
+            <p class="hero__eyebrow">Symfony 7.4 LTS, Twig, Stimulus, Turbo</p>
+            <h1 id="home-title" class="hero__title">{{ site.name }}</h1>
+            <p class="hero__lead">{{ site.description }}</p>
+            <div class="hero__actions">
+                <a class="button" href="{{ path('tasks') }}" data-testid="home-tasks-link">Voir la démo Turbo Frame</a>
+                <a class="button button--light" href="{{ path('contact') }}" data-testid="home-contact-link">Voir le formulaire</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container main__content">
+        {{ include('features/carousel/_carousel.html.twig', {
+            id: 'home-carousel',
+            title: 'À la une',
+            testid: 'home-carousel',
+            slides: slides,
+        }) }}
+
+        <section class="blog" aria-labelledby="home-blog-title" data-testid="home-blog">
+            <h2 id="home-blog-title">Derniers articles</h2>
+            {% if articles_error %}
+                <div class="alert alert--error" data-testid="home-blog-error">
+                    {{ include('core/ui/_icon.html.twig', {name: 'circle-alert'}) }}
+                    <p>{{ articles_error }}</p>
+                </div>
+            {% elseif articles is empty %}
+                <p class="alert alert--info" data-testid="home-blog-empty">Aucun article pour l’instant. Revenez bientôt.</p>
+            {% else %}
+                <ul class="blog__grid" role="list">
+                    {% for article in articles %}
+                        <li class="blog__item">
+                            <article class="card" data-testid="home-blog-card">
+                                {{ include('core/ui/_picture.html.twig', {name: 'blog-' ~ loop.index, widths: [480, 960], sizes: '(min-width: 1024px) 460px, (min-width: 640px) 50vw, 100vw', class: 'card__image'}) }}
+                                <div class="card__body">
+                                    <h3 class="card__title">{{ article.title }}</h3>
+                                    <p class="card__excerpt">{{ article.excerpt }}</p>
+                                    <time class="card__date" datetime="{{ article.publishedAt|date('Y-m-d') }}">{{ article.publishedAt|date('d/m/Y') }}</time>
+                                </div>
+                            </article>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

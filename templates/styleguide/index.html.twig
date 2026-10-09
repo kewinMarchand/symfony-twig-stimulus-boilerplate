@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% set seo = seo_page({title: 'Charte graphique', description: 'Charte graphique de développement : tokens de couleur avec contraste calculé, typographie, espacements, composants, formulaires et icônes.', robots: 'noindex, nofollow', canonical: false}) %}
+
+{% block body %}
+    <h1>Charte graphique</h1>
+    <p class="lead">Page de développement, absente en production. Le bouton « Accessibilité renforcée » de l’en-tête compare les deux modes.</p>
+
+    <section class="styleguide__section" aria-labelledby="sg-colors" data-testid="styleguide-colors">
+        <h2 id="sg-colors">Couleurs</h2>
+        <ul class="styleguide__swatches" role="list">
+            {% for name, color in colors %}
+                <li class="styleguide__swatch">
+                    <span class="styleguide__chip" style="background: var({{ name }})"></span>
+                    <code>{{ name }}</code>
+                    <span>{{ color.value }}</span>
+                    {% if color.contrast %}
+                        <span>Contraste sur le fond : {{ color.contrast.value|number_format(2, ',') }}:1, {{ color.contrast.level }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-typography" data-testid="styleguide-typography">
+        <h2 id="sg-typography">Typographie</h2>
+        <div class="styleguide__type">
+            <p class="h1-sample" aria-hidden="true">Titre de niveau 1</p>
+            <p class="h2-sample" aria-hidden="true">Titre de niveau 2</p>
+            <p class="h3-sample" aria-hidden="true">Titre de niveau 3, 4, 5 et 6</p>
+            <p>Corps de texte : Inter, interlignage du token <code>--line-height</code>.</p>
+            <p class="lead">Texte d’introduction.</p>
+            <p><small>Petit texte.</small></p>
+        </div>
+        <ul role="list">
+            {% for name, value in font_sizes %}
+                <li><code>{{ name }}</code> : {{ value }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-spacing" data-testid="styleguide-spacing">
+        <h2 id="sg-spacing">Espacements et rayons</h2>
+        <ul class="styleguide__spaces" role="list">
+            {% for name, value in spaces %}
+                <li><span class="styleguide__bar" style="width: var({{ name }})"></span><code>{{ name }}</code> {{ value }}</li>
+            {% endfor %}
+            {% for name, value in radius %}
+                <li><span class="styleguide__radius" style="border-radius: var({{ name }})"></span><code>{{ name }}</code> {{ value }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-buttons" data-testid="styleguide-buttons">
+        <h2 id="sg-buttons">Boutons</h2>
+        {% for variant in ['', 'button--outlined'] %}
+            <div class="styleguide__row">
+                <button type="button" class="button {{ variant }}">Défaut</button>
+                <button type="button" class="button {{ variant }} is-hover">Survol</button>
+                <button type="button" class="button {{ variant }} is-focus">Focus</button>
+                <button type="button" class="button {{ variant }} is-active">Actif</button>
+                <button type="button" class="button {{ variant }}" disabled>Désactivé</button>
+                <button type="button" class="button {{ variant }}" aria-busy="true" aria-disabled="true">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <span>Chargement</span>
+                </button>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-forms" data-testid="styleguide-forms">
+        <h2 id="sg-forms">Formulaires</h2>
+        <div class="form">
+            <div class="field">
+                <label for="sg-text">Champ texte</label>
+                <input id="sg-text" type="text" aria-describedby="sg-text-help">
+                <p id="sg-text-help" class="field__help">Texte d’aide lié au champ.</p>
+            </div>
+            <div class="field">
+                <label for="sg-email">E-mail</label>
+                <input id="sg-email" type="email" value="ada" aria-invalid="true" aria-describedby="sg-email-error">
+                <ul><li id="sg-email-error">Indiquez une adresse e-mail valide, par exemple nom@domaine.fr.</li></ul>
+            </div>
+            <div class="field">
+                <label for="sg-number">Nombre</label>
+                <input id="sg-number" type="number" inputmode="numeric">
+            </div>
+            <div class="field">
+                <label for="sg-textarea">Zone de texte</label>
+                <textarea id="sg-textarea" rows="3"></textarea>
+            </div>
+            <div class="field">
+                <label for="sg-select">Liste</label>
+                <select id="sg-select"><option>Option 1</option><option>Option 2</option></select>
+            </div>
+            <div class="check">
+                <input id="sg-checkbox" type="checkbox">
+                <label for="sg-checkbox">Case à cocher</label>
+            </div>
+            <div class="switch">
+                <input id="sg-switch" type="checkbox" role="switch">
+                <label for="sg-switch">Interrupteur</label>
+            </div>
+            <fieldset>
+                <legend>Boutons radio</legend>
+                <div class="check"><input id="sg-radio-1" type="radio" name="sg-radio" checked><label for="sg-radio-1">Premier</label></div>
+                <div class="check"><input id="sg-radio-2" type="radio" name="sg-radio"><label for="sg-radio-2">Second</label></div>
+            </fieldset>
+            <div class="field">
+                <label for="sg-disabled">Champ désactivé</label>
+                <input id="sg-disabled" type="text" disabled value="Non modifiable">
+            </div>
+        </div>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-feedback" data-testid="styleguide-feedback">
+        <h2 id="sg-feedback">Retours</h2>
+        <p class="alert alert--info">{{ include('core/ui/_icon.html.twig', {name: 'info'}) }} Information.</p>
+        <p class="alert alert--success">{{ include('core/ui/_icon.html.twig', {name: 'circle-check'}) }} Succès.</p>
+        <p class="alert alert--warning">{{ include('core/ui/_icon.html.twig', {name: 'triangle-alert'}) }} Avertissement.</p>
+        <p class="alert alert--error">{{ include('core/ui/_icon.html.twig', {name: 'circle-alert'}) }} Erreur.</p>
+        <div class="skeleton-list" role="status" aria-label="Exemple de chargement"><span class="skeleton"></span><span class="skeleton"></span></div>
+        <p class="alert alert--info">Aucune tâche pour l’instant. Tout est à jour.</p>
+        <div class="alert alert--error">
+            <p>Impossible de charger les tâches pour le moment.</p>
+            <button type="button" class="button button--outlined">{{ include('core/ui/_icon.html.twig', {name: 'rotate-cw'}) }}<span>Réessayer</span></button>
+        </div>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-navigation" data-testid="styleguide-navigation">
+        <h2 id="sg-navigation">Navigation</h2>
+        <nav class="breadcrumb" aria-label="Exemple de fil d'Ariane">
+            <ol><li><a href="{{ path('home') }}">Accueil</a></li><li><a href="{{ path('catalog') }}">Catalogue</a></li><li><span aria-current="page">Feuillages</span></li></ol>
+        </nav>
+        <nav class="pagination" aria-label="Exemple de pagination">
+            <ul role="list">
+                <li><span class="pagination__link is-disabled">Précédent</span></li>
+                <li><span class="pagination__link is-current" aria-current="page"><span class="visually-hidden">Page </span>1</span></li>
+                <li><a class="pagination__link" href="{{ path('catalog') }}"><span class="visually-hidden">Page </span>2</a></li>
+                <li><span class="pagination__ellipsis">…</span></li>
+                <li><a class="pagination__link" href="{{ path('catalog') }}">Suivant</a></li>
+            </ul>
+        </nav>
+        <ul class="chips" role="list" aria-label="Exemple de filtres actifs">
+            <li><a class="chip chip--removable" href="{{ path('catalog') }}"><span class="visually-hidden">Retirer le filtre : </span>Mi-ombre {{ include('core/ui/_icon.html.twig', {name: 'x'}) }}</a></li>
+        </ul>
+        <p><a href="{{ path('home') }}">Lien interne</a> et <a href="https://symfony.com/">lien externe {{ include('core/ui/_icon.html.twig', {name: 'external-link', icon_label: '(site externe)'}) }}</a></p>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-media" data-testid="styleguide-media">
+        <h2 id="sg-media">Médias et cartes</h2>
+        <div class="styleguide__cards">
+            <article class="card">
+                {{ include('core/ui/_picture.html.twig', {name: 'blog-1', widths: [480, 960], sizes: '320px', class: 'card__image'}) }}
+                <div class="card__body"><h3 class="card__title">Carte de blog</h3><p class="card__excerpt">Extrait de l’article.</p><time class="card__date" datetime="2026-09-24">24/09/2026</time></div>
+            </article>
+            {% for view in ['grille', 'liste'] %}
+                <ul class="product-list product-list--{{ view }}" role="list">
+                    <li class="product-list__item">
+                        <article class="product">
+                            <img class="product__image" src="{{ asset('images/product-6-400.webp') }}" alt="Monstera deliciosa" width="400" height="400" loading="lazy">
+                            <div class="product__body">
+                                <h3 class="product__name">Carte produit ({{ view }})</h3>
+                                <p class="product__price">{{ 2990|price }}</p>
+                                <p class="badge">Rupture de stock</p>
+                            </div>
+                        </article>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-icons" data-testid="styleguide-icons">
+        <h2 id="sg-icons">Icônes</h2>
+        <ul class="styleguide__icons" role="list">
+            {% for icon in icons %}
+                <li>{{ include('core/ui/_icon.html.twig', {name: icon}) }} <code>{{ icon }}</code></li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="styleguide__section" aria-labelledby="sg-logo" data-testid="styleguide-logo">
+        <h2 id="sg-logo">Logo</h2>
+        <div class="styleguide__logos">
+            <p class="styleguide__logo"><img src="{{ asset('images/logo-mark.svg') }}" alt="" width="48" height="48"> Pictogramme</p>
+            <p class="styleguide__logo"><img src="{{ asset('images/logo-mark.svg') }}" alt="" width="36" height="36"> <strong>{{ site.name }}</strong></p>
+            <p class="styleguide__logo styleguide__logo--dark"><img src="{{ asset('images/logo-mark.svg') }}" alt="" width="36" height="36"> <strong>{{ site.name }}</strong></p>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{#-
+    Image responsive AVIF puis WebP.
+    name : préfixe dans assets/images (ex. 'hero'), widths : variantes disponibles, ratio 16:9,
+    sizes, class, loading ('lazy' par défaut), priority (true pour l'image LCP).
+-#}
+{%- set priority = priority|default(false) -%}
+{%- set largest = widths|last -%}
+<picture>
+    {%- for format in ['avif', 'webp'] %}
+        <source type="image/{{ format }}" sizes="{{ sizes }}" srcset="{% for width in widths %}{{ asset('images/' ~ name ~ '-' ~ width ~ '.' ~ format) }} {{ width }}w{{ not loop.last ? ', ' }}{% endfor %}">
+    {%- endfor %}
+    <img class="{{ class|default('') }}" src="{{ asset('images/' ~ name ~ '-' ~ largest ~ '.webp') }}" alt="" width="{{ largest }}" height="{{ (largest * 9 / 16)|round }}"
+        {%- if priority %} fetchpriority="high"{% else %} loading="{{ loading|default('lazy') }}" decoding="async"{% endif %}>
+</picture>

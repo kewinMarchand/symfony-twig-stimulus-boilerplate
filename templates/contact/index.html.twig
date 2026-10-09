@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% set seo = seo_page({title: 'Contact', description: 'Démo de formulaire : Symfony Form et Validator, erreurs liées aux champs, envoi amélioré par Turbo et fonctionnel sans JavaScript.'}) %}
+
+{% block body %}
+    <h1>Contact</h1>
+    <p class="lead">Formulaire validé côté serveur par Symfony Validator, envoyé par Turbo et fonctionnel sans JavaScript.</p>
+    {{ include('contact/_form.html.twig') }}
+    <div id="contact-status" class="contact-status" aria-live="polite">
+        {% for message in app.flashes('contact_success') %}
+            <p class="alert alert--success" data-testid="contact-success">{{ message }}</p>
+        {% endfor %}
+        {% if send_error %}
+            <p class="alert alert--error" data-testid="contact-error">{{ send_error }}</p>
+        {% endif %}
+    </div>
+{% endblock %}

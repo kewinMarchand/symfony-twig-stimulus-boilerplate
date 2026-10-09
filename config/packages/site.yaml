@@ -1,0 +1,37 @@
+parameters:
+    # Renseigner après un audit RGAA : la déclaration et le pied de page en déduisent l'état de conformité.
+    site.accessibility:
+        audit_date: null
+        compliance_rate: null
+        auditor: null
+    site:
+        name: Symfony Twig Stimulus Boilerplate
+        description: Boilerplate Symfony avec Twig, Stimulus et Turbo, rendu serveur, outillé pour la QA, les tests end-to-end et l’accessibilité.
+        url: '%env(SITE_URL)%'
+        locale: fr_FR
+        theme_color: '#1d4ed8'
+        publisher:
+            name: Exemple SAS (société fictive)
+            address: 1 rue de l’Exemple, 13000 Marseille (adresse fictive)
+            siret: 000 000 000 00000 (numéro fictif)
+            director: Camille Exemple (personne fictive)
+            email: contact@exemple.fr
+        host:
+            name: Hébergeur Exemple (société fictive)
+            address: 2 avenue de l’Hébergement, 75000 Paris (adresse fictive)
+        accessibility: '%site.accessibility%'
+        navigation:
+            main:
+                - { route: home, label: Accueil }
+                - { route: catalog, label: Catalogue }
+                - { route: tasks, label: Tâches }
+                - { route: contact, label: Contact }
+            legal:
+                - { route: legal_notice, label: Mentions légales }
+                - { route: legal_privacy, label: Données personnelles }
+                - { route: legal_accessibility, label: Accessibilité }
+                - { route: legal_sitemap, label: Plan du site }
+
+twig:
+    globals:
+        site: '%site%'

@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Domain/*/Model/'
+            - '../src/Kernel.php'
+
+    App\Domain\Tasks\Repository\TaskRepository: '@App\Infrastructure\InMemory\InMemoryTaskRepository'
+    App\Domain\Home\Repository\ArticleRepository: '@App\Infrastructure\InMemory\InMemoryArticleRepository'
+    App\Domain\Home\Repository\SlideRepository: '@App\Infrastructure\InMemory\InMemorySlideRepository'
+    App\Domain\Contact\Sender\ContactMessageSender: '@App\Infrastructure\Logger\LoggerContactMessageSender'
+    App\Domain\Catalog\Repository\CatalogRepository: '@App\Infrastructure\InMemory\InMemoryCatalogRepository'
+
+when@test:
+    services:
+        logger:
+            class: Psr\Log\NullLogger

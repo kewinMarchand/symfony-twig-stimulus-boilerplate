@@ -1,0 +1,16 @@
+.git
+.env.local
+.env.*.local
+.env.local.php
+vendor
+var
+node_modules
+assets/vendor
+public/assets
+public/bundles
+.phpunit.cache
+.php-cs-fixer.cache
+playwright-report
+test-results
+.lighthouseci
+screenshots

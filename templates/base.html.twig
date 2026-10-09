@@ -1,0 +1,56 @@
+{%- set seo = seo is defined ? seo : seo_page() -%}
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script>document.documentElement.classList.add('js');try{if(localStorage.getItem('a11y-mode')==='enhanced'){document.documentElement.dataset.a11yMode='enhanced'}}catch(e){}</script>
+        <title>{{ seo.title }}</title>
+        <meta name="description" content="{{ seo.description }}">
+        <meta name="robots" content="{{ seo.robots }}">
+        {% if seo.canonical %}
+            <link rel="canonical" href="{{ seo.canonical }}">
+            <meta property="og:url" content="{{ seo.canonical }}">
+        {% endif %}
+        {% if seo.prev %}<link rel="prev" href="{{ seo.prev }}">{% endif %}
+        {% if seo.next %}<link rel="next" href="{{ seo.next }}">{% endif %}
+        <meta name="theme-color" content="{{ site.theme_color }}">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ site.name }}">
+        <meta property="og:title" content="{{ seo.title }}">
+        <meta property="og:description" content="{{ seo.description }}">
+        <meta property="og:image" content="{{ seo.image }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="{{ seo.imageAlt }}">
+        <meta property="og:locale" content="{{ site.locale }}">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ seo.title }}">
+        <meta name="twitter:description" content="{{ seo.description }}">
+        <meta name="twitter:image" content="{{ seo.image }}">
+        <link rel="icon" href="/favicon.ico" sizes="48x48">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="manifest" href="{{ path('seo_manifest') }}">
+        <link rel="preload" href="{{ asset('fonts/inter-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+        {% for json_ld in seo.jsonLd %}
+            <script type="application/ld+json">{{ json_ld|raw }}</script>
+        {% endfor %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    </head>
+    <body>
+        <div class="app-shell">
+            {{ include('core/layout/_skip_link.html.twig') }}
+            {{ include('core/layout/_header.html.twig') }}
+            <main id="main" class="main" tabindex="-1">
+                {% block main %}
+                    <div class="container main__content">
+                        {{ include('core/layout/_breadcrumb.html.twig') }}
+                        {% block body %}{% endblock %}
+                    </div>
+                {% endblock %}
+            </main>
+            {{ include('core/layout/_footer.html.twig') }}
+        </div>
+    </body>
+</html>

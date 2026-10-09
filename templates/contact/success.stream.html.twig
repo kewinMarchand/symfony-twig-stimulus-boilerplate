@@ -1,0 +1,6 @@
+<turbo-stream action="replace" target="contact-form">
+    <template>{{ include('contact/_form.html.twig') }}</template>
+</turbo-stream>
+<turbo-stream action="update" target="contact-status">
+    <template><p class="alert alert--success" data-testid="contact-success">Merci, votre message a bien été envoyé.</p></template>
+</turbo-stream>

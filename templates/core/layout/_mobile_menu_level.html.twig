@@ -1,0 +1,22 @@
+<div class="mobile-menu__level" data-mobile-menu-target="level" data-level="{{ level }}" hidden>
+    <button type="button" class="mobile-menu__back" data-action="mobile-menu#show" data-mobile-menu-level-param="{{ parent }}" data-testid="layout-mobile-menu-back">
+        {{ include('core/ui/_icon.html.twig', {name: 'chevron-left'}) }}
+        <span>Retour : {{ parent_label }}</span>
+    </button>
+    <h2 class="mobile-menu__heading" tabindex="-1">{{ title }}</h2>
+    <ul class="mobile-menu__list" role="list">
+        <li><a class="mobile-menu__item mobile-menu__item--all" href="{{ path('catalog', {path: slugs|join('/')}) }}">{{ all_label }}</a></li>
+        {% for category in categories %}
+            <li>
+                {% if category.children is not empty %}
+                    <button type="button" class="mobile-menu__item" data-action="mobile-menu#show" data-mobile-menu-level-param="{{ (slugs|merge([category.slug]))|join('-') }}">
+                        <span>{{ category.name }}</span>
+                        {{ include('core/ui/_icon.html.twig', {name: 'chevron-right'}) }}
+                    </button>
+                {% else %}
+                    <a class="mobile-menu__item" href="{{ path('catalog', {path: (slugs|merge([category.slug]))|join('/')}) }}" data-action="mobile-menu#close">{{ category.name }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

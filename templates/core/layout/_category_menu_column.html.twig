@@ -1,0 +1,16 @@
+<ul class="category-menu__column" role="list"{% if column_id is defined %} id="{{ column_id }}"{% endif %}>
+    {% for category in categories %}
+        {% set slugs = parents|merge([category.slug]) %}
+        <li class="category-menu__item">
+            {% if category.children is not empty %}
+                <a class="category-menu__link category-menu__link--parent" href="{{ path('catalog', {path: slugs|join('/')}) }}" aria-expanded="false" aria-controls="category-menu-{{ slugs|join('-') }}" data-action="focus->category-menu#expand mouseenter->category-menu#expand" data-testid="layout-category-link">
+                    <span>{{ category.name }}</span>
+                    {{ include('core/ui/_icon.html.twig', {name: 'chevron-right'}) }}
+                </a>
+                {{ include('core/layout/_category_menu_column.html.twig', {categories: category.children, parents: slugs, column_id: 'category-menu-' ~ slugs|join('-')}) }}
+            {% else %}
+                <a class="category-menu__link" href="{{ path('catalog', {path: slugs|join('/')}) }}" data-action="focus->category-menu#expand mouseenter->category-menu#expand" data-testid="layout-category-link">{{ category.name }}</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

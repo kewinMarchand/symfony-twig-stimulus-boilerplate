@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{% for item in site.navigation.main|merge(site.navigation.legal) %}
+    <url><loc>{{ site.url }}{{ path(item.route) }}</loc></url>
+{% endfor %}
+{% for trail in catalog_tree().allTrails() %}
+    <url><loc>{{ site.url }}{{ path('catalog', {path: trail|map(c => c.slug)|join('/')}) }}</loc></url>
+{% endfor %}
+</urlset>

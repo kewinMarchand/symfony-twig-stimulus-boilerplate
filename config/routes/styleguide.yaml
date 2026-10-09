@@ -1,0 +1,7 @@
+when@dev: &styleguide
+    styleguide:
+        path: /charte-graphique
+        controller: App\UI\Http\Controller\StyleguideController
+        methods: [GET]
+
+when@test: *styleguide

@@ -1,0 +1,33 @@
+<nav class="pagination" aria-label="Pagination" data-testid="catalog-pagination">
+    <ul role="list">
+        <li>
+            {% if current > 1 %}
+                <a class="pagination__link" href="{{ category_path ~ state.withPage(current - 1).queryString() }}" rel="prev" data-catalog-focus="title">
+                    {{ include('core/ui/_icon.html.twig', {name: 'chevron-left'}) }}<span>Précédent</span>
+                </a>
+            {% else %}
+                <span class="pagination__link is-disabled">{{ include('core/ui/_icon.html.twig', {name: 'chevron-left'}) }}<span>Précédent</span></span>
+            {% endif %}
+        </li>
+        {% for number in pagination_window(current, page_count) %}
+            <li>
+                {% if number is null %}
+                    <span class="pagination__ellipsis">…</span>
+                {% elseif number == current %}
+                    <span class="pagination__link is-current" aria-current="page"><span class="visually-hidden">Page </span>{{ number }}</span>
+                {% else %}
+                    <a class="pagination__link" href="{{ category_path ~ state.withPage(number).queryString() }}" data-catalog-focus="title"><span class="visually-hidden">Page </span>{{ number }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        <li>
+            {% if current < page_count %}
+                <a class="pagination__link" href="{{ category_path ~ state.withPage(current + 1).queryString() }}" rel="next" data-catalog-focus="title">
+                    <span>Suivant</span>{{ include('core/ui/_icon.html.twig', {name: 'chevron-right'}) }}
+                </a>
+            {% else %}
+                <span class="pagination__link is-disabled"><span>Suivant</span>{{ include('core/ui/_icon.html.twig', {name: 'chevron-right'}) }}</span>
+            {% endif %}
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{%- set category_path = path('catalog', {path: path}) -%}
+{%- set page = state.query.page -%}
+{%- set product_count = result ? result.page.total : 0 -%}
+{%- set breadcrumb = [{label: 'Catalogue', path: path('catalog')}] -%}
+{%- for step in trail -%}
+    {%- set breadcrumb = breadcrumb|merge([{label: step.name, path: path('catalog', {path: (trail|slice(0, loop.index)|map(c => c.slug))|join('/')})}]) -%}
+{%- endfor -%}
+{%- set page_suffix = page > 1 ? ', page ' ~ page : '' -%}
+{%- set seo = seo_page({
+    title: (trail is empty ? 'Catalogue' : category.name ~ ' · Catalogue') ~ page_suffix,
+    description: 'Jardinerie tropicale fictive : ' ~ (trail is empty ? 'tout le catalogue' : category.name|lower) ~ ', à filtrer par exposition, taille, prix et disponibilité. Livraison et conseils d’entretien.',
+    breadcrumb: breadcrumb,
+    canonical: category_path ~ (page > 1 ? '?page=' ~ page : ''),
+    robots: state.hasFiltersOrSort() ? 'noindex, follow' : 'index, follow',
+    prev: result and page > 1 ? category_path ~ state.withPage(page - 1).queryString() : null,
+    next: result and page < result.page.pageCount ? category_path ~ state.withPage(page + 1).queryString() : null,
+    json_ld: result ? [{
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        numberOfItems: result.page.total,
+        itemListElement: result.page.items|map((product, index) => {
+            '@type': 'ListItem',
+            position: (page - 1) * constant('App\\Domain\\Catalog\\Model\\CatalogQuery::PER_PAGE') + index + 1,
+            name: product.name,
+            url: site.url ~ category_path ~ '#' ~ product.slug,
+        }),
+    }] : [],
+}) -%}
+
+{% block body %}
+    <div class="catalog" data-controller="catalog" data-action="click->catalog#trackClick turbo:before-fetch-request->catalog#rememberFocus turbo:frame-load->catalog#restoreFocus">
+        <h1 class="catalog__title" tabindex="-1" data-catalog-target="title">{{ category.name }}</h1>
+        {% if category.children is not empty %}
+            <ul class="chips" role="list" aria-label="Sous-catégories">
+                {% for child in category.children %}
+                    <li><a class="chip" href="{{ path('catalog', {path: (path ? path ~ '/' : '') ~ child.slug}) }}">{{ child.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <p class="visually-hidden" role="status" data-catalog-target="announcer"></p>
+        <turbo-frame id="catalog-results" class="catalog__frame" data-turbo-action="advance">
+            {{ include('catalog/_results.html.twig') }}
+        </turbo-frame>
+    </div>
+{% endblock %}

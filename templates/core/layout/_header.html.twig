@@ -1,0 +1,33 @@
+{% set tree = catalog_tree() %}
+<header class="header" data-controller="mobile-menu">
+    <div class="header__inner container">
+        <a class="header__logo" href="{{ path('home') }}" data-testid="layout-logo"{% if app.current_route == 'home' %} aria-current="page"{% endif %}>
+            <img src="{{ asset('images/logo-mark.svg') }}" alt="" width="36" height="36">
+            <span>{{ site.name }}</span>
+        </a>
+        <nav class="header__nav" aria-label="Navigation principale">
+            <ul class="nav-list" role="list">
+                {% for item in site.navigation.main %}
+                    {% if item.route == 'catalog' %}
+                        {{ include('core/layout/_category_menu.html.twig') }}
+                    {% else %}
+                        <li>
+                            <a class="nav-link" href="{{ path(item.route) }}"{% if app.current_route == item.route %} aria-current="page"{% endif %}>{{ item.label }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        <div class="header__actions">
+            <button type="button" class="button button--ghost mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-menu" data-mobile-menu-target="toggle" data-action="mobile-menu#open" data-testid="layout-mobile-menu-toggle">
+                {{ include('core/ui/_icon.html.twig', {name: 'menu'}) }}
+                <span>Menu</span>
+            </button>
+            <button type="button" class="button button--ghost a11y-toggle" aria-pressed="false" data-controller="a11y-mode" data-action="a11y-mode#toggle" data-testid="a11y-mode-toggle">
+                {{ include('core/ui/_icon.html.twig', {name: 'accessibility'}) }}
+                <span>Accessibilité renforcée</span>
+            </button>
+        </div>
+    </div>
+    {{ include('core/layout/_mobile_menu.html.twig') }}
+</header>

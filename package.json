@@ -1,0 +1,17 @@
+{
+  "name": "symfony-twig-stimulus-boilerplate-qa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Outillage Node limité aux tests end-to-end, d'accessibilité et Lighthouse",
+  "license": "MIT",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=24.14.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.63.0"
+  }
+}

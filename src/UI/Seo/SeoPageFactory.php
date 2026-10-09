@@ -1,0 +1,126 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\UI\Seo;
+
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+/**
+ * Seul point de construction des métadonnées SEO d'une page, à partir de la config du site
+ * et des données fournies par la vue.
+ */
+final readonly class SeoPageFactory
+{
+    private const int JSON_FLAGS = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_HEX_TAG | \JSON_THROW_ON_ERROR;
+
+    /**
+     * @param array{name: string, description: string, url: string, navigation: array<string, list<array{route: string, label: string}>>} $site
+     */
+    public function __construct(
+        #[Autowire('%site%')]
+        private array $site,
+        private RequestStack $requestStack,
+        private UrlGeneratorInterface $urlGenerator,
+    ) {
+    }
+
+    /**
+     * @param array{
+     *     title?: string,
+     *     description?: string,
+     *     breadcrumb?: list<array{label: string, path?: string}>,
+     *     canonical?: string|false,
+     *     robots?: string,
+     *     json_ld?: list<array<string, mixed>>,
+     *     prev?: string|null,
+     *     next?: string|null,
+     * } $options chemins relatifs à l'URL du site
+     */
+    public function create(array $options = []): SeoPage
+    {
+        $siteUrl = $this->site['url'];
+        $request = $this->requestStack->getMainRequest();
+        $route = $request?->attributes->get('_route');
+        $route = \is_string($route) ? $route : null;
+        $title = $options['title'] ?? null;
+
+        $canonicalPath = $options['canonical'] ?? (null !== $route ? $this->currentPath($route) : false);
+        $canonical = false === $canonicalPath ? null : $siteUrl.$canonicalPath;
+        $breadcrumb = Breadcrumb::fromTrail($options['breadcrumb'] ?? $this->defaultTrail($route, $title));
+
+        $jsonLd = $options['json_ld'] ?? [];
+        if ('home' === $route) {
+            $jsonLd = [...$this->organizationJsonLd($siteUrl), ...$jsonLd];
+        }
+        $breadcrumbJsonLd = $breadcrumb->jsonLd($siteUrl, $canonical ?? $siteUrl.($request?->getPathInfo() ?? '/'));
+        if (null !== $breadcrumbJsonLd) {
+            $jsonLd[] = $breadcrumbJsonLd;
+        }
+
+        return new SeoPage(
+            null === $title ? $this->site['name'] : $title.' · '.$this->site['name'],
+            $options['description'] ?? $this->site['description'],
+            $canonical,
+            $options['robots'] ?? 'index, follow',
+            $siteUrl.'/og-image.jpg',
+            $this->site['name'].' : jardin tropical luxuriant',
+            $breadcrumb,
+            array_map(static fn (array $data): string => json_encode($data, self::JSON_FLAGS), $jsonLd),
+            isset($options['prev']) ? $siteUrl.$options['prev'] : null,
+            isset($options['next']) ? $siteUrl.$options['next'] : null,
+        );
+    }
+
+    private function currentPath(string $route): string
+    {
+        $parameters = $this->requestStack->getMainRequest()?->attributes->get('_route_params');
+
+        return $this->urlGenerator->generate($route, \is_array($parameters) ? $parameters : []);
+    }
+
+    /**
+     * @return list<array{label: string, path?: string}>
+     */
+    private function defaultTrail(?string $route, ?string $title): array
+    {
+        if ('home' === $route) {
+            return [];
+        }
+
+        foreach ($this->site['navigation'] as $items) {
+            foreach ($items as $item) {
+                if ($item['route'] === $route) {
+                    return [['label' => $item['label']]];
+                }
+            }
+        }
+
+        return null === $title ? [] : [['label' => $title]];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function organizationJsonLd(string $siteUrl): array
+    {
+        return [
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => $this->site['name'],
+                'url' => $siteUrl.'/',
+                'logo' => $siteUrl.'/icon-512.png',
+            ],
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'WebSite',
+                'name' => $this->site['name'],
+                'url' => $siteUrl.'/',
+                'inLanguage' => 'fr',
+            ],
+        ];
+    }
+}

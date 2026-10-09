@@ -1,0 +1,45 @@
+<dialog id="mobile-menu" class="mobile-menu" aria-labelledby="mobile-menu-title" data-mobile-menu-target="dialog" data-action="close->mobile-menu#reset" data-testid="layout-mobile-menu">
+    <div class="mobile-menu__header">
+        <p id="mobile-menu-title" class="mobile-menu__title">Menu</p>
+        <button type="button" class="button button--outlined" data-action="mobile-menu#close">
+            {{ include('core/ui/_icon.html.twig', {name: 'x'}) }}
+            <span>Fermer</span>
+        </button>
+    </div>
+
+    <div class="mobile-menu__level" data-mobile-menu-target="level" data-level="root">
+        <h2 class="mobile-menu__heading" tabindex="-1">Menu</h2>
+        <ul class="mobile-menu__list" role="list">
+            {% for item in site.navigation.main %}
+                <li>
+                    {% if item.route == 'catalog' %}
+                        <button type="button" class="mobile-menu__item" data-action="mobile-menu#show" data-mobile-menu-level-param="catalog">
+                            <span>{{ item.label }}</span>
+                            {{ include('core/ui/_icon.html.twig', {name: 'chevron-right'}) }}
+                        </button>
+                    {% else %}
+                        <a class="mobile-menu__item" href="{{ path(item.route) }}"{% if app.current_route == item.route %} aria-current="page"{% endif %}>{{ item.label }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {{ include('core/layout/_mobile_menu_level.html.twig', {level: 'catalog', parent: 'root', parent_label: 'Menu', title: 'Catalogue', all_label: 'Voir tout le catalogue', slugs: [], categories: tree.root.children}) }}
+    {% for trail in tree.allTrails() %}
+        {% set category = trail|last %}
+        {% if category.children is not empty %}
+            {% set slugs = trail|map(c => c.slug) %}
+            {% set parent_trail = trail|slice(0, trail|length - 1) %}
+            {{ include('core/layout/_mobile_menu_level.html.twig', {
+                level: slugs|join('-'),
+                parent: parent_trail is empty ? 'catalog' : parent_trail|map(c => c.slug)|join('-'),
+                parent_label: parent_trail is empty ? 'Catalogue' : (parent_trail|last).name,
+                title: category.name,
+                all_label: 'Voir toute la catégorie',
+                slugs: slugs,
+                categories: category.children,
+            }) }}
+        {% endif %}
+    {% endfor %}
+</dialog>
