@@ -17,7 +17,7 @@
         <div class="carousel__container">
             {% for slide in slides %}
                 <div class="carousel__slide" role="group" aria-roledescription="diapositive" aria-label="{{ loop.index }} sur {{ slides|length }}" data-testid="carousel-slide">
-                    {{ include('core/ui/_picture.html.twig', {name: slide.image, widths: [640, 1280], sizes: '(min-width: 1024px) 460px, (min-width: 768px) 50vw, 100vw', class: 'carousel__image'}) }}
+                    {{ include('core/ui/_picture.html.twig', {name: slide.image, widths: [640, 1280], sizes: '(min-width: 1024px) calc((min(100vw, 1440px) - 96px) / 3), (min-width: 768px) calc((100vw - 64px) / 2), calc(100vw - 32px)', class: 'carousel__image'}) }}
                     <h3 class="carousel__title">{{ slide.title }}</h3>
                     <p>{{ slide.text }}</p>
                 </div>

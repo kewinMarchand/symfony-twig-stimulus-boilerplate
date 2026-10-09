@@ -811,6 +811,8 @@ html:not(.js) .carousel__dots {
     flex: 0 0 100%;
     min-width: 0;
     scroll-snap-align: start;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 360px;
 }
 
 @media (min-width: 768px) {

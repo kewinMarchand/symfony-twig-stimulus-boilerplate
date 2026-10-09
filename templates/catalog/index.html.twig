@@ -29,6 +29,13 @@
     }] : [],
 }) -%}
 
+{% block preload %}
+    {% if result and result.page.items is not empty %}
+        {% set first = result.page.items|first %}
+        <link rel="preload" as="image" type="image/avif" imagesrcset="{{ asset('images/product-' ~ first.image ~ '-400.avif') }} 400w, {{ asset('images/product-' ~ first.image ~ '-800.avif') }} 800w" imagesizes="(min-width: 1024px) 290px, (min-width: 528px) 50vw, 100vw" fetchpriority="high">
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     <div class="catalog" data-controller="catalog" data-action="click->catalog#trackClick turbo:before-fetch-request->catalog#rememberFocus turbo:frame-load->catalog#restoreFocus">
         <h1 class="catalog__title" tabindex="-1" data-catalog-target="title">{{ category.name }}</h1>

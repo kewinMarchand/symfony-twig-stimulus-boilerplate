@@ -79,7 +79,7 @@
                             <article class="product" id="{{ product.slug }}" data-testid="catalog-product">
                                 <picture>
                                     {% for format in ['avif', 'webp'] %}
-                                        <source type="image/{{ format }}" sizes="(min-width: 480px) 280px, 100vw" srcset="{{ asset('images/product-' ~ product.image ~ '-400.' ~ format) }} 400w, {{ asset('images/product-' ~ product.image ~ '-800.' ~ format) }} 800w">
+                                        <source type="image/{{ format }}" sizes="(min-width: 1024px) 290px, (min-width: 528px) 50vw, 100vw" srcset="{{ asset('images/product-' ~ product.image ~ '-400.' ~ format) }} 400w, {{ asset('images/product-' ~ product.image ~ '-800.' ~ format) }} 800w">
                                     {% endfor %}
                                     <img class="product__image" src="{{ asset('images/product-' ~ product.image ~ '-800.webp') }}" alt="{{ product.name }}" width="800" height="800"{% if loop.first %} fetchpriority="high"{% elseif loop.index > 4 %} loading="lazy" decoding="async"{% endif %}>
                                 </picture>

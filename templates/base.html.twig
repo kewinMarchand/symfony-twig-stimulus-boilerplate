@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script>document.documentElement.classList.add('js');try{if(localStorage.getItem('a11y-mode')==='enhanced'){document.documentElement.dataset.a11yMode='enhanced'}}catch(e){}</script>
         <title>{{ seo.title }}</title>
+        {% block preload %}{% endblock %}
         <meta name="description" content="{{ seo.description }}">
         <meta name="robots" content="{{ seo.robots }}">
         {% if seo.canonical %}
