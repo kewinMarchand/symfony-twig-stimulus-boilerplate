@@ -27,14 +27,16 @@ test-unit: ## Tests unitaires et fonctionnels (PHPUnit) et test du mode accessib
 	$(EXEC) vendor/bin/phpunit
 	node --test 'tests/js/**/*.test.js'
 
-test-e2e: docker-up ## Tests end-to-end desktop et mobile, image de production puis serveur de dev (Playwright)
+test-e2e: ## Tests end-to-end desktop et mobile, image de production puis serveur de dev (Playwright)
+	$(UP_PROD)
 	yarn playwright test tests/e2e --grep-invert @dev
-	$(COMPOSE) up -d --wait
+	$(UP_DEV)
 	yarn playwright test tests/e2e --grep @dev
 
-test-a11y: docker-up ## Tests d'accessibilité WCAG 2.1 AA, deux modes, prod puis dev (axe-core + Playwright)
+test-a11y: ## Tests d'accessibilité WCAG 2.1 AA, deux modes, prod puis dev (axe-core + Playwright)
+	$(UP_PROD)
 	yarn playwright test tests/a11y --grep-invert @dev
-	$(COMPOSE) up -d --wait
+	$(UP_DEV)
 	yarn playwright test tests/a11y --grep @dev
 
 metrics: docker-build ## Métriques Lighthouse CI sur l'image de production (perf ≥ 90, a11y et SEO = 100)

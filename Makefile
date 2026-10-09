@@ -2,6 +2,8 @@
 
 COMPOSE := docker compose
 COMPOSE_PROD := docker compose -f compose.yaml
+UP_PROD := $(COMPOSE_PROD) up -d --build --wait
+UP_DEV := $(COMPOSE) up -d --wait
 EXEC ?= $(COMPOSE) run --rm php
 
 export HOST_UID := $(shell id -u)
@@ -26,7 +28,7 @@ install: ## Construit l'image de dev, installe les dépendances PHP et Node et l
 	npx playwright install chromium
 
 up: ## Lance le serveur de développement (http://localhost:8095)
-	$(COMPOSE) up -d --wait
+	$(UP_DEV)
 	@echo "http://localhost:$(HTTP_PORT)"
 
 down: ## Arrête les conteneurs
@@ -36,7 +38,7 @@ docker-build: ## Construit l'image Docker de production
 	$(COMPOSE_PROD) build
 
 docker-up: ## Lance l'image de production à la place du serveur de dev (port HTTP_PORT, 8095 par défaut)
-	$(COMPOSE_PROD) up -d --build --wait
+	$(UP_PROD)
 
 docker-down: ## Arrête le conteneur
 	$(COMPOSE) down --remove-orphans
