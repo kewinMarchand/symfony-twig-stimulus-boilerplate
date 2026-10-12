@@ -337,6 +337,29 @@ img {
     .js .header .mobile-menu-toggle {
         display: inline-flex;
     }
+
+    .js .header__inner {
+        flex-wrap: nowrap;
+    }
+
+    .js .header__logo {
+        flex: 1 1 auto;
+    }
+
+    .js .header__actions {
+        flex: 0 0 auto;
+        flex-wrap: nowrap;
+    }
+
+    .js .header__actions .button {
+        width: var(--touch-target);
+        height: var(--touch-target);
+        padding: 0;
+    }
+
+    .js .header__action-label {
+        display: none;
+    }
 }
 
 .category-menu {
