@@ -14,3 +14,9 @@ sentry:
             - Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
             - Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException
             - Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException
+
+# En test, le SDK ne remplace pas les gestionnaires d'erreurs globaux de PHP : ils survivraient
+# d'un test à l'autre (PHPUnit les signale comme non retirés) et les erreurs restent à Symfony.
+when@test:
+    sentry:
+        register_error_handler: false

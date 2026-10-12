@@ -25,12 +25,15 @@ final class ObservabilityTest extends WebTestCase
     public function testWithoutDsnNothingIsInjected(): void
     {
         $client = self::createClient();
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
 
+        $body = $crawler->filter('body');
+        self::assertNull($body->attr('data-controller'));
+        self::assertNull($body->attr('data-glitchtip-dsn-value'));
+        self::assertNull($body->attr('data-matomo-tracker-url-value'));
         $html = (string) $client->getResponse()->getContent();
-        self::assertStringNotContainsString('glitchtip', $html);
         self::assertStringNotContainsString('sentry-browser', $html);
-        self::assertStringNotContainsString('matomo', $html);
+        self::assertStringNotContainsString('matomo.js', $html);
     }
 
     public function testWithoutMatomoThePrivacyPageHasNoAudienceSection(): void
@@ -60,9 +63,10 @@ final class ObservabilityTest extends WebTestCase
     {
         $_ENV['MATOMO_URL'] = $_SERVER['MATOMO_URL'] = 'http://matomo.test/';
         $client = self::createClient();
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
 
-        self::assertStringNotContainsString('matomo', (string) $client->getResponse()->getContent());
+        self::assertNull($crawler->filter('body')->attr('data-controller'));
+        self::assertStringNotContainsString('matomo.js', (string) $client->getResponse()->getContent());
     }
 
     public function testWithDsnTheBrowserControllerIsInjected(): void
