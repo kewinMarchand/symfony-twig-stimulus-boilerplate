@@ -5,6 +5,7 @@ COMPOSE_PROD := docker compose -f compose.yaml
 UP_PROD := $(COMPOSE_PROD) up -d --build --wait
 UP_DEV := $(COMPOSE) up -d --wait
 EXEC ?= $(COMPOSE) run --rm php
+NODE ?= docker run --rm -u $(HOST_UID):$(HOST_GID) -v $(CURDIR):/app -w /app node:24-alpine node
 
 export HOST_UID := $(shell id -u)
 export HOST_GID := $(shell id -g)
@@ -34,6 +35,9 @@ up: ## Lance le serveur de développement (http://localhost:8095)
 down: ## Arrête les conteneurs
 	$(COMPOSE) down --remove-orphans
 
+icons: ## Génère public/icons.svg et src/Shared/UI/IconNames.php depuis icons.json (noms Lucide)
+	$(NODE) tools/icons.js
+
 docker-build: ## Construit l'image Docker de production
 	$(COMPOSE_PROD) build
 
@@ -43,4 +47,4 @@ docker-up: ## Lance l'image de production à la place du serveur de dev (port HT
 docker-down: ## Arrête le conteneur
 	$(COMPOSE) down --remove-orphans
 
-.PHONY: help install up down docker-build docker-up docker-down
+.PHONY: help install up down icons docker-build docker-up docker-down

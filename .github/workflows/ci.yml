@@ -23,7 +23,8 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: composer install --no-progress --prefer-dist
-      - run: make qa EXEC=
+      - run: yarn install --frozen-lockfile
+      - run: make qa EXEC= NODE=node
 
   e2e:
     runs-on: ubuntu-latest

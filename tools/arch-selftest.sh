@@ -34,7 +34,7 @@ php_class src/Shared/UI/ArchSelftestSharedToModule.php 'App\Shared\UI' \
     ArchSelftestSharedToModule 'App\Catalog\Domain\CategoryTree'
 php_class src/Catalog/UI/ArchSelftestUiToInfrastructure.php 'App\Catalog\UI' \
     ArchSelftestUiToInfrastructure 'App\Catalog\Infrastructure\InMemory\InMemoryCatalogRepository'
-printf '%s\n' "{{ ux_icon('lucide:x') }}" > templates/home/_arch_selftest.html.twig
+printf '%s\n' '<svg><use href="/icons.svg#x"></use></svg>' > templates/home/_arch_selftest.html.twig
 printf '%s\n' "import EmblaCarousel from 'embla-carousel';" '' 'export default EmblaCarousel;' \
     > assets/controllers/arch_selftest_controller.js
 

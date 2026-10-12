@@ -1,2 +1,6 @@
-{#- Seul point d'appel de ux_icon() : name = icône lucide, icon_label optionnel pour une icône porteuse de sens -#}
-{{- ux_icon('lucide:' ~ name, icon_label|default(false) ? {role: 'img', 'aria-label': icon_label} : {'aria-hidden': 'true', focusable: 'false'}) -}}
+{#- Seul point d'utilisation du sprite public/icons.svg : name = nom de icons.json, icon_label optionnel pour une icône porteuse de sens -#}
+{%- if icon_label|default(false) -%}
+    <svg width="1em" height="1em" role="img" aria-label="{{ icon_label }}"><use href="/icons.svg#{{ name }}"></use></svg>
+{%- else -%}
+    <svg width="1em" height="1em" aria-hidden="true" focusable="false"><use href="/icons.svg#{{ name }}"></use></svg>
+{%- endif -%}

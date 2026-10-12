@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Site\UI;
 
+use App\Shared\UI\IconNames;
 use App\Site\Styleguide\ContrastRatio;
 use App\Site\Styleguide\DesignTokens;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,7 @@ final class StyleguideController extends AbstractController
             'spaces' => DesignTokens::fromCss($css, 'space-'),
             'font_sizes' => DesignTokens::fromCss($css, 'font-size-'),
             'radius' => DesignTokens::fromCss($css, 'radius'),
-            'icons' => array_map(static fn (string $file): string => basename($file, '.svg'), glob(\dirname($stylesheet, 2).'/icons/lucide/*.svg') ?: []),
+            'icons' => IconNames::ALL,
         ]);
     }
 }

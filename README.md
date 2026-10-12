@@ -24,7 +24,7 @@ Un bouton « Accessibilité renforcée » dans l'en-tête agrandit le texte, esp
 | AssetMapper + importmap                     | JavaScript et CSS sans bundler, versionnés à la compilation              |
 | Stimulus (stimulus-bundle), Turbo (ux-turbo) | Comportements ciblés, navigation et formulaires sans rechargement        |
 | Embla Carousel 8                            | Carrousel (glisser, swipe, molette), derrière un seul contrôleur          |
-| symfony/ux-icons (lucide)                   | Icônes SVG inline, derrière un seul partial Twig                          |
+| Sprite SVG tiré de Lucide                   | Icônes, générées par `make icons`, derrière un seul partial Twig          |
 | CSS maison, tokens en variables CSS         | Thème, mode renforcé, aucune dépendance CSS                               |
 | PHP-CS-Fixer, PHPStan (niveau max)          | Style et analyse statique                                                |
 | PHPUnit 12, node:test                       | Tests unitaires (domaine, fonctions pures) et fonctionnels (WebTestCase) |
@@ -151,6 +151,7 @@ Terminer par `make qa`, puis `make test-e2e test-a11y`. Cette procédure a été
 | `make qa`                              | QA rapide : lint, architecture, format, analyse statique, tests unitaires et fonctionnels  |
 | `make arch`                            | Règles d'architecture : deptrac (`deptrac.yaml`) et bibliothèques tierces confinées à leur wrapper |
 | `make arch-selftest`                   | Écrit une violation volontaire de chaque règle, exige qu'elles soient toutes détectées, puis les retire |
+| `make icons`                          | Génère le sprite `public/icons.svg` et la liste des noms depuis `icons.json`                |
 | `make qa-full`                         | QA complète : QA rapide, e2e, accessibilité, Lighthouse                                    |
 | `make format`                          | PHP-CS-Fixer en écriture                                                                   |
 | `make typecheck`                       | PHPStan niveau max                                                                         |
@@ -197,7 +198,7 @@ tools/
   arch-selftest.sh   violations volontaires de make arch-selftest
 ```
 
-Les règles de dépendance sont vérifiées par deptrac (`make arch`) : `Domain` ne dépend que de lui-même, ni framework, ni autre couche, ni autre module. `Infrastructure` dépend du `Domain` de son module et des frameworks. `UI` du `Domain` de son module, de `Shared` et des frameworks, et de l'`Infrastructure` seulement dans les modules sans couche application. `Site` compose les modules, `Shared` n'en importe aucun. `make arch` vérifie aussi que `ux_icon()` n'est appelé que dans `templates/shared/ui/_icon.html.twig` et qu'Embla n'est importé que dans `assets/controllers/carousel_controller.js`. `make arch-selftest` écrit une violation de chaque règle et exige qu'elles soient toutes détectées.
+Les règles de dépendance sont vérifiées par deptrac (`make arch`) : `Domain` ne dépend que de lui-même, ni framework, ni autre couche, ni autre module. `Infrastructure` dépend du `Domain` de son module et des frameworks. `UI` du `Domain` de son module, de `Shared` et des frameworks, et de l'`Infrastructure` seulement dans les modules sans couche application. `Site` compose les modules, `Shared` n'en importe aucun. `make arch` vérifie aussi que le sprite `icons.svg` n'est utilisé que dans `templates/shared/ui/_icon.html.twig` et qu'Embla n'est importé que dans `assets/controllers/carousel_controller.js`. `make arch-selftest` écrit une violation de chaque règle et exige qu'elles soient toutes détectées.
 
 Les dépôts sont en mémoire avec une latence simulée. Le jour où l'API est disponible, on écrit un adaptateur HttpClient dans `src/<Module>/Infrastructure/Http/` et on change l'alias dans `config/services.yaml`, sans toucher au domaine ni aux vues.
 
@@ -227,7 +228,7 @@ Le pattern est dans le domaine Tasks :
 
 ### Ajouter une icône
 
-`docker compose run --rm php bin/console ux:icons:import lucide:<nom>`, puis `{{ include('shared/ui/_icon.html.twig', {name: '<nom>'}) }}`. Les SVG sont versionnés dans `assets/icons/lucide/` : la production ne contacte jamais Iconify.
+Ajouter son nom Lucide à `icons.json`, lancer `make icons`, puis `{{ include('shared/ui/_icon.html.twig', {name: '<nom>'}) }}`. Le sprite `public/icons.svg` et `src/Shared/UI/IconNames.php` sont régénérés et versionnés, et `make icons-check` vérifie en QA qu'ils restent à jour.
 
 ## Tests
 
