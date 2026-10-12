@@ -6,6 +6,7 @@ namespace App\Catalog\UI;
 
 use App\Catalog\Domain\CatalogLoadException;
 use App\Catalog\Domain\CatalogRepository;
+use App\Catalog\Domain\CategoryPath;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,9 +17,8 @@ final class CatalogController extends AbstractController
     #[Route('/catalogue/{path}', name: 'catalog', requirements: ['path' => '[a-z0-9-]+(?:/[a-z0-9-]+){0,2}'], defaults: ['path' => ''], methods: ['GET'])]
     public function __invoke(Request $request, CatalogRepository $catalogRepository, string $path): Response
     {
-        $tree = $catalogRepository->categoryTree();
-        $trail = $tree->trail('' === $path ? [] : explode('/', $path));
-        if (null === $trail) {
+        $categoryPath = CategoryPath::resolve($catalogRepository->categoryTree(), $path);
+        if (null === $categoryPath) {
             throw $this->createNotFoundException();
         }
 
@@ -29,15 +29,11 @@ final class CatalogController extends AbstractController
             return $this->redirect($this->generateUrl('catalog', ['path' => $path]).$canonicalQuery, Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $category = [] === $trail ? $tree->root : $trail[array_key_last($trail)];
-
         try {
-            $result = $catalogRepository->search($category, $state->query);
+            $result = $catalogRepository->search($categoryPath->category(), $state->query);
         } catch (CatalogLoadException $exception) {
             return $this->render('catalog/index.html.twig', [
-                'path' => $path,
-                'trail' => $trail,
-                'category' => $category,
+                'categoryPath' => $categoryPath,
                 'state' => $state,
                 'result' => null,
                 'error' => $exception->getMessage(),
@@ -49,9 +45,7 @@ final class CatalogController extends AbstractController
         }
 
         return $this->render('catalog/index.html.twig', [
-            'path' => $path,
-            'trail' => $trail,
-            'category' => $category,
+            'categoryPath' => $categoryPath,
             'state' => $state,
             'result' => $result,
             'error' => null,

@@ -26,18 +26,17 @@
     </div>
 
     {{ include('shared/layout/_mobile_menu_level.html.twig', {level: 'catalog', parent: 'root', parent_label: 'Menu', title: 'Catalogue', all_label: 'Voir tout le catalogue', slugs: [], categories: tree.root.children}) }}
-    {% for trail in tree.allTrails() %}
-        {% set category = trail|last %}
+    {% for categoryPath in catalog_paths() %}
+        {% set category = categoryPath.category %}
         {% if category.children is not empty %}
-            {% set slugs = trail|map(c => c.slug) %}
-            {% set parent_trail = trail|slice(0, trail|length - 1) %}
+            {% set parent = categoryPath.parent %}
             {{ include('shared/layout/_mobile_menu_level.html.twig', {
-                level: slugs|join('-'),
-                parent: parent_trail is empty ? 'catalog' : parent_trail|map(c => c.slug)|join('-'),
-                parent_label: parent_trail is empty ? 'Catalogue' : (parent_trail|last).name,
+                level: categoryPath.value|replace({'/': '-'}),
+                parent: parent.isRoot ? 'catalog' : parent.value|replace({'/': '-'}),
+                parent_label: parent.isRoot ? 'Catalogue' : parent.category.name,
                 title: category.name,
                 all_label: 'Voir toute la catégorie',
-                slugs: slugs,
+                slugs: categoryPath.value|split('/'),
                 categories: category.children,
             }) }}
         {% endif %}

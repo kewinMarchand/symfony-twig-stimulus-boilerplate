@@ -3,7 +3,7 @@
 {% for item in site.navigation.main|merge(site.navigation.legal) %}
     <url><loc>{{ site.url }}{{ path(item.route) }}</loc></url>
 {% endfor %}
-{% for trail in catalog_tree().allTrails() %}
-    <url><loc>{{ site.url }}{{ path('catalog', {path: trail|map(c => c.slug)|join('/')}) }}</loc></url>
+{% for categoryPath in catalog_paths() %}
+    <url><loc>{{ site.url }}{{ path('catalog', {path: categoryPath.value}) }}</loc></url>
 {% endfor %}
 </urlset>

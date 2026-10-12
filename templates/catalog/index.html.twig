@@ -1,16 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{%- set category_path = path('catalog', {path: path}) -%}
+{%- set category = categoryPath.category -%}
+{%- set category_path = path('catalog', {path: categoryPath.value}) -%}
 {%- set page = state.query.page -%}
 {%- set product_count = result ? result.page.total : 0 -%}
 {%- set breadcrumb = [{label: 'Catalogue', path: path('catalog')}] -%}
-{%- for step in trail -%}
-    {%- set breadcrumb = breadcrumb|merge([{label: step.name, path: path('catalog', {path: (trail|slice(0, loop.index)|map(c => c.slug))|join('/')})}]) -%}
+{%- for step in categoryPath.steps -%}
+    {%- set breadcrumb = breadcrumb|merge([{label: step.category.name, path: path('catalog', {path: step.value})}]) -%}
 {%- endfor -%}
 {%- set page_suffix = page > 1 ? ', page ' ~ page : '' -%}
 {%- set seo = seo_page({
-    title: (trail is empty ? 'Catalogue' : category.name ~ ' · Catalogue') ~ page_suffix,
-    description: 'Jardinerie tropicale fictive : ' ~ (trail is empty ? 'tout le catalogue' : category.name|lower) ~ ', à filtrer par exposition, taille, prix et disponibilité. Livraison et conseils d’entretien.',
+    title: (categoryPath.isRoot ? 'Catalogue' : category.name ~ ' · Catalogue') ~ page_suffix,
+    description: 'Jardinerie tropicale fictive : ' ~ (categoryPath.isRoot ? 'tout le catalogue' : category.name|lower) ~ ', à filtrer par exposition, taille, prix et disponibilité. Livraison et conseils d’entretien.',
     breadcrumb: breadcrumb,
     canonical: category_path ~ (page > 1 ? '?page=' ~ page : ''),
     robots: state.hasFiltersOrSort() ? 'noindex, follow' : 'index, follow',
@@ -42,7 +43,7 @@
         {% if category.children is not empty %}
             <ul class="chips" role="list" aria-label="Sous-catégories">
                 {% for child in category.children %}
-                    <li><a class="chip" href="{{ path('catalog', {path: (path ? path ~ '/' : '') ~ child.slug}) }}">{{ child.name }}</a></li>
+                    <li><a class="chip" href="{{ path('catalog', {path: categoryPath.child(child).value}) }}">{{ child.name }}</a></li>
                 {% endfor %}
             </ul>
         {% endif %}

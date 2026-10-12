@@ -6,6 +6,7 @@ namespace App\Catalog\UI;
 
 use App\Catalog\Domain\CatalogRepository;
 use App\Catalog\Domain\CatalogSearch;
+use App\Catalog\Domain\CategoryPath;
 use App\Catalog\Domain\CategoryTree;
 use Twig\Attribute\AsTwigFilter;
 use Twig\Attribute\AsTwigFunction;
@@ -20,6 +21,15 @@ final readonly class CatalogExtension
     public function tree(): CategoryTree
     {
         return $this->catalogRepository->categoryTree();
+    }
+
+    /**
+     * @return list<CategoryPath>
+     */
+    #[AsTwigFunction('catalog_paths')]
+    public function paths(): array
+    {
+        return CategoryPath::all($this->catalogRepository->categoryTree());
     }
 
     /**

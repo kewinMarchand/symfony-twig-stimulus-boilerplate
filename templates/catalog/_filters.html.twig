@@ -15,7 +15,7 @@
                 <summary>Catégorie</summary>
                 <ul class="facet__links" role="list">
                     {% for child in category.children %}
-                        <li><a href="{{ path('catalog', {path: (path ? path ~ '/' : '') ~ child.slug}) }}" data-turbo-frame="_top">{{ child.name }} <span class="facet__count">({{ facets.categories[child.slug] }})</span></a></li>
+                        <li><a href="{{ path('catalog', {path: categoryPath.child(child).value}) }}" data-turbo-frame="_top">{{ child.name }} <span class="facet__count">({{ facets.categories[child.slug] }})</span></a></li>
                     {% endfor %}
                 </ul>
             </details>
