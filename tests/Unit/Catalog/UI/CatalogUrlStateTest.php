@@ -21,8 +21,8 @@ final class CatalogUrlStateTest extends TestCase
         $filters = $state->query->filters;
         self::assertSame([Exposure::Sun, Exposure::PartialShade], $filters->exposures);
         self::assertSame([Size::Large], $filters->sizes);
-        self::assertSame(10, $filters->priceMin);
-        self::assertSame(50, $filters->priceMax);
+        self::assertSame(1000, $filters->priceMin?->cents);
+        self::assertSame(5000, $filters->priceMax?->cents);
         self::assertTrue($filters->inStockOnly);
         self::assertSame(ProductSort::PriceAscending, $state->query->sort);
         self::assertSame(ListView::List, $state->view);

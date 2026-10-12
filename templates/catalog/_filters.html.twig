@@ -57,11 +57,11 @@
                 <legend class="visually-hidden">Prix en euros</legend>
                 <div class="field">
                     <label for="filter-price-min">Minimum (€)</label>
-                    <input type="number" id="filter-price-min" name="prix_min" min="0" step="1" inputmode="numeric" value="{{ filters.priceMin }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-min">
+                    <input type="number" id="filter-price-min" name="prix_min" min="0" step="1" inputmode="numeric" value="{{ filters.priceMin ? filters.priceMin.euros }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-min">
                 </div>
                 <div class="field">
                     <label for="filter-price-max">Maximum (€)</label>
-                    <input type="number" id="filter-price-max" name="prix_max" min="0" step="1" inputmode="numeric" value="{{ filters.priceMax }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-max">
+                    <input type="number" id="filter-price-max" name="prix_max" min="0" step="1" inputmode="numeric" value="{{ filters.priceMax ? filters.priceMax.euros }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-max">
                 </div>
             </fieldset>
         </details>

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Catalog\Domain;
+namespace App\Tests\Unit\Catalog\Infrastructure\InMemory;
 
-use App\Catalog\Domain\CatalogSearch;
 use App\Catalog\Domain\Category;
 use App\Catalog\Domain\Exposure;
+use App\Catalog\Domain\Price;
 use App\Catalog\Domain\Product;
 use App\Catalog\Domain\ProductFilters;
 use App\Catalog\Domain\ProductSort;
 use App\Catalog\Domain\Size;
-use PHPUnit\Framework\Attributes\DataProvider;
+use App\Catalog\Infrastructure\InMemory\CatalogSearch;
 use PHPUnit\Framework\TestCase;
 
 final class CatalogSearchTest extends TestCase
@@ -22,11 +22,11 @@ final class CatalogSearchTest extends TestCase
     private static function products(): array
     {
         return [
-            new Product('1', 'a', 'Bégonia', 'interieur', 1500, Exposure::Shade, Size::Small, true, 1),
-            new Product('2', 'b', 'Agave', 'exterieur', 4000, Exposure::Sun, Size::Large, true, 2),
-            new Product('3', 'c', 'Calathea', 'interieur', 2500, Exposure::PartialShade, Size::Medium, false, 3),
-            new Product('4', 'd', 'Dracaena', 'interieur', 3500, Exposure::PartialShade, Size::Large, true, 4),
-            new Product('5', 'e', 'Échinacée', 'exterieur', 900, Exposure::Sun, Size::Small, true, 5),
+            new Product('1', 'a', 'Bégonia', 'interieur', Price::fromCents(1500), Exposure::Shade, Size::Small, true, 1),
+            new Product('2', 'b', 'Agave', 'exterieur', Price::fromCents(4000), Exposure::Sun, Size::Large, true, 2),
+            new Product('3', 'c', 'Calathea', 'interieur', Price::fromCents(2500), Exposure::PartialShade, Size::Medium, false, 3),
+            new Product('4', 'd', 'Dracaena', 'interieur', Price::fromCents(3500), Exposure::PartialShade, Size::Large, true, 4),
+            new Product('5', 'e', 'Échinacée', 'exterieur', Price::fromCents(900), Exposure::Sun, Size::Small, true, 5),
         ];
     }
 
@@ -59,7 +59,7 @@ final class CatalogSearchTest extends TestCase
 
     public function testFiltersByPriceInEurosAndStock(): void
     {
-        $filters = new ProductFilters(priceMin: 15, priceMax: 35, inStockOnly: true);
+        $filters = new ProductFilters(priceMin: Price::fromEuros(15), priceMax: Price::fromEuros(35), inStockOnly: true);
 
         self::assertSame(['1', '4'], self::ids(CatalogSearch::filter(self::products(), $filters)));
     }
@@ -94,27 +94,5 @@ final class CatalogSearchTest extends TestCase
     public function testEmptyResultHasOnePage(): void
     {
         self::assertSame(1, CatalogSearch::paginate([], 1, 12)->pageCount);
-    }
-
-    /**
-     * @return iterable<string, array{int, int, list<int|null>}>
-     */
-    public static function windows(): iterable
-    {
-        yield 'une page' => [1, 1, [1]];
-        yield 'sept pages, sans ellipse' => [4, 7, [1, 2, 3, 4, 5, 6, 7]];
-        yield 'début' => [1, 10, [1, 2, null, 10]];
-        yield 'milieu' => [5, 10, [1, null, 4, 5, 6, null, 10]];
-        yield 'avant-dernière' => [9, 10, [1, null, 8, 9, 10]];
-        yield 'troisième, sans ellipse à gauche' => [3, 10, [1, 2, 3, 4, null, 10]];
-    }
-
-    /**
-     * @param list<int|null> $expected
-     */
-    #[DataProvider('windows')]
-    public function testPaginationWindow(int $current, int $pageCount, array $expected): void
-    {
-        self::assertSame($expected, CatalogSearch::paginationWindow($current, $pageCount));
     }
 }

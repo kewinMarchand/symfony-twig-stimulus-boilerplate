@@ -50,10 +50,10 @@
                             {{ include('catalog/_active_filter.html.twig', {label: size.label, href: category_path ~ state.withoutSize(size).queryString()}) }}
                         {% endfor %}
                         {% if filters.priceMin is not null %}
-                            {{ include('catalog/_active_filter.html.twig', {label: 'Prix minimum ' ~ filters.priceMin ~ ' €', href: category_path ~ state.withoutPriceMin().queryString()}) }}
+                            {{ include('catalog/_active_filter.html.twig', {label: 'Prix minimum ' ~ filters.priceMin.euros ~ ' €', href: category_path ~ state.withoutPriceMin().queryString()}) }}
                         {% endif %}
                         {% if filters.priceMax is not null %}
-                            {{ include('catalog/_active_filter.html.twig', {label: 'Prix maximum ' ~ filters.priceMax ~ ' €', href: category_path ~ state.withoutPriceMax().queryString()}) }}
+                            {{ include('catalog/_active_filter.html.twig', {label: 'Prix maximum ' ~ filters.priceMax.euros ~ ' €', href: category_path ~ state.withoutPriceMax().queryString()}) }}
                         {% endif %}
                         {% if filters.inStockOnly %}
                             {{ include('catalog/_active_filter.html.twig', {label: 'En stock', href: category_path ~ state.withoutInStock().queryString()}) }}
@@ -85,7 +85,7 @@
                                 </picture>
                                 <div class="product__body">
                                     <h2 class="product__name">{{ product.name }}</h2>
-                                    <p class="product__price" data-testid="catalog-product-price" data-price="{{ product.price }}">{{ product.price|price }}</p>
+                                    <p class="product__price" data-testid="catalog-product-price" data-price="{{ product.price.cents }}">{{ product.price|price }}</p>
                                     <dl class="product__details">
                                         <div><dt>Exposition</dt><dd>{{ product.exposure.label }}</dd></div>
                                         <div><dt>Taille</dt><dd>{{ product.size.label }}</dd></div>

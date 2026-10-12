@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Catalog\UI;
 
 use App\Catalog\Domain\CatalogRepository;
-use App\Catalog\Domain\CatalogSearch;
 use App\Catalog\Domain\CategoryPath;
 use App\Catalog\Domain\CategoryTree;
+use App\Catalog\Domain\Price;
 use Twig\Attribute\AsTwigFilter;
 use Twig\Attribute\AsTwigFunction;
 
@@ -38,14 +38,12 @@ final readonly class CatalogExtension
     #[AsTwigFunction('pagination_window')]
     public function paginationWindow(int $current, int $pageCount): array
     {
-        return CatalogSearch::paginationWindow($current, $pageCount);
+        return PaginationWindow::pages($current, $pageCount);
     }
 
     #[AsTwigFilter('price')]
-    public function price(int $cents): string
+    public function price(Price|int $price): string
     {
-        $formatter = new \NumberFormatter('fr_FR', \NumberFormatter::CURRENCY);
-
-        return (string) $formatter->formatCurrency($cents / 100, 'EUR');
+        return ($price instanceof Price ? $price : Price::fromCents($price))->format();
     }
 }

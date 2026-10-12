@@ -82,12 +82,13 @@ Découpage par module métier d'abord, par couche ensuite, selon l'architecture 
 ```
 src/
   Catalog/           module complet : catalogue de la jardinerie
-    Domain/          modèle sans framework : Category, CategoryTree, CategoryPath, CatalogQuery, ProductFilters, Product,
-                     le port CatalogRepository et la recherche (filtre, comptage disjonctif, tri, pagination)
+    Domain/          modèle sans framework : Category, CategoryTree, CategoryPath, CatalogQuery, ProductFilters,
+                     Product, Price (centimes), le port CatalogRepository
     Application/     ShowCatalogPage : résout la catégorie, interroge le dépôt, décide (introuvable, page
                      hors bornes, échec de chargement), sans framework
-    Infrastructure/  InMemory/ : dépôt en mémoire
-    UI/              contrôleur, état de recherche porté par l'URL, extension Twig
+    Infrastructure/  InMemory/ : dépôt en mémoire et CatalogSearch, le simulateur de l'API (filtre, comptage
+                     disjonctif, tri, pagination), qui disparaîtra avec lui au branchement
+    UI/              contrôleur, état de recherche porté par l'URL (euros), fenêtre de pagination, extension Twig
   Blog/              forme réduite : Domain/ (Article, port, exception), Infrastructure/InMemory/
   Contact/           forme réduite : Domain/, Infrastructure/Logger/, UI/ (contrôleur, formulaire)
   Task/              forme réduite : Domain/ (Task protège son invariant), Infrastructure/InMemory/, UI/

@@ -6,6 +6,7 @@ namespace App\Catalog\UI;
 
 use App\Catalog\Domain\CatalogQuery;
 use App\Catalog\Domain\Exposure;
+use App\Catalog\Domain\Price;
 use App\Catalog\Domain\ProductFilters;
 use App\Catalog\Domain\ProductSort;
 use App\Catalog\Domain\Size;
@@ -32,8 +33,8 @@ final readonly class CatalogUrlState
         $filters = new ProductFilters(
             array_values(array_filter(Exposure::cases(), static fn (Exposure $case): bool => \in_array($case->value, $params['exposition'] ?? [], true))),
             array_values(array_filter(Size::cases(), static fn (Size $case): bool => \in_array($case->value, $params['taille'] ?? [], true))),
-            self::positiveInt($first('prix_min'), 0),
-            self::positiveInt($first('prix_max'), 0),
+            self::euros($first('prix_min')),
+            self::euros($first('prix_max')),
             '1' === $first('en_stock'),
         );
 
@@ -53,8 +54,8 @@ final readonly class CatalogUrlState
         $pairs = [
             ...array_map(static fn (Exposure $exposure): array => ['exposition', $exposure->value], $filters->exposures),
             ...array_map(static fn (Size $size): array => ['taille', $size->value], $filters->sizes),
-            ...(null !== $filters->priceMin ? [['prix_min', (string) $filters->priceMin]] : []),
-            ...(null !== $filters->priceMax ? [['prix_max', (string) $filters->priceMax]] : []),
+            ...(null !== $filters->priceMin ? [['prix_min', (string) $filters->priceMin->euros()]] : []),
+            ...(null !== $filters->priceMax ? [['prix_max', (string) $filters->priceMax->euros()]] : []),
             ...($filters->inStockOnly ? [['en_stock', '1']] : []),
             ...(ProductSort::Relevance !== $this->query->sort ? [['tri', $this->query->sort->value]] : []),
             ...(ListView::Grid !== $this->view ? [['vue', $this->view->value]] : []),
@@ -133,6 +134,13 @@ final readonly class CatalogUrlState
         $filters = $this->query->filters;
 
         return $this->withFilters(new ProductFilters($filters->exposures, $filters->sizes, $filters->priceMin, $filters->priceMax, false));
+    }
+
+    private static function euros(?string $value): ?Price
+    {
+        $euros = self::positiveInt($value, 0);
+
+        return null === $euros ? null : Price::fromEuros($euros);
     }
 
     private static function positiveInt(?string $value, int $min): ?int

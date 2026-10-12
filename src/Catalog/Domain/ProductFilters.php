@@ -13,8 +13,8 @@ final readonly class ProductFilters
     public function __construct(
         public array $exposures = [],
         public array $sizes = [],
-        public ?int $priceMin = null,
-        public ?int $priceMax = null,
+        public ?Price $priceMin = null,
+        public ?Price $priceMax = null,
         public bool $inStockOnly = false,
     ) {
     }

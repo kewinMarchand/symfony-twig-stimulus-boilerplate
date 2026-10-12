@@ -2,12 +2,26 @@
 
 declare(strict_types=1);
 
-namespace App\Catalog\Domain;
+namespace App\Catalog\Infrastructure\InMemory;
 
+use App\Catalog\Domain\CatalogQuery;
+use App\Catalog\Domain\CatalogResult;
+use App\Catalog\Domain\Category;
+use App\Catalog\Domain\Exposure;
+use App\Catalog\Domain\FacetCounts;
+use App\Catalog\Domain\Product;
+use App\Catalog\Domain\ProductFilters;
+use App\Catalog\Domain\ProductPage;
+use App\Catalog\Domain\ProductSort;
+use App\Catalog\Domain\Size;
+
+/**
+ * Simulateur de l'API : filtre, comptage disjonctif, tri et pagination des résultats. C'est le travail du
+ * fournisseur de données, pas une règle du modèle : au branchement de l'API, ce fichier disparaît avec
+ * le dépôt en mémoire, sans toucher au domaine.
+ */
 final class CatalogSearch
 {
-    private const int MAX_VISIBLE_PAGES = 7;
-
     /**
      * @param list<Product> $products
      */
@@ -42,8 +56,8 @@ final class CatalogSearch
     {
         return array_values(array_filter($products, static fn (Product $product): bool => ([] === $filters->exposures || \in_array($product->exposure, $filters->exposures, true))
             && ([] === $filters->sizes || \in_array($product->size, $filters->sizes, true))
-            && (null === $filters->priceMin || $product->price >= $filters->priceMin * 100)
-            && (null === $filters->priceMax || $product->price <= $filters->priceMax * 100)
+            && (null === $filters->priceMin || $product->price->cents >= $filters->priceMin->cents)
+            && (null === $filters->priceMax || $product->price->cents <= $filters->priceMax->cents)
             && (!$filters->inStockOnly || $product->inStock)));
     }
 
@@ -85,8 +99,8 @@ final class CatalogSearch
     {
         $comparator = match ($sort) {
             ProductSort::Relevance => null,
-            ProductSort::PriceAscending => static fn (Product $a, Product $b): int => $a->price <=> $b->price,
-            ProductSort::PriceDescending => static fn (Product $a, Product $b): int => $b->price <=> $a->price,
+            ProductSort::PriceAscending => static fn (Product $a, Product $b): int => $a->price->cents <=> $b->price->cents,
+            ProductSort::PriceDescending => static fn (Product $a, Product $b): int => $b->price->cents <=> $a->price->cents,
             ProductSort::Name => static fn (Product $a, Product $b): int => strcoll($a->name, $b->name),
         };
 
@@ -110,28 +124,5 @@ final class CatalogSearch
             $page,
             max(1, (int) ceil($total / $perPage)),
         );
-    }
-
-    /**
-     * Pages à afficher, null pour une ellipse : toutes jusqu'à 7, sinon 1, courante ± 1 et dernière.
-     *
-     * @return list<int|null>
-     */
-    public static function paginationWindow(int $current, int $pageCount): array
-    {
-        if ($pageCount <= self::MAX_VISIBLE_PAGES) {
-            return range(1, $pageCount);
-        }
-
-        $start = max(2, $current - 1);
-        $end = min($pageCount - 1, $current + 1);
-
-        return [
-            1,
-            ...($start > 2 ? [null] : []),
-            ...range($start, $end),
-            ...($end < $pageCount - 1 ? [null] : []),
-            $pageCount,
-        ];
     }
 }

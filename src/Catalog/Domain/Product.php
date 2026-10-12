@@ -11,7 +11,7 @@ final readonly class Product
         public string $slug,
         public string $name,
         public string $categorySlug,
-        public int $price,
+        public Price $price,
         public Exposure $exposure,
         public Size $size,
         public bool $inStock,
