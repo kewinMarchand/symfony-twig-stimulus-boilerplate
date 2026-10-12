@@ -84,6 +84,8 @@ src/
   Catalog/           module complet : catalogue de la jardinerie
     Domain/          modèle sans framework : Category, CategoryTree, CategoryPath, CatalogQuery, ProductFilters, Product,
                      le port CatalogRepository et la recherche (filtre, comptage disjonctif, tri, pagination)
+    Application/     ShowCatalogPage : résout la catégorie, interroge le dépôt, décide (introuvable, page
+                     hors bornes, échec de chargement), sans framework
     Infrastructure/  InMemory/ : dépôt en mémoire
     UI/              contrôleur, état de recherche porté par l'URL, extension Twig
   Blog/              forme réduite : Domain/ (Article, port, exception), Infrastructure/InMemory/
