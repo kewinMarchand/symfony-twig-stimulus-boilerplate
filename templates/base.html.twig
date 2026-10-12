@@ -40,7 +40,12 @@
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     </head>
     {%- set glitchtip_config = glitchtip() %}
-    <body{% if glitchtip_config %} data-controller="glitchtip" data-glitchtip-dsn-value="{{ glitchtip_config.dsn }}" data-glitchtip-environment-value="{{ glitchtip_config.environment }}" data-glitchtip-bundle-value="{{ asset('sentry/sentry-browser-11.6.0.min.js') }}"{% endif %}>
+    {%- set matomo_config = matomo() %}
+    {%- set body_controllers = (glitchtip_config ? ['glitchtip'] : [])|merge(matomo_config ? ['matomo'] : []) %}
+    <body
+        {%- if body_controllers is not empty %} data-controller="{{ body_controllers|join(' ') }}"{% endif %}
+        {%- if glitchtip_config %} data-glitchtip-dsn-value="{{ glitchtip_config.dsn }}" data-glitchtip-environment-value="{{ glitchtip_config.environment }}" data-glitchtip-bundle-value="{{ asset('sentry/sentry-browser-11.6.0.min.js') }}"{% endif %}
+        {%- if matomo_config %} data-matomo-script-url-value="{{ matomo_config.scriptUrl }}" data-matomo-tracker-url-value="{{ matomo_config.trackerUrl }}" data-matomo-site-id-value="{{ matomo_config.siteId }}" data-action="turbo:frame-load@document->matomo#trackPageView"{% endif %}>
         <div class="app-shell">
             {{ include('shared/layout/_skip_link.html.twig') }}
             {{ include('shared/layout/_header.html.twig') }}

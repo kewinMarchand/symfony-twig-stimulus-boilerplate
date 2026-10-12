@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { gunzipSync } from 'node:zlib'
 import { expect, test } from '@playwright/test'
@@ -38,14 +39,55 @@ const throwInBrowser = async (page: Page, message: string) => {
   }, message)
 }
 
-test('sans DSN, aucun script de suivi n’est chargé', async ({ page }) => {
+const MATOMO_TRACKER = readFileSync(new URL('./fixtures/matomo-tracker.js', import.meta.url), 'utf8')
+
+const interceptMatomo = async (page: Page) => {
+  const pageViews: string[] = []
+  await page.route('http://matomo.test/matomo.js', (route) =>
+    route.fulfill({ contentType: 'text/javascript', body: MATOMO_TRACKER }),
+  )
+  await page.route('http://matomo.test/matomo.php?*', (route) => {
+    pageViews.push(route.request().url())
+    return route.fulfill({ status: 204 })
+  })
+  return pageViews
+}
+
+test('sans variable, aucun traceur n’est chargé', async ({ page }) => {
   const requests: string[] = []
   page.on('request', (request) => requests.push(request.url()))
-  await page.goto('/')
+  await page.goto('/donnees-personnelles')
   await page.waitForLoadState('load')
 
-  await expect(page.locator('body')).not.toHaveAttribute('data-controller', /glitchtip/)
-  expect(requests.filter((url) => url.includes('sentry-browser'))).toEqual([])
+  await expect(page.locator('body')).not.toHaveAttribute('data-controller', /.+/)
+  await expect(page.getByTestId('legal-audience-measurement')).toHaveCount(0)
+  expect(requests.filter((url) => url.includes('sentry-browser') || url.includes('matomo'))).toEqual([])
+})
+
+test.describe('Mesure d’audience Matomo, avec un traceur factice @observabilite', () => {
+  test.skip(({ isMobile }) => isMobile, 'navigation par les liens du header desktop')
+
+  test('une page vue par navigation, sans cookie', async ({ page, context }) => {
+    const pageViews = await interceptMatomo(page)
+    await page.goto('/')
+    await expect.poll(() => pageViews.length).toBe(1)
+
+    await page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link', { name: 'Contact' }).click()
+    await expect(page).toHaveURL(/\/contact$/)
+    await expect.poll(() => pageViews.length).toBe(2)
+    expect(new URL(pageViews[1]).searchParams.get('url')).toMatch(/\/contact$/)
+
+    const commands = await page.evaluate(() => (window as { __matomoCommands?: string[][] }).__matomoCommands ?? [])
+    expect(commands[0]).toEqual(['disableCookies'])
+    expect(await context.cookies()).toEqual([])
+  })
+
+  test('la page Données personnelles décrit la mesure d’audience', async ({ page }) => {
+    await interceptMatomo(page)
+    await page.goto('/donnees-personnelles')
+
+    await expect(page.getByTestId('legal-audience-measurement')).toContainText('sans cookie')
+  })
 })
 
 test.describe('Suivi des erreurs GlitchTip, avec un DSN factice @observabilite', () => {

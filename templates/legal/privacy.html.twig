@@ -24,6 +24,13 @@
         <h2>Réclamation</h2>
         <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la Commission nationale de l’informatique et des libertés (CNIL), sur <a href="https://www.cnil.fr/fr/plaintes">cnil.fr</a>.</p>
 
+        {% if matomo() %}
+            <section aria-labelledby="mesure-audience" data-testid="legal-audience-measurement">
+                <h2 id="mesure-audience">Mesure d’audience</h2>
+                <p>La fréquentation du site est mesurée avec Matomo, hébergé par l’éditeur, configuré sans cookie et sans identifiant : aucun suivi d’un site à l’autre, adresse IP anonymisée, aucune donnée transmise à un tiers. Les statistiques produites sont anonymes et servent uniquement à améliorer le site. Les données brutes sont conservées 25 mois au plus.</p>
+            </section>
+        {% endif %}
+
         <h2>Cookies</h2>
         <p>Aucun cookie de mesure d’audience n’est déposé. Seul un cookie technique de session, exempté de consentement, peut être posé après l’envoi du formulaire de contact sans JavaScript, pour afficher la confirmation.</p>
     </article>

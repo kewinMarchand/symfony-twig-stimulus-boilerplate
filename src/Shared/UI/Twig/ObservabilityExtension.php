@@ -18,6 +18,10 @@ final readonly class ObservabilityExtension
         private string $glitchtipDsn,
         #[Autowire('%env(default:kernel.environment:GLITCHTIP_ENVIRONMENT)%')]
         private string $glitchtipEnvironment,
+        #[Autowire('%env(MATOMO_URL)%')]
+        private string $matomoUrl,
+        #[Autowire('%env(MATOMO_SITE_ID)%')]
+        private string $matomoSiteId,
     ) {
     }
 
@@ -30,5 +34,24 @@ final readonly class ObservabilityExtension
         $dsn = trim($this->glitchtipDsn);
 
         return '' === $dsn ? null : ['dsn' => $dsn, 'environment' => $this->glitchtipEnvironment];
+    }
+
+    /**
+     * Sans URL ni identifiant de site, la mesure d'audience est éteinte : aucun script, aucune requête.
+     *
+     * @return array{scriptUrl: string, trackerUrl: string, siteId: string}|null
+     */
+    #[AsTwigFunction('matomo')]
+    public function matomo(): ?array
+    {
+        $url = trim($this->matomoUrl);
+        $siteId = trim($this->matomoSiteId);
+        if ('' === $url || '' === $siteId) {
+            return null;
+        }
+
+        $base = rtrim($url, '/').'/';
+
+        return ['scriptUrl' => $base.'matomo.js', 'trackerUrl' => $base.'matomo.php', 'siteId' => $siteId];
     }
 }

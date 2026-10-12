@@ -16,8 +16,9 @@ final class ObservabilityTest extends WebTestCase
 
     protected function tearDown(): void
     {
-        unset($_ENV['GLITCHTIP_DSN'], $_SERVER['GLITCHTIP_DSN']);
-        $_ENV['GLITCHTIP_DSN'] = $_SERVER['GLITCHTIP_DSN'] = '';
+        foreach (['GLITCHTIP_DSN', 'MATOMO_URL', 'MATOMO_SITE_ID'] as $name) {
+            $_ENV[$name] = $_SERVER[$name] = '';
+        }
         parent::tearDown();
     }
 
@@ -29,6 +30,39 @@ final class ObservabilityTest extends WebTestCase
         $html = (string) $client->getResponse()->getContent();
         self::assertStringNotContainsString('glitchtip', $html);
         self::assertStringNotContainsString('sentry-browser', $html);
+        self::assertStringNotContainsString('matomo', $html);
+    }
+
+    public function testWithoutMatomoThePrivacyPageHasNoAudienceSection(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/donnees-personnelles');
+
+        self::assertSelectorNotExists('[data-testid="legal-audience-measurement"]');
+    }
+
+    public function testWithMatomoTheTrackerAndTheAudienceSectionAreInjected(): void
+    {
+        $_ENV['MATOMO_URL'] = $_SERVER['MATOMO_URL'] = 'http://matomo.test';
+        $_ENV['MATOMO_SITE_ID'] = $_SERVER['MATOMO_SITE_ID'] = '1';
+        $client = self::createClient();
+        $crawler = $client->request('GET', '/donnees-personnelles');
+
+        $body = $crawler->filter('body');
+        self::assertSame('matomo', $body->attr('data-controller'));
+        self::assertSame('http://matomo.test/matomo.js', $body->attr('data-matomo-script-url-value'));
+        self::assertSame('http://matomo.test/matomo.php', $body->attr('data-matomo-tracker-url-value'));
+        self::assertSame('1', $body->attr('data-matomo-site-id-value'));
+        self::assertSelectorTextContains('[data-testid="legal-audience-measurement"]', 'sans cookie');
+    }
+
+    public function testMatomoNeedsBothUrlAndSiteId(): void
+    {
+        $_ENV['MATOMO_URL'] = $_SERVER['MATOMO_URL'] = 'http://matomo.test/';
+        $client = self::createClient();
+        $client->request('GET', '/');
+
+        self::assertStringNotContainsString('matomo', (string) $client->getResponse()->getContent());
     }
 
     public function testWithDsnTheBrowserControllerIsInjected(): void

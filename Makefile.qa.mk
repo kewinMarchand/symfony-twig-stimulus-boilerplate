@@ -1,7 +1,8 @@
 LHCI_PROJECT := symfony-twig-stimulus-boilerplate-lhci
 LHCI_PORT := 3230
-# Valeurs factices de la phase @observabilite : un faux GlitchTip local (tests/e2e/observability.e2e.ts), jamais une instance réelle.
-OBSERVABILITY_ENV := GLITCHTIP_DSN=http://clefactice@localhost:3231/1
+# Valeurs factices de la phase @observabilite : un faux GlitchTip local et un traceur Matomo intercepté
+# (tests/e2e/observability.e2e.ts), jamais une instance réelle.
+OBSERVABILITY_ENV := GLITCHTIP_DSN=http://clefactice@localhost:3231/1 MATOMO_URL=http://matomo.test/ MATOMO_SITE_ID=1
 
 qa: lint arch arch-selftest format-check typecheck test-unit ## QA rapide : lint, architecture, format, analyse statique, tests unitaires
 
