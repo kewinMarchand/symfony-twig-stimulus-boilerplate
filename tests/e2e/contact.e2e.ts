@@ -1,6 +1,20 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('Contact', () => {
+  test('signale les champs obligatoires par un astérisque expliqué en tête du formulaire', async ({ page }) => {
+    await page.goto('/contact')
+
+    await expect(page.getByTestId('contact-required-note')).toHaveText('Les champs marqués d’un astérisque (*) sont obligatoires.')
+    for (const field of ['contact-name', 'contact-email', 'contact-message']) {
+      const input = page.getByTestId(field)
+      await expect(input).toHaveAttribute('required', 'required')
+      const marker = await page
+        .locator(`label[for="${await input.getAttribute('id')}"]`)
+        .evaluate((label) => getComputedStyle(label, '::after').content)
+      expect(marker).toContain('*')
+    }
+  })
+
   test('affiche les erreurs de validation quand le formulaire est vide', async ({ page }) => {
     await page.goto('/contact')
     await page.getByTestId('contact-submit').click()

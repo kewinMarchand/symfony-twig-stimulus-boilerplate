@@ -1,5 +1,6 @@
 {%- set first_invalid = form|filter(child => not child.vars.valid)|map(child => child.vars.name)|first -%}
 {{ form_start(form, {attr: {id: 'contact-form', class: 'form'}}) }}
+    <p class="form__required-note" data-testid="contact-required-note">Les champs marqués d’un astérisque (*) sont obligatoires.</p>
     {{ form_errors(form) }}
     {{ form_row(form.name, {row_attr: {class: 'field'}, attr: {autocomplete: 'name', autofocus: first_invalid == 'name', 'data-testid': 'contact-name'}}) }}
     {{ form_row(form.email, {row_attr: {class: 'field'}, attr: {autocomplete: 'email', autofocus: first_invalid == 'email', 'data-testid': 'contact-email'}}) }}
