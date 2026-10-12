@@ -39,7 +39,8 @@
         {% endfor %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     </head>
-    <body>
+    {%- set glitchtip_config = glitchtip() %}
+    <body{% if glitchtip_config %} data-controller="glitchtip" data-glitchtip-dsn-value="{{ glitchtip_config.dsn }}" data-glitchtip-environment-value="{{ glitchtip_config.environment }}" data-glitchtip-bundle-value="{{ asset('sentry/sentry-browser-11.6.0.min.js') }}"{% endif %}>
         <div class="app-shell">
             {{ include('shared/layout/_skip_link.html.twig') }}
             {{ include('shared/layout/_header.html.twig') }}

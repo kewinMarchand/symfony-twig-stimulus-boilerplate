@@ -1,0 +1,16 @@
+# Suivi des erreurs par GlitchTip (API compatible Sentry). Sans GLITCHTIP_DSN, rien n'est envoyé.
+# Ni donnée personnelle, ni corps de requête, ni trace de performance. Les erreurs attendues
+# (404, 405, 422, 503) ne sont pas remontées : seules les erreurs inattendues le sont.
+sentry:
+    dsn: '%env(GLITCHTIP_DSN)%'
+    tracing:
+        enabled: false
+    options:
+        environment: '%env(default:kernel.environment:GLITCHTIP_ENVIRONMENT)%'
+        send_default_pii: false
+        max_request_body_size: none
+        ignore_exceptions:
+            - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+            - Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+            - Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException
+            - Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException

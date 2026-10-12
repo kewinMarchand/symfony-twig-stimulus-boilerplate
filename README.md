@@ -52,6 +52,8 @@ Variables d'environnement (`.env`, à surcharger dans `.env.local` non versionn�
 | `SITE_URL`    | URL publique : URL canoniques, Open Graph, JSON-LD, sitemap                        |
 | `APP_SECRET`  | Secret Symfony, obligatoire en production                                          |
 | `HTTP_PORT`   | Port publié par Docker (8095 par défaut)                                           |
+| `GLITCHTIP_DSN` | Suivi des erreurs GlitchTip (DSN au format Sentry). Vide : rien n'est chargé ni envoyé |
+| `GLITCHTIP_ENVIRONMENT` | Environnement des erreurs remontées, par défaut celui de Symfony |
 | `MAINTENANCE` | `1` sert la page statique de maintenance en 503 avec `Retry-After`, sans PHP        |
 
 ## Démarrer un projet à partir de ce dépôt

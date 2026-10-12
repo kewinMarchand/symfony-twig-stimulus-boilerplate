@@ -1,5 +1,7 @@
 LHCI_PROJECT := symfony-twig-stimulus-boilerplate-lhci
 LHCI_PORT := 3230
+# Valeurs factices de la phase @observabilite : un faux GlitchTip local (tests/e2e/observability.e2e.ts), jamais une instance réelle.
+OBSERVABILITY_ENV := GLITCHTIP_DSN=http://clefactice@localhost:3231/1
 
 qa: lint arch arch-selftest format-check typecheck test-unit ## QA rapide : lint, architecture, format, analyse statique, tests unitaires
 
@@ -39,9 +41,11 @@ test-unit: ## Tests unitaires et fonctionnels (PHPUnit) et test du mode accessib
 	$(EXEC) sh -c "rm -rf var/cache/test && vendor/bin/phpunit"
 	node --test 'tests/js/**/*.test.js'
 
-test-e2e: ## Tests end-to-end desktop et mobile, image de production puis serveur de dev (Playwright)
+test-e2e: ## Tests end-to-end desktop et mobile : image de production, puis avec traceurs factices, puis serveur de dev (Playwright)
 	$(UP_PROD)
-	yarn playwright test tests/e2e --grep-invert @dev
+	yarn playwright test tests/e2e --grep-invert "@dev|@observabilite"
+	$(OBSERVABILITY_ENV) $(UP_PROD)
+	yarn playwright test tests/e2e --grep @observabilite
 	$(UP_DEV)
 	yarn playwright test tests/e2e --grep @dev
 
