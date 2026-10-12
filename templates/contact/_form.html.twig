@@ -5,7 +5,7 @@
     {{ form_row(form.email, {row_attr: {class: 'field'}, attr: {autocomplete: 'email', autofocus: first_invalid == 'email', 'data-testid': 'contact-email'}}) }}
     {{ form_row(form.message, {row_attr: {class: 'field'}, attr: {rows: 5, autofocus: first_invalid == 'message', 'data-testid': 'contact-message'}}) }}
     <button type="submit" class="button" data-testid="contact-submit">
-        {{ include('core/ui/_icon.html.twig', {name: 'mail'}) }}
+        {{ include('shared/ui/_icon.html.twig', {name: 'mail'}) }}
         <span>Envoyer</span>
     </button>
 {{ form_end(form) }}

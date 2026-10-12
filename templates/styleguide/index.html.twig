@@ -115,15 +115,15 @@
 
     <section class="styleguide__section" aria-labelledby="sg-feedback" data-testid="styleguide-feedback">
         <h2 id="sg-feedback">Retours</h2>
-        <p class="alert alert--info">{{ include('core/ui/_icon.html.twig', {name: 'info'}) }} Information.</p>
-        <p class="alert alert--success">{{ include('core/ui/_icon.html.twig', {name: 'circle-check'}) }} Succès.</p>
-        <p class="alert alert--warning">{{ include('core/ui/_icon.html.twig', {name: 'triangle-alert'}) }} Avertissement.</p>
-        <p class="alert alert--error">{{ include('core/ui/_icon.html.twig', {name: 'circle-alert'}) }} Erreur.</p>
+        <p class="alert alert--info">{{ include('shared/ui/_icon.html.twig', {name: 'info'}) }} Information.</p>
+        <p class="alert alert--success">{{ include('shared/ui/_icon.html.twig', {name: 'circle-check'}) }} Succès.</p>
+        <p class="alert alert--warning">{{ include('shared/ui/_icon.html.twig', {name: 'triangle-alert'}) }} Avertissement.</p>
+        <p class="alert alert--error">{{ include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) }} Erreur.</p>
         <div class="skeleton-list" role="status" aria-label="Exemple de chargement"><span class="skeleton"></span><span class="skeleton"></span></div>
         <p class="alert alert--info">Aucune tâche pour l’instant. Tout est à jour.</p>
         <div class="alert alert--error">
             <p>Impossible de charger les tâches pour le moment.</p>
-            <button type="button" class="button button--outlined">{{ include('core/ui/_icon.html.twig', {name: 'rotate-cw'}) }}<span>Réessayer</span></button>
+            <button type="button" class="button button--outlined">{{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}<span>Réessayer</span></button>
         </div>
     </section>
 
@@ -142,16 +142,16 @@
             </ul>
         </nav>
         <ul class="chips" role="list" aria-label="Exemple de filtres actifs">
-            <li><a class="chip chip--removable" href="{{ path('catalog') }}"><span class="visually-hidden">Retirer le filtre : </span>Mi-ombre {{ include('core/ui/_icon.html.twig', {name: 'x'}) }}</a></li>
+            <li><a class="chip chip--removable" href="{{ path('catalog') }}"><span class="visually-hidden">Retirer le filtre : </span>Mi-ombre {{ include('shared/ui/_icon.html.twig', {name: 'x'}) }}</a></li>
         </ul>
-        <p><a href="{{ path('home') }}">Lien interne</a> et <a href="https://symfony.com/">lien externe {{ include('core/ui/_icon.html.twig', {name: 'external-link', icon_label: '(site externe)'}) }}</a></p>
+        <p><a href="{{ path('home') }}">Lien interne</a> et <a href="https://symfony.com/">lien externe {{ include('shared/ui/_icon.html.twig', {name: 'external-link', icon_label: '(site externe)'}) }}</a></p>
     </section>
 
     <section class="styleguide__section" aria-labelledby="sg-media" data-testid="styleguide-media">
         <h2 id="sg-media">Médias et cartes</h2>
         <div class="styleguide__cards">
             <article class="card">
-                {{ include('core/ui/_picture.html.twig', {name: 'blog-1', widths: [480, 960], sizes: '320px', class: 'card__image'}) }}
+                {{ include('shared/ui/_picture.html.twig', {name: 'blog-1', widths: [480, 960], sizes: '320px', class: 'card__image'}) }}
                 <div class="card__body"><h3 class="card__title">Carte de blog</h3><p class="card__excerpt">Extrait de l’article.</p><time class="card__date" datetime="2026-09-24">24/09/2026</time></div>
             </article>
             {% for view in ['grille', 'liste'] %}
@@ -175,7 +175,7 @@
         <h2 id="sg-icons">Icônes</h2>
         <ul class="styleguide__icons" role="list">
             {% for icon in icons %}
-                <li>{{ include('core/ui/_icon.html.twig', {name: icon}) }} <code>{{ icon }}</code></li>
+                <li>{{ include('shared/ui/_icon.html.twig', {name: icon}) }} <code>{{ icon }}</code></li>
             {% endfor %}
         </ul>
     </section>

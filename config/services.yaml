@@ -8,14 +8,14 @@ services:
     App\:
         resource: '../src/'
         exclude:
-            - '../src/Domain/*/Model/'
+            - '../src/*/Domain/'
             - '../src/Kernel.php'
 
-    App\Domain\Tasks\Repository\TaskRepository: '@App\Infrastructure\InMemory\InMemoryTaskRepository'
-    App\Domain\Home\Repository\ArticleRepository: '@App\Infrastructure\InMemory\InMemoryArticleRepository'
-    App\Domain\Home\Repository\SlideRepository: '@App\Infrastructure\InMemory\InMemorySlideRepository'
-    App\Domain\Contact\Sender\ContactMessageSender: '@App\Infrastructure\Logger\LoggerContactMessageSender'
-    App\Domain\Catalog\Repository\CatalogRepository: '@App\Infrastructure\InMemory\InMemoryCatalogRepository'
+    App\Task\Domain\TaskRepository: '@App\Task\Infrastructure\InMemory\InMemoryTaskRepository'
+    App\Blog\Domain\ArticleRepository: '@App\Blog\Infrastructure\InMemory\InMemoryArticleRepository'
+    App\Site\Home\SlideRepository: '@App\Site\Home\InMemorySlideRepository'
+    App\Contact\Domain\ContactMessageSender: '@App\Contact\Infrastructure\Logger\LoggerContactMessageSender'
+    App\Catalog\Domain\CatalogRepository: '@App\Catalog\Infrastructure\InMemory\InMemoryCatalogRepository'
 
 when@test:
     services:

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Domain\Contact\Exception\ContactMessageNotSentException;
-use App\Domain\Contact\Model\ContactMessage;
-use App\Domain\Contact\Sender\ContactMessageSender;
+use App\Contact\Domain\ContactMessage;
+use App\Contact\Domain\ContactMessageNotSentException;
+use App\Contact\Domain\ContactMessageSender;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

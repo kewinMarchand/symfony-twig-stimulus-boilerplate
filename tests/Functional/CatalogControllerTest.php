@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Domain\Catalog\Exception\CatalogLoadException;
-use App\Domain\Catalog\Model\CatalogQuery;
-use App\Domain\Catalog\Model\CatalogResult;
-use App\Domain\Catalog\Model\Category;
-use App\Domain\Catalog\Model\CategoryTree;
-use App\Domain\Catalog\Repository\CatalogRepository;
-use App\Infrastructure\InMemory\InMemoryCatalogRepository;
+use App\Catalog\Domain\CatalogLoadException;
+use App\Catalog\Domain\CatalogQuery;
+use App\Catalog\Domain\CatalogRepository;
+use App\Catalog\Domain\CatalogResult;
+use App\Catalog\Domain\Category;
+use App\Catalog\Domain\CategoryTree;
+use App\Catalog\Infrastructure\InMemory\InMemoryCatalogRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class CatalogControllerTest extends WebTestCase

@@ -3,7 +3,7 @@
     <div class="catalog__filters-header">
         <h2 id="catalog-filters-title">Filtres</h2>
         <button type="button" class="button button--outlined catalog__filters-close" data-action="catalog#closeFilters">
-            {{ include('core/ui/_icon.html.twig', {name: 'x'}) }}
+            {{ include('shared/ui/_icon.html.twig', {name: 'x'}) }}
             <span>Fermer</span>
         </button>
     </div>
@@ -25,7 +25,7 @@
             <summary>Exposition</summary>
             <fieldset>
                 <legend class="visually-hidden">Exposition</legend>
-                {% for exposure in enum('App\\Domain\\Catalog\\Model\\Exposure').cases() %}
+                {% for exposure in enum('App\\Catalog\\Domain\\Exposure').cases() %}
                     {% set count = facets.exposures[exposure.value] %}
                     {% set checked = exposure in filters.exposures %}
                     <div class="check">
@@ -40,7 +40,7 @@
             <summary>Taille</summary>
             <fieldset>
                 <legend class="visually-hidden">Taille</legend>
-                {% for size in enum('App\\Domain\\Catalog\\Model\\Size').cases() %}
+                {% for size in enum('App\\Catalog\\Domain\\Size').cases() %}
                     {% set count = facets.sizes[size.value] %}
                     {% set checked = size in filters.sizes %}
                     <div class="check">

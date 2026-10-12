@@ -6,35 +6,35 @@
     <div class="catalog__main">
         {% if error %}
             <div class="alert alert--error" data-testid="catalog-error">
-                {{ include('core/ui/_icon.html.twig', {name: 'circle-alert'}) }}
+                {{ include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) }}
                 <p>{{ error }}</p>
                 <a class="button button--outlined" href="{{ category_path ~ state.queryString() }}" data-testid="catalog-retry">
-                    {{ include('core/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
+                    {{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
                     <span>Réessayer</span>
                 </a>
             </div>
         {% else %}
             <div class="catalog__toolbar">
                 <button type="button" class="button button--outlined catalog__filters-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="catalog-filters" data-catalog-target="opener" data-action="catalog#openFilters" data-testid="catalog-filters-open">
-                    {{ include('core/ui/_icon.html.twig', {name: 'sliders-horizontal'}) }}
+                    {{ include('shared/ui/_icon.html.twig', {name: 'sliders-horizontal'}) }}
                     <span>Filtrer{% if filters.activeCount > 0 %} ({{ filters.activeCount }}<span class="visually-hidden"> filtres actifs</span>){% endif %}</span>
                 </button>
                 <p class="catalog__count" role="status" data-catalog-target="count" data-testid="catalog-results-count">{{ product_count }} produit{{ product_count > 1 ? 's' }}</p>
                 <div class="catalog__sort">
                     <label for="catalog-sort">Trier par</label>
                     <select id="catalog-sort" name="tri" form="catalog-filters-form" data-action="catalog#apply" data-testid="catalog-sort">
-                        {% for sort in enum('App\\Domain\\Catalog\\Model\\ProductSort').cases() %}
+                        {% for sort in enum('App\\Catalog\\Domain\\ProductSort').cases() %}
                             <option value="{{ sort.value }}"{% if sort == state.query.sort %} selected{% endif %}>{{ sort.label }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <nav class="catalog__views" aria-label="Affichage">
-                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\UI\\Http\\Catalog\\ListView').Grid).queryString() }}"{% if state.view.value == 'grille' %} aria-current="page"{% endif %} data-testid="catalog-view-grid">
-                        {{ include('core/ui/_icon.html.twig', {name: 'layout-grid'}) }}
+                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\Catalog\\UI\\ListView').Grid).queryString() }}"{% if state.view.value == 'grille' %} aria-current="page"{% endif %} data-testid="catalog-view-grid">
+                        {{ include('shared/ui/_icon.html.twig', {name: 'layout-grid'}) }}
                         <span>Grille</span>
                     </a>
-                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\UI\\Http\\Catalog\\ListView').List).queryString() }}"{% if state.view.value == 'liste' %} aria-current="page"{% endif %} data-testid="catalog-view-list">
-                        {{ include('core/ui/_icon.html.twig', {name: 'list'}) }}
+                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\Catalog\\UI\\ListView').List).queryString() }}"{% if state.view.value == 'liste' %} aria-current="page"{% endif %} data-testid="catalog-view-list">
+                        {{ include('shared/ui/_icon.html.twig', {name: 'list'}) }}
                         <span>Liste</span>
                     </a>
                 </nav>

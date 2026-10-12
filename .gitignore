@@ -30,3 +30,7 @@
 /blob-report/
 /screenshots/
 /.lighthouseci/
+
+###> deptrac/deptrac ###
+/.deptrac.cache
+###< deptrac/deptrac ###

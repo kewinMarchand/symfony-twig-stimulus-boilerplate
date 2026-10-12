@@ -41,17 +41,17 @@
     </head>
     <body>
         <div class="app-shell">
-            {{ include('core/layout/_skip_link.html.twig') }}
-            {{ include('core/layout/_header.html.twig') }}
+            {{ include('shared/layout/_skip_link.html.twig') }}
+            {{ include('shared/layout/_header.html.twig') }}
             <main id="main" class="main" tabindex="-1">
                 {% block main %}
                     <div class="container main__content">
-                        {{ include('core/layout/_breadcrumb.html.twig') }}
+                        {{ include('shared/layout/_breadcrumb.html.twig') }}
                         {% block body %}{% endblock %}
                     </div>
                 {% endblock %}
             </main>
-            {{ include('core/layout/_footer.html.twig') }}
+            {{ include('shared/layout/_footer.html.twig') }}
         </div>
     </body>
 </html>

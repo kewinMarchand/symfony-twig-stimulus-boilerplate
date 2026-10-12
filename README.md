@@ -61,7 +61,9 @@ Variables d'environnement (`.env`, à surcharger dans `.env.local` non versionn�
 | Commande                               | Effet                                                                                     |
 | -------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `make up` / `make down`                | Serveur de développement, arrêt des conteneurs                                             |
-| `make qa`                              | QA rapide : lint, format, analyse statique, tests unitaires et fonctionnels                |
+| `make qa`                              | QA rapide : lint, architecture, format, analyse statique, tests unitaires et fonctionnels  |
+| `make arch`                            | Règles d'architecture : deptrac (`deptrac.yaml`) et bibliothèques tierces confinées à leur wrapper |
+| `make arch-selftest`                   | Écrit une violation volontaire de chaque règle, exige qu'elles soient toutes détectées, puis les retire |
 | `make qa-full`                         | QA complète : QA rapide, e2e, accessibilité, Lighthouse                                    |
 | `make format`                          | PHP-CS-Fixer en écriture                                                                   |
 | `make typecheck`                       | PHPStan niveau max                                                                         |
@@ -75,37 +77,39 @@ Toutes les commandes PHP tournent dans un conteneur jetable (`docker compose run
 
 ## Architecture
 
+Découpage par module métier d'abord, par couche ensuite, selon l'architecture commune aux boilerplates de l'auteur (décisions D1 à D12, règle R12 pour PHP).
+
 ```
 src/
-  Domain/            un dossier par domaine, sans aucune dépendance au framework
-    Catalog/
-      Model/         entités, value objects, enums
-      Repository/    interfaces (ports)
-      Service/       fonctions pures : filtre, comptage disjonctif, tri, pagination
-      Exception/
-  Infrastructure/    adaptateurs : dépôts en mémoire, envoi de message par logger
-  UI/
-    Http/Controller/ couche de routage : un contrôleur mince par page, il délègue à une vue Twig
-    Http/Form/       formulaires et leurs contraintes
-    Http/Catalog/    état du catalogue porté par l'URL
-    Seo/             construction unique des métadonnées et du fil d'Ariane
-    Twig/            fonctions et filtres Twig
+  Catalog/           module complet : catalogue de la jardinerie
+    Domain/          modèle sans framework : Category, CategoryTree, CatalogQuery, ProductFilters, Product,
+                     le port CatalogRepository et la recherche (filtre, comptage disjonctif, tri, pagination)
+    Infrastructure/  InMemory/ : dépôt en mémoire
+    UI/              contrôleur, état de recherche porté par l'URL, extension Twig
+  Blog/              forme réduite : Domain/ (Article, port, exception), Infrastructure/InMemory/
+  Contact/           forme réduite : Domain/, Infrastructure/Logger/, UI/ (contrôleur, formulaire)
+  Task/              forme réduite : Domain/ (Task protège son invariant), Infrastructure/InMemory/, UI/
+  Site/              pages sans métier propre : UI/ (accueil, légal, SEO, charte), Home/ (diapositives),
+                     Legal/ (conformité d'accessibilité), Styleguide/ (contraste, tokens)
+  Shared/            socle sans métier : UI/Seo/ (métadonnées, fil d'Ariane), UI/Twig/
 templates/
-  core/              layout, en-tête, menus, pied de page, icône, image responsive
-  features/          briques agnostiques (carrousel)
-  <domaine>/         vues de chaque page
+  shared/            layout, en-tête, menus, pied de page, icône, image responsive, carrousel
+  <page>/            vues de chaque page (catalog, contact, home, legal, seo, styleguide, tasks)
 assets/
   controllers/       contrôleurs Stimulus
   styles/app.css     tokens et styles
 tests/
-  Unit/ Functional/  PHPUnit
+  Unit/<Module>/     PHPUnit, rangés comme src/
+  Functional/        WebTestCase
   js/                node:test
   e2e/ a11y/         Playwright
+tools/
+  arch-selftest.sh   violations volontaires de make arch-selftest
 ```
 
-Le sens des dépendances est `UI` vers `Domain` et `Infrastructure` vers `Domain`, jamais l'inverse. `make lint` vérifie que `src/Domain` n'importe ni Symfony, ni Doctrine, ni Twig, ni PSR, et que `ux_icon()` n'est appelé que dans `templates/core/ui/_icon.html.twig`.
+Les règles de dépendance sont vérifiées par deptrac (`make arch`) : `Domain` ne dépend que de lui-même, ni framework, ni autre couche, ni autre module. `Infrastructure` dépend du `Domain` de son module et des frameworks. `UI` du `Domain` de son module, de `Shared` et des frameworks, et de l'`Infrastructure` seulement dans les modules sans couche application. `Site` compose les modules, `Shared` n'en importe aucun. `make arch` vérifie aussi que `ux_icon()` n'est appelé que dans `templates/shared/ui/_icon.html.twig` et qu'Embla n'est importé que dans `assets/controllers/carousel_controller.js`. `make arch-selftest` écrit une violation de chaque règle et exige qu'elles soient toutes détectées.
 
-Les dépôts sont en mémoire avec une latence simulée. Le jour où l'API est disponible, on écrit un adaptateur HttpClient dans `src/Infrastructure/` et on change l'alias dans `config/services.yaml`, sans toucher au domaine ni aux vues.
+Les dépôts sont en mémoire avec une latence simulée. Le jour où l'API est disponible, on écrit un adaptateur HttpClient dans `src/<Module>/Infrastructure/Http/` et on change l'alias dans `config/services.yaml`, sans toucher au domaine ni aux vues.
 
 Les conventions de code viennent du `CLAUDE.md` global de l'auteur. Le `CLAUDE.md` de ce dépôt note les choix propres au projet, les versions épinglées et les pièges connus.
 
@@ -113,7 +117,7 @@ Les conventions de code viennent du `CLAUDE.md` global de l'auteur. Le `CLAUDE.m
 
 ### Ajouter une page
 
-1. Créer le contrôleur dans `src/UI/Http/Controller/`, avec sa route en attribut. Il ne fait qu'appeler le domaine et rendre une vue.
+1. Créer le contrôleur dans `src/<Module>/UI/` (ou `src/Site/UI/` pour une page sans métier), avec sa route en attribut. Il ne fait qu'appeler le domaine et rendre une vue.
 2. Créer la vue `templates/<domaine>/index.html.twig`, qui commence par `{% set seo = seo_page({title: '…', description: '…'}) %}`.
 3. Ajouter la route à `config/packages/site.yaml` (navigation, sitemap, plan du site, fil d'Ariane) et à `tests/e2e/routes.ts` (tests de réponse, SEO, débordement et accessibilité), puis à `.lighthouserc.json`.
 4. Écrire `tests/e2e/<page>.e2e.ts` et un test fonctionnel dans `tests/Functional/`.
@@ -122,18 +126,18 @@ Les conventions de code viennent du `CLAUDE.md` global de l'auteur. Le `CLAUDE.m
 
 Le pattern est dans le domaine Tasks :
 
-- `src/Domain/Tasks/Repository/TaskRepository.php` est le port, `src/Infrastructure/InMemory/InMemoryTaskRepository.php` l'adaptateur.
+- `src/Task/Domain/TaskRepository.php` est le port, `src/Task/Infrastructure/InMemory/InMemoryTaskRepository.php` l'adaptateur.
 - `TasksController::index()` rend la page avec un `<turbo-frame loading="lazy">` qui contient le squelette de chargement.
 - `TasksController::list()` rend le contenu du frame : liste, état vide, ou erreur métier avec un bouton « Réessayer » (simple formulaire GET, sans JavaScript dédié).
 
 ### Ajouter un champ de formulaire
 
-1. Ajouter la propriété et ses contraintes, avec leur message en français, dans `src/UI/Http/Form/ContactFormData.php`.
+1. Ajouter la propriété et ses contraintes, avec leur message en français, dans `src/Contact/UI/Form/ContactFormData.php`.
 2. L'ajouter dans `ContactType.php`, puis dans `templates/contact/_form.html.twig` avec son `data-testid`. Symfony relie l'erreur au champ par `aria-describedby` et pose `aria-invalid`.
 
 ### Ajouter une icône
 
-`docker compose run --rm php bin/console ux:icons:import lucide:<nom>`, puis `{{ include('core/ui/_icon.html.twig', {name: '<nom>'}) }}`. Les SVG sont versionnés dans `assets/icons/lucide/` : la production ne contacte jamais Iconify.
+`docker compose run --rm php bin/console ux:icons:import lucide:<nom>`, puis `{{ include('shared/ui/_icon.html.twig', {name: '<nom>'}) }}`. Les SVG sont versionnés dans `assets/icons/lucide/` : la production ne contacte jamais Iconify.
 
 ## Tests
 

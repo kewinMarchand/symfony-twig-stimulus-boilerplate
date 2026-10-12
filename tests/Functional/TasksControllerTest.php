@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Domain\Tasks\Exception\TasksLoadException;
-use App\Domain\Tasks\Model\Task;
-use App\Domain\Tasks\Repository\TaskRepository;
+use App\Task\Domain\Task;
+use App\Task\Domain\TaskRepository;
+use App\Task\Domain\TasksLoadException;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class TasksControllerTest extends WebTestCase
