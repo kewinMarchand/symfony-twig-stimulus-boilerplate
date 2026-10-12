@@ -54,6 +54,90 @@ Variables d'environnement (`.env`, à surcharger dans `.env.local` non versionn�
 | `HTTP_PORT`   | Port publié par Docker (8095 par défaut)                                           |
 | `MAINTENANCE` | `1` sert la page statique de maintenance en 503 avec `Retry-After`, sans PHP        |
 
+## Démarrer un projet à partir de ce dépôt
+
+### Créer le dépôt
+
+La voie recommandée est le template GitHub : le nouveau dépôt part d'un historique neuf, sans lien avec celui-ci. Bouton « Use this template » sur GitHub, ou en ligne de commande :
+
+```sh
+gh repo create mon-projet --template kewinMarchand/symfony-twig-stimulus-boilerplate --private --clone
+cd mon-projet
+make install
+make up
+```
+
+Pour suivre les évolutions du boilerplate ou y contribuer, passer plutôt par un fork, qui garde l'historique commun :
+
+```sh
+gh repo fork kewinMarchand/symfony-twig-stimulus-boilerplate --clone --fork-name mon-projet
+```
+
+GitHub n'autorise pas un fork dans le compte qui possède déjà le dépôt : depuis ce compte, passer par le template, ou forker vers une organisation avec `--org`.
+
+### Récupérer les mises à jour
+
+Avec un fork, l'historique est commun : `gh repo fork --clone` a déjà déclaré le dépôt d'origine comme remote `upstream`.
+
+```sh
+git fetch upstream
+git merge upstream/main
+```
+
+Avec un template, l'historique n'est pas commun et une fusion n'a pas de sens. On reprend les commits utiles un par un :
+
+```sh
+git remote add upstream https://github.com/kewinMarchand/symfony-twig-stimulus-boilerplate.git
+git fetch upstream
+git log --oneline upstream/main
+git cherry-pick <sha>
+```
+
+### Personnaliser
+
+| Sujet | Fichiers |
+| --- | --- |
+| Nom du projet et du paquet | `composer.json` (`name`, `description`), `package.json` (`name`, `description`), `compose.yaml` (`name:` du projet Compose, image `…:prod`), `compose.override.yaml` (image `…:dev`), `Makefile.qa.mk` (`LHCI_PROJECT`), `LICENSE`, titres de `README.md` et `CLAUDE.md` |
+| Config du site et identité | `config/packages/site.yaml` (nom, description, couleur du thème, navigation), `templates/seo/manifest.webmanifest.twig` (`short_name`), `src/Shared/UI/Seo/SeoPageFactory.php` (texte alternatif de l'image de partage), `templates/home/index.html.twig` (sur-titre et boutons du hero), `src/Site/Home/InMemorySlideRepository.php` (diapositives). Le nom du site est aussi vérifié par `tests/Functional/PagesTest.php` (`SITE`) et `tests/e2e/navigation.e2e.ts` |
+| Ports | `Makefile` (`HTTP_PORT`, 8095), `compose.yaml` (port par défaut), `.env` (`SITE_URL`), `playwright.config.ts`, `Makefile.qa.mk` (`LHCI_PORT`, 3230) et `.lighthouserc.json` |
+| Logo et favicons | `assets/images/logo-mark.svg`, `public/favicon.ico`, `public/favicon.svg`, `public/apple-touch-icon.png`, `public/icon-192.png`, `public/icon-512.png`, `public/og-image.jpg` |
+| Pages légales | `config/packages/site.yaml` (`publisher`, `host`, et `site.accessibility` une fois l'audit RGAA réalisé), textes de `templates/legal/` |
+| URL Lighthouse | `.lighthouserc.json` (une URL par page à mesurer, sur le port 3230) |
+| CI | `.github/workflows/ci.yml` |
+
+### Retirer les modules d'exemple
+
+`Catalog`, `Blog` et `Task` sont des exemples. `Contact` sert de module restant, et `Site` et `Shared` restent en place. Pour les retirer sans casser deptrac ni `make arch-selftest` :
+
+1. **Code** : supprimer `src/Catalog/`, `src/Blog/` et `src/Task/`, puis `assets/controllers/catalog_controller.js` et `assets/controllers/category_menu_controller.js`. Dans `src/Site/UI/HomeController.php`, ne garder que les diapositives.
+2. **Templates** : supprimer `templates/catalog/`, `templates/tasks/`, `templates/legal/_category_tree.html.twig`, et dans `templates/shared/layout/`, `_category_menu.html.twig`, `_category_menu_column.html.twig` et `_mobile_menu_level.html.twig`. Puis retirer :
+   - dans `templates/shared/layout/_header.html.twig`, l'appel `catalog_tree()` et la branche `catalog` de la navigation
+   - dans `_mobile_menu.html.twig`, la branche `catalog` et les niveaux du catalogue
+   - dans `templates/home/index.html.twig`, la section des articles et le bouton vers `/taches`
+   - dans `templates/legal/sitemap.html.twig`, la section Catalogue
+   - dans `templates/seo/sitemap.xml.twig`, la boucle `catalog_paths()` qui produisait les entrées de catégories
+   - dans `templates/bundles/TwigBundle/Exception/error404.html.twig`, le lien vers le catalogue
+   - dans `templates/styleguide/index.html.twig`, les liens `path('catalog')` et le filtre `price`.
+3. **Routes et services** : les routes disparaissent avec leurs contrôleurs. Retirer les entrées `catalog` et `tasks` de la navigation dans `config/packages/site.yaml` (menu, sitemap, plan du site, fil d'Ariane), et les alias des ports de `Task`, `Blog` et `Catalog` dans `config/services.yaml`.
+4. **Architecture** : dans `deptrac.yaml`, supprimer les couches et les règles `Catalog*`, `Blog*` et `Task*`, et réduire la règle de `Site` à `[ContactDomain, Shared, Framework]`. Dans `tools/arch-selftest.sh`, repointer les cinq violations PHP vers `Contact`, en gardant leurs noms de classe :
+
+   | Violation | Fichier | Dépendance interdite |
+   | --- | --- | --- |
+   | `ArchSelftestDomainToInfrastructure` | `src/Contact/Domain/` | `App\Contact\Infrastructure\Logger\LoggerContactMessageSender` |
+   | `ArchSelftestDomainToFramework` | `src/Contact/Domain/` | `Symfony\Component\HttpFoundation\Response`, inchangée |
+   | `ArchSelftestModuleToModule` | `src/Contact/Domain/` | `App\Site\Home\Slide` (sans second module, le module vise `Site`) |
+   | `ArchSelftestSharedToModule` | `src/Shared/UI/` | `App\Contact\Domain\ContactMessage` |
+   | `ArchSelftestUiToInfrastructure` | `src/Contact/Infrastructure/` | `App\Contact\UI\ContactController` (l'UI de `Contact` peut appeler son infrastructure, on teste donc le sens interdit) |
+5. **Tests** :
+   - supprimer `tests/Unit/Catalog/`, `tests/Unit/Task/`, `tests/Functional/CatalogControllerTest.php` et `tests/Functional/TasksControllerTest.php`
+   - dans `tests/Functional/PagesTest.php`, retirer les pages catalogue, sous-catégorie et tâches, et l'URL de catégorie du sitemap
+   - dans `tests/Functional/HomeControllerTest.php`, retirer les tests du blog
+   - côté Playwright, supprimer `tests/e2e/catalogue.e2e.ts`, `taches.e2e.ts` et `menu.e2e.ts`, et adapter `routes.ts`, `accueil.e2e.ts`, `breadcrumb.e2e.ts`, `pages.e2e.ts`, `layout.e2e.ts` et `tests/a11y/pages.a11y.ts`.
+6. **Lighthouse** : retirer `/catalogue`, `/catalogue/plantes-interieur/feuillages` et `/taches` de `.lighthouserc.json`.
+7. **Facultatif** : les images `assets/images/product-*` et `blog-*`, et les styles du catalogue dans `assets/styles/app.css`.
+
+Terminer par `make qa`, puis `make test-e2e test-a11y`. Cette procédure a été déroulée sur une copie jetable du dépôt jusqu'à un `make qa` vert : 0 violation deptrac, 7 violations volontaires sur 7 détectées, 40 tests PHPUnit.
+
 ## Commandes
 
 `make help` liste toutes les commandes. Les principales :
@@ -121,7 +205,7 @@ Les conventions de code viennent du `CLAUDE.md` global de l'auteur. Le `CLAUDE.m
 ### Ajouter une page
 
 1. Créer le contrôleur dans `src/<Module>/UI/` (ou `src/Site/UI/` pour une page sans métier), avec sa route en attribut. Il ne fait qu'appeler le domaine et rendre une vue.
-2. Créer la vue `templates/<domaine>/index.html.twig`, qui commence par `{% set seo = seo_page({title: '…', description: '…'}) %}`.
+2. Créer la vue dans le dossier de templates de la page, `templates/<page>/index.html.twig` (comme `templates/contact/` ou `templates/legal/`), qui commence par `{% set seo = seo_page({title: '…', description: '…'}) %}`.
 3. Ajouter la route à `config/packages/site.yaml` (navigation, sitemap, plan du site, fil d'Ariane) et à `tests/e2e/routes.ts` (tests de réponse, SEO, débordement et accessibilité), puis à `.lighthouserc.json`.
 4. Écrire `tests/e2e/<page>.e2e.ts` et un test fonctionnel dans `tests/Functional/`.
 
