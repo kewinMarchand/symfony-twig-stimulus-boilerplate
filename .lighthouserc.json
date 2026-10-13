@@ -2,15 +2,15 @@
   "ci": {
     "collect": {
       "url": [
-        "http://localhost:3230/",
-        "http://localhost:3230/catalogue",
-        "http://localhost:3230/catalogue/plantes-interieur/feuillages",
-        "http://localhost:3230/taches",
-        "http://localhost:3230/contact",
-        "http://localhost:3230/mentions-legales",
-        "http://localhost:3230/donnees-personnelles",
-        "http://localhost:3230/accessibilite",
-        "http://localhost:3230/plan-du-site"
+        "http://127.0.0.1:3230/",
+        "http://127.0.0.1:3230/catalogue",
+        "http://127.0.0.1:3230/catalogue/plantes-interieur/feuillages",
+        "http://127.0.0.1:3230/taches",
+        "http://127.0.0.1:3230/contact",
+        "http://127.0.0.1:3230/mentions-legales",
+        "http://127.0.0.1:3230/donnees-personnelles",
+        "http://127.0.0.1:3230/accessibilite",
+        "http://127.0.0.1:3230/plan-du-site"
       ],
       "numberOfRuns": 3,
       "settings": {

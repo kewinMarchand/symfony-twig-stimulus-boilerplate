@@ -60,8 +60,8 @@ test-a11y: ## Tests d'accessibilité WCAG 2.1 AA, deux modes, prod puis dev (axe
 	$(RUN_NODE) yarn playwright test tests/a11y --grep @dev
 
 metrics: docker-build ## Métriques Lighthouse CI sur l'image de production (perf ≥ 90, a11y et SEO = 100)
-	HTTP_PORT=$(LHCI_PORT) $(COMPOSE_PROD) -p $(LHCI_PROJECT) up -d --wait
+	HTTP_PORT=$(LHCI_PORT) SITE_HOST=127.0.0.1 $(COMPOSE_PROD) -p $(LHCI_PROJECT) up -d --wait
 	$(RUN_NODE) sh -c 'CHROME_PATH=$$(node -e "console.log(require(\"@playwright/test\").chromium.executablePath())") yarn lhci autorun'; \
-		status=$$?; HTTP_PORT=$(LHCI_PORT) $(COMPOSE_PROD) -p $(LHCI_PROJECT) down; exit $$status
+		status=$$?; HTTP_PORT=$(LHCI_PORT) SITE_HOST=127.0.0.1 $(COMPOSE_PROD) -p $(LHCI_PROJECT) down; exit $$status
 
 .PHONY: qa qa-full lint arch arch-deptrac arch-wrappers arch-selftest icons-check format format-check typecheck test test-unit test-e2e test-a11y metrics
