@@ -238,7 +238,7 @@ Ajouter son nom Lucide à `icons.json`, lancer `make icons`, puis `{{ include('s
 
 ## Intégration continue
 
-`.github/workflows/ci.yml` n'appelle que des cibles `make` (`make install`, `make qa`, `make test-e2e test-a11y`, `make metrics`), donc les mêmes conteneurs que le poste de dev, à chaque push sur `main` et sur chaque pull request. En cas d'échec, le rapport Playwright est joint au run.
+`.github/workflows/ci.yml` n'appelle que des cibles `make` (`make install`, `make qa`, `make test-e2e test-a11y`, `make metrics`), donc les mêmes conteneurs que le poste de dev, à chaque push sur `main` et sur chaque pull request. Le job `qa` n'a besoin d'aucune API (réponses capturées dans `tests/Fixtures/api/`). Le job e2e clone `hono-mongo-test-api` dans `.api`, le lance par `make -C .api install db-reset` et pointe `API_URL` sur `http://localhost:8091`. En cas d'échec, le rapport Playwright est joint au run.
 
 ## Licence
 

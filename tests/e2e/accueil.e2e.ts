@@ -75,3 +75,20 @@ test.describe('Carrousel sans JavaScript', () => {
     await expect.poll(() => track.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0)
   })
 })
+
+test.describe('Articles de l’accueil, états de l’API', () => {
+  test('liste vide : message amical', async ({ page }) => {
+    await page.setExtraHTTPHeaders({ 'X-Scenario': 'empty' })
+    await page.goto('/')
+
+    await expect(page.getByTestId('home-blog-empty')).toBeVisible()
+    await expect(page.getByTestId('home-blog-card')).toHaveCount(0)
+  })
+
+  test('erreur : message lisible', async ({ page }) => {
+    await page.setExtraHTTPHeaders({ 'X-Scenario': 'error' })
+    await page.goto('/')
+
+    await expect(page.getByTestId('home-blog-error')).toBeVisible()
+  })
+})

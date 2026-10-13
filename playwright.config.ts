@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const BASE_URL = `http://localhost:${process.env.HTTP_PORT ?? 8095}`
+// 127.0.0.1 et non localhost : Chromium essaie ::1 d’abord, où un autre service de la machine peut répondre sur le même port.
+const BASE_URL = `http://127.0.0.1:${process.env.HTTP_PORT ?? 8095}`
 
 export default defineConfig({
   testMatch: /.*\.(e2e|a11y)\.ts/,

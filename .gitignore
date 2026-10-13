@@ -34,3 +34,6 @@
 ###> deptrac/deptrac ###
 /.deptrac.cache
 ###< deptrac/deptrac ###
+
+# API de test clonée par la CI e2e
+/.api/

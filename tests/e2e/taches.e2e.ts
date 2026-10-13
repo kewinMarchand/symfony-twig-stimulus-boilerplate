@@ -33,3 +33,21 @@ test.describe('Tâches sans JavaScript', () => {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/taches$/)
   })
 })
+
+test.describe('Tâches, états de l’API', () => {
+  test('liste vide : message amical', async ({ page }) => {
+    await page.setExtraHTTPHeaders({ 'X-Scenario': 'empty' })
+    await page.goto('/taches')
+
+    await expect(page.getByTestId('tasks-empty')).toBeVisible()
+    await expect(page.getByTestId('tasks-list')).toHaveCount(0)
+  })
+
+  test('erreur : message et bouton Réessayer', async ({ page }) => {
+    await page.setExtraHTTPHeaders({ 'X-Scenario': 'error' })
+    await page.goto('/taches')
+
+    await expect(page.getByTestId('tasks-error')).toBeVisible()
+    await expect(page.getByTestId('tasks-retry')).toBeVisible()
+  })
+})

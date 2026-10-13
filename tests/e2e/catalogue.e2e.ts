@@ -21,7 +21,7 @@ test.describe('Catalogue', () => {
     await page.getByTestId('catalog-filter-exposure-mi-ombre').check()
 
     await expect(page).toHaveURL(/\/catalogue\?exposition=mi-ombre$/)
-    await expect(page.getByTestId('catalog-results-count')).toHaveText('9 produits')
+    await expect(page.getByTestId('catalog-results-count')).toHaveText('7 produits')
     await expect(page.getByTestId('catalog-filter-exposure-mi-ombre')).toBeFocused()
     await expect(page.getByTestId('catalog-active-filter')).toHaveAccessibleName('Retirer le filtre : Mi-ombre')
   })
@@ -45,7 +45,7 @@ test.describe('Catalogue', () => {
     await page.getByTestId('catalog-sort').selectOption('prix-asc')
 
     await expect(page).toHaveURL(/tri=prix-asc/)
-    await expect.poll(async () => (await prices(page)).slice(0, 2)).toEqual([1290, 1490])
+    await expect.poll(async () => (await prices(page)).slice(0, 2)).toEqual([1290, 1590])
   })
 
   test('paginer conserve les filtres et revient en arrière', async ({ page }) => {
@@ -89,7 +89,7 @@ test.describe('Catalogue', () => {
     await page.getByRole('button', { name: 'Appliquer les filtres' }).click()
 
     await expect(page).toHaveURL(/\/catalogue\?taille=L$/)
-    await expect(page.getByTestId('catalog-results-count')).toHaveText('8 produits')
+    await expect(page.getByTestId('catalog-results-count')).toHaveText('9 produits')
     await context.close()
   })
 })
@@ -122,5 +122,24 @@ test.describe('Catalogue sur mobile', () => {
     await expect(page).toHaveURL(/taille=S/)
     await expect(page.getByTestId('catalog-filters')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Voir les 6 produits' })).toBeVisible()
+  })
+})
+
+test.describe('Catalogue, états de l’API', () => {
+  test('erreur de l’API : message et relance', async ({ page }) => {
+    await page.setExtraHTTPHeaders({ 'X-Scenario': 'error' })
+    await page.goto('/catalogue')
+
+    await expect(page.getByTestId('catalog-error')).toBeVisible()
+    await expect(page.getByTestId('catalog-retry')).toBeVisible()
+    await expect(page.getByTestId('catalog-product')).toHaveCount(0)
+  })
+
+  test('liste vide de l’API : message amical', async ({ page }) => {
+    await page.setExtraHTTPHeaders({ 'X-Scenario': 'empty' })
+    await page.goto('/catalogue')
+
+    await expect(page.getByTestId('catalog-empty')).toBeVisible()
+    await expect(page.getByTestId('catalog-error')).toHaveCount(0)
   })
 })

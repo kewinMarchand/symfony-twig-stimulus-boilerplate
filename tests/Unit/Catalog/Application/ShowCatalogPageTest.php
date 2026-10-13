@@ -19,15 +19,19 @@ use PHPUnit\Framework\TestCase;
 
 final class ShowCatalogPageTest extends TestCase
 {
-    private static function repository(?\Throwable $failure = null, int $pageCount = 2): CatalogRepository
+    private static function repository(?\Throwable $failure = null, int $pageCount = 2, ?\Throwable $treeFailure = null): CatalogRepository
     {
-        return new readonly class($failure, $pageCount) implements CatalogRepository {
-            public function __construct(private ?\Throwable $failure, private int $pageCount)
+        return new readonly class($failure, $pageCount, $treeFailure) implements CatalogRepository {
+            public function __construct(private ?\Throwable $failure, private int $pageCount, private ?\Throwable $treeFailure)
             {
             }
 
             public function categoryTree(): CategoryTree
             {
+                if (null !== $this->treeFailure) {
+                    throw $this->treeFailure;
+                }
+
                 return new CategoryTree(new Category('', 'Catalogue', [new Category('palmiers', 'Palmiers')]));
             }
 
@@ -76,6 +80,15 @@ final class ShowCatalogPageTest extends TestCase
 
         self::assertNotNull($page);
         self::assertNull($page->result);
+        self::assertSame('Impossible de charger les produits pour le moment.', $page->errorMessage);
+    }
+
+    public function testCategoryTreeFailureGivesAPageInError(): void
+    {
+        $page = (new ShowCatalogPage(self::repository(treeFailure: new CatalogLoadException())))('palmiers', self::query());
+
+        self::assertNotNull($page);
+        self::assertTrue($page->categoryPath->isRoot());
         self::assertSame('Impossible de charger les produits pour le moment.', $page->errorMessage);
     }
 }
