@@ -9,6 +9,7 @@ src/Catalog/Domain/ArchSelftestDomainToFramework.php
 src/Blog/Domain/ArchSelftestModuleToModule.php
 src/Shared/UI/ArchSelftestSharedToModule.php
 src/Catalog/UI/ArchSelftestUiToInfrastructure.php
+src/Catalog/UI/ArchSelftestUiToHttpClient.php
 templates/home/_arch_selftest.html.twig
 assets/controllers/arch_selftest_controller.js"
 
@@ -34,6 +35,8 @@ php_class src/Shared/UI/ArchSelftestSharedToModule.php 'App\Shared\UI' \
     ArchSelftestSharedToModule 'App\Catalog\Domain\CategoryTree'
 php_class src/Catalog/UI/ArchSelftestUiToInfrastructure.php 'App\Catalog\UI' \
     ArchSelftestUiToInfrastructure 'App\Catalog\Infrastructure\InMemory\InMemoryCatalogRepository'
+php_class src/Catalog/UI/ArchSelftestUiToHttpClient.php 'App\Catalog\UI' \
+    ArchSelftestUiToHttpClient 'Symfony\Contracts\HttpClient\HttpClientInterface'
 printf '%s\n' '<svg><use href="/icons.svg#x"></use></svg>' > templates/home/_arch_selftest.html.twig
 printf '%s\n' "import EmblaCarousel from 'embla-carousel';" '' 'export default EmblaCarousel;' \
     > assets/controllers/arch_selftest_controller.js
@@ -49,7 +52,7 @@ fi
 
 detected=0
 for marker in ArchSelftestDomainToInfrastructure ArchSelftestDomainToFramework ArchSelftestModuleToModule \
-    ArchSelftestSharedToModule ArchSelftestUiToInfrastructure; do
+    ArchSelftestSharedToModule ArchSelftestUiToInfrastructure ArchSelftestUiToHttpClient; do
     if printf '%s\n' "$deptrac_output" | grep -q "App.*\\\\$marker must not depend on"; then
         detected=$((detected + 1))
     else
@@ -70,4 +73,4 @@ if [ "$failed" -ne 0 ]; then
     printf '%s\n%s\n' "$deptrac_output" "$wrappers_output"
     exit 1
 fi
-echo "OK : $detected violations volontaires sur 7 détectées, fichiers retirés."
+echo "OK : $detected violations volontaires sur 8 détectées, fichiers retirés."

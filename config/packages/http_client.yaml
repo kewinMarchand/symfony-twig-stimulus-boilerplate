@@ -1,0 +1,9 @@
+framework:
+    http_client:
+        scoped_clients:
+            # Seul client de l'API commune, injecté par son nom ($apiClient) dans les Infrastructure/Http des modules.
+            api.client:
+                base_uri: '%env(API_URL)%'
+                headers:
+                    Accept: application/json
+                timeout: 5

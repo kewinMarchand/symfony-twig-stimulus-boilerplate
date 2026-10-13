@@ -7,7 +7,7 @@ ENV COMPOSER_HOME=/tmp/composer \
     XDG_CONFIG_HOME=/tmp/caddy/config \
     XDG_DATA_HOME=/tmp/caddy/data
 EXPOSE 8080
-HEALTHCHECK --interval=5s --timeout=3s --retries=20 CMD curl -fsS -o /dev/null http://localhost:8080/robots.txt || exit 1
+HEALTHCHECK --interval=5s --timeout=3s --retries=20 CMD curl -fsS -o /dev/null http://${SERVER_ADDRESS:-localhost:8080}/robots.txt || exit 1
 CMD ["frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile"]
 
 FROM base AS dev

@@ -6,9 +6,10 @@ services:
       context: .
       target: prod
     image: symfony-twig-stimulus-boilerplate:prod
-    ports:
-      - '127.0.0.1:${HTTP_PORT:-8095}:8080'
+    network_mode: host
     environment:
+      SERVER_ADDRESS: 127.0.0.1:${HTTP_PORT:-8095}
+      API_URL: ${API_URL:-http://localhost:8090}
       SITE_URL: http://localhost:${HTTP_PORT:-8095}
       APP_SECRET: ${APP_SECRET:?APP_SECRET requis pour l'image de production}
       MAINTENANCE: ${MAINTENANCE:-0}
