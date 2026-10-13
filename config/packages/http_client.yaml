@@ -7,3 +7,9 @@ framework:
                 headers:
                     Accept: application/json
                 timeout: 5
+
+# En test, aucune API à démarrer : des réponses réelles capturées sur l'API (tests/Fixtures/api/).
+when@test:
+    framework:
+        http_client:
+            mock_response_factory: App\Tests\Support\ApiMockResponseFactory

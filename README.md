@@ -126,7 +126,7 @@ git cherry-pick <sha>
 
    | Violation | Fichier | Dépendance interdite |
    | --- | --- | --- |
-   | `ArchSelftestDomainToInfrastructure` | `src/Contact/Domain/` | `App\Contact\Infrastructure\Logger\LoggerContactMessageSender` |
+   | `ArchSelftestDomainToInfrastructure` | `src/Contact/Domain/` | `App\Contact\Infrastructure\Http\HttpContactMessageSender` |
    | `ArchSelftestDomainToFramework` | `src/Contact/Domain/` | `Symfony\Component\HttpFoundation\Response`, inchangée |
    | `ArchSelftestModuleToModule` | `src/Contact/Domain/` | `App\Site\Home\Slide` (sans second module, le module vise `Site`) |
    | `ArchSelftestSharedToModule` | `src/Shared/UI/` | `App\Contact\Domain\ContactMessage` |
@@ -174,12 +174,11 @@ src/
                      Product, Price (centimes), le port CatalogRepository
     Application/     ShowCatalogPage : résout la catégorie, interroge le dépôt, décide (introuvable, page
                      hors bornes, échec de chargement), sans framework
-    Infrastructure/  InMemory/ : dépôt en mémoire et CatalogSearch, le simulateur de l'API (filtre, comptage
-                     disjonctif, tri, pagination), qui disparaîtra avec lui au branchement
+    Infrastructure/  Http/ : dépôt HTTP et CatalogTranslation, la traduction depuis et vers l'API
     UI/              contrôleur, état de recherche porté par l'URL (euros), fenêtre de pagination, extension Twig
-  Blog/              forme réduite : Domain/ (Article, port, exception), Infrastructure/InMemory/
-  Contact/           forme réduite : Domain/, Infrastructure/Logger/, UI/ (contrôleur, formulaire)
-  Task/              forme réduite : Domain/ (Task protège son invariant), Infrastructure/InMemory/, UI/
+  Blog/              forme réduite : Domain/ (Article, port, exception), Infrastructure/Http/
+  Contact/           forme réduite : Domain/, Infrastructure/Http/ (envoi, violations 422), UI/ (contrôleur, formulaire)
+  Task/              forme réduite : Domain/ (Task protège son invariant), Infrastructure/Http/, UI/
   Site/              pages sans métier propre : UI/ (accueil, légal, SEO, charte), Home/ (diapositives),
                      Legal/ (conformité d'accessibilité), Styleguide/ (contraste, tokens)
   Shared/            socle sans métier : UI/Seo/ (métadonnées, fil d'Ariane), UI/Twig/
@@ -200,7 +199,7 @@ tools/
 
 Les règles de dépendance sont vérifiées par deptrac (`make arch`) : `Domain` ne dépend que de lui-même, ni framework, ni autre couche, ni autre module. `Infrastructure` dépend du `Domain` de son module et des frameworks. `UI` du `Domain` de son module, de `Shared` et des frameworks, et de l'`Infrastructure` seulement dans les modules sans couche application. `Site` compose les modules, `Shared` n'en importe aucun. `make arch` vérifie aussi que le sprite `icons.svg` n'est utilisé que dans `templates/shared/ui/_icon.html.twig` et qu'Embla n'est importé que dans `assets/controllers/carousel_controller.js`. `make arch-selftest` écrit une violation de chaque règle et exige qu'elles soient toutes détectées.
 
-Les dépôts sont en mémoire avec une latence simulée. Le jour où l'API est disponible, on écrit un adaptateur HttpClient dans `src/<Module>/Infrastructure/Http/` et on change l'alias dans `config/services.yaml`, sans toucher au domaine ni aux vues.
+Les données viennent de l'API commune (`API_URL`). Chaque module traduit ses réponses dans `src/<Module>/Infrastructure/Http/` : la forme est vérifiée, puis les objets du domaine sont construits (`Price` en centimes, arbre des catégories). Le domaine et l'application ignorent l'API.
 
 Les conventions de code viennent du `CLAUDE.md` global de l'auteur. Le `CLAUDE.md` de ce dépôt note les choix propres au projet, les versions épinglées et les pièges connus.
 
@@ -217,7 +216,7 @@ Les conventions de code viennent du `CLAUDE.md` global de l'auteur. Le `CLAUDE.m
 
 Le pattern est dans le domaine Tasks :
 
-- `src/Task/Domain/TaskRepository.php` est le port, `src/Task/Infrastructure/InMemory/InMemoryTaskRepository.php` l'adaptateur.
+- `src/Task/Domain/TaskRepository.php` est le port, `src/Task/Infrastructure/Http/HttpTaskRepository.php` l'adaptateur, qui lit `GET /api/tasks`.
 - `TasksController::index()` rend la page avec un `<turbo-frame loading="lazy">` qui contient le squelette de chargement.
 - `TasksController::list()` rend le contenu du frame : liste, état vide, ou erreur métier avec un bouton « Réessayer » (simple formulaire GET, sans JavaScript dédié).
 

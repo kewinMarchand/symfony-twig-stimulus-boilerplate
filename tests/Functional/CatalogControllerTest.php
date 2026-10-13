@@ -10,7 +10,7 @@ use App\Catalog\Domain\CatalogRepository;
 use App\Catalog\Domain\CatalogResult;
 use App\Catalog\Domain\Category;
 use App\Catalog\Domain\CategoryTree;
-use App\Catalog\Infrastructure\InMemory\InMemoryCatalogRepository;
+use App\Catalog\Infrastructure\Http\CatalogTranslation;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class CatalogControllerTest extends WebTestCase
@@ -85,7 +85,7 @@ final class CatalogControllerTest extends WebTestCase
         self::getContainer()->set(CatalogRepository::class, new class implements CatalogRepository {
             public function categoryTree(): CategoryTree
             {
-                return (new InMemoryCatalogRepository())->categoryTree();
+                return CatalogTranslation::tree(json_decode((string) file_get_contents(__DIR__.'/../Fixtures/api/categories.json'), true, flags: \JSON_THROW_ON_ERROR));
             }
 
             public function search(Category $category, CatalogQuery $query): CatalogResult

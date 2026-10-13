@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Unit\Catalog\Infrastructure\Http;
+
+use App\Catalog\Domain\CatalogQuery;
+use App\Catalog\Domain\Category;
+use App\Catalog\Domain\CategoryPath;
+use App\Catalog\Domain\Exposure;
+use App\Catalog\Domain\Price;
+use App\Catalog\Domain\ProductFilters;
+use App\Catalog\Domain\ProductSort;
+use App\Catalog\Domain\Size;
+use App\Catalog\Infrastructure\Http\CatalogTranslation;
+use App\Shared\Infrastructure\Http\InvalidApiPayloadException;
+use PHPUnit\Framework\TestCase;
+
+final class CatalogTranslationTest extends TestCase
+{
+    public function testTranslatesTheCategoryTreeUnderARoot(): void
+    {
+        $tree = CatalogTranslation::tree(self::payload('categories'));
+
+        self::assertSame('Catalogue', $tree->root->name);
+        self::assertSame('Feuillages', CategoryPath::resolve($tree, 'plantes-interieur/feuillages')?->category()->name);
+    }
+
+    public function testTranslatesAProductPageWithPricesInCentsAndEveryFacetValue(): void
+    {
+        $root = CatalogTranslation::tree(self::payload('categories'))->root;
+        $result = CatalogTranslation::result(self::payload('products'), $root, 1);
+
+        self::assertSame(24, $result->page->total);
+        self::assertSame(2, $result->page->pageCount);
+        self::assertCount(12, $result->page->items);
+        self::assertSame(3490, $result->page->items[0]->price->cents);
+        self::assertSame(['soleil', 'mi-ombre', 'ombre'], array_keys($result->facets->exposures));
+        self::assertSame(['S', 'M', 'L'], array_keys($result->facets->sizes));
+        self::assertSame(['plantes-interieur' => 12, 'plantes-exterieur' => 9, 'plantes-aquatiques' => 3], $result->facets->categories);
+    }
+
+    public function testAnEmptyResultStillHasOnePage(): void
+    {
+        $result = CatalogTranslation::result(self::payload('products-empty'), new Category('', 'Catalogue'), 1);
+
+        self::assertSame(0, $result->page->total);
+        self::assertSame(1, $result->page->pageCount);
+    }
+
+    public function testBuildsTheSearchQueryInTheLanguageOfTheApi(): void
+    {
+        $query = new CatalogQuery(
+            new ProductFilters([Exposure::Sun, Exposure::Shade], [Size::Large], Price::fromEuros(10), Price::fromEuros(50), true),
+            ProductSort::PriceDescending,
+            2,
+        );
+
+        self::assertSame(
+            'category=feuillages&exposure%5B%5D=soleil&exposure%5B%5D=ombre&size%5B%5D=L&priceMin=1000&priceMax=5000&inStock=true&order%5Bprice%5D=desc&page=2&itemsPerPage=12',
+            CatalogTranslation::searchQuery(new Category('feuillages', 'Feuillages'), $query),
+        );
+        self::assertSame('page=1&itemsPerPage=12', CatalogTranslation::searchQuery(new Category('', 'Catalogue'), new CatalogQuery()));
+    }
+
+    public function testRejectsAnUnknownExposure(): void
+    {
+        $payload = self::payload('products');
+        self::assertIsArray($payload);
+        self::assertIsArray($payload['items']);
+        self::assertIsArray($payload['items'][0]);
+        $payload['items'][0]['exposure'] = 'lune';
+
+        $this->expectException(InvalidApiPayloadException::class);
+
+        CatalogTranslation::result($payload, new Category('', 'Catalogue'), 1);
+    }
+
+    private static function payload(string $name): mixed
+    {
+        return json_decode((string) file_get_contents(__DIR__.'/../../../../Fixtures/api/'.$name.'.json'), true, flags: \JSON_THROW_ON_ERROR);
+    }
+}

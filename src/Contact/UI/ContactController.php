@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Contact\UI;
 
 use App\Contact\Domain\ContactMessageNotSentException;
+use App\Contact\Domain\ContactMessageRejectedException;
 use App\Contact\Domain\ContactMessageSender;
 use App\Contact\UI\Form\ContactFormData;
 use App\Contact\UI\Form\ContactType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,6 +31,13 @@ final class ContactController extends AbstractController
 
         try {
             $sender->send($data->toMessage());
+        } catch (ContactMessageRejectedException $exception) {
+            foreach ($exception->violations as $violation) {
+                $target = $form->has($violation['field']) ? $form->get($violation['field']) : $form;
+                $target->addError(new FormError($violation['message']));
+            }
+
+            return $this->render('contact/index.html.twig', ['form' => $form, 'send_error' => null], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
         } catch (ContactMessageNotSentException $exception) {
             return $this->render('contact/index.html.twig', [
                 'form' => $form,

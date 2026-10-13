@@ -42,6 +42,16 @@ final class ContactControllerTest extends WebTestCase
         self::assertStringContainsString('target="contact-status"', (string) $client->getResponse()->getContent());
     }
 
+    public function testApiViolationsAreShownUnderTheirField(): void
+    {
+        $client = $this->submit(['name' => 'Refus', 'email' => 'refus@exemple.fr', 'message' => 'Bonjour, ceci est un message.']);
+
+        self::assertResponseStatusCodeSame(422);
+        $email = $client->getCrawler()->filter('[data-testid="contact-email"]');
+        self::assertSame('true', $email->attr('aria-invalid'));
+        self::assertStringContainsString('refusée par le destinataire', $client->getCrawler()->filter('#'.$email->attr('aria-describedby'))->text());
+    }
+
     public function testSendingFailureShowsABusinessMessage(): void
     {
         $client = self::createClient();

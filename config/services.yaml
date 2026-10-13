@@ -11,13 +11,14 @@ services:
             - '../src/*/Domain/'
             - '../src/Kernel.php'
 
-    App\Task\Domain\TaskRepository: '@App\Task\Infrastructure\InMemory\InMemoryTaskRepository'
-    App\Blog\Domain\ArticleRepository: '@App\Blog\Infrastructure\InMemory\InMemoryArticleRepository'
+    App\Task\Domain\TaskRepository: '@App\Task\Infrastructure\Http\HttpTaskRepository'
+    App\Blog\Domain\ArticleRepository: '@App\Blog\Infrastructure\Http\HttpArticleRepository'
     App\Site\Home\SlideRepository: '@App\Site\Home\InMemorySlideRepository'
-    App\Contact\Domain\ContactMessageSender: '@App\Contact\Infrastructure\Logger\LoggerContactMessageSender'
-    App\Catalog\Domain\CatalogRepository: '@App\Catalog\Infrastructure\InMemory\InMemoryCatalogRepository'
+    App\Contact\Domain\ContactMessageSender: '@App\Contact\Infrastructure\Http\HttpContactMessageSender'
+    App\Catalog\Domain\CatalogRepository: '@App\Catalog\Infrastructure\Http\HttpCatalogRepository'
 
 when@test:
     services:
         logger:
             class: Psr\Log\NullLogger
+        App\Tests\Support\ApiMockResponseFactory: ~
