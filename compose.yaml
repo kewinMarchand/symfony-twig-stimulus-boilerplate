@@ -16,3 +16,27 @@ services:
       GLITCHTIP_ENVIRONMENT: ${GLITCHTIP_ENVIRONMENT:-}
       MATOMO_URL: ${MATOMO_URL:-}
       MATOMO_SITE_ID: ${MATOMO_SITE_ID:-}
+
+  node:
+    profiles: [dev]
+    build:
+      context: docker/node
+      args:
+        PLAYWRIGHT_VERSION: ${PLAYWRIGHT_VERSION:-}
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
+    image: symfony-twig-stimulus-boilerplate:node
+    user: '${HOST_UID:-1000}:${HOST_GID:-1000}'
+    init: true
+    ipc: host
+    network_mode: host
+    environment:
+      HOME: /tmp
+      CI: ${CI:-}
+      HTTP_PORT: ${HTTP_PORT:-8095}
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+
+volumes:
+  node_modules:

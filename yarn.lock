@@ -102,7 +102,7 @@
     legacy-javascript latest
     third-party-web latest
 
-"@playwright/test@^1.63.0":
+"@playwright/test@1.64.0":
   version "1.64.0"
   resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.64.0.tgz#af51c4f1dd5f689b2ff16e6eacf27ac00843f239"
   integrity sha512-oTN9FNYuN6bqQMwiho6jJKLCG2/QOYCixGXuCjRmzOq23eODeukuY2XiAVoVpAECbuezMt1MHQjAiQxK8F+Y+g==

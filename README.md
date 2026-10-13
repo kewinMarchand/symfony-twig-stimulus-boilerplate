@@ -33,15 +33,14 @@ Un bouton « Accessibilité renforcée » dans l'en-tête agrandit le texte, esp
 
 ## Prérequis
 
-- Docker et Docker Compose
-- Node.js 24.14 ou plus (`.nvmrc`) et Yarn 1, pour Playwright, Lighthouse et le test unitaire du mode renforcé (`node:test`, lancé par `make test-unit`)
+- Docker (avec Compose), `make` et git. Rien d'autre : PHP, Composer, Node, Yarn et Chromium tournent en conteneur.
 
 ## Démarrage
 
 ```sh
 git clone https://github.com/kewinMarchand/symfony-twig-stimulus-boilerplate.git
 cd symfony-twig-stimulus-boilerplate
-make install   # image de dev, dépendances PHP et Node, navigateur Chromium des tests
+make install   # images de dev (PHP, Node et Chromium), dépendances installées dans les conteneurs
 make up        # http://localhost:8095
 ```
 
@@ -161,7 +160,7 @@ Terminer par `make qa`, puis `make test-e2e test-a11y`. Cette procédure a été
 | `make metrics`                         | Lighthouse CI sur l'image de production (port 3230) : échoue sous 90 en performance ou sous 100 en accessibilité et SEO |
 | `make docker-build` / `make docker-up` | Image de production, sur le port `HTTP_PORT`                                               |
 
-Toutes les commandes PHP tournent dans un conteneur jetable (`docker compose run --rm php`). En CI, `make qa EXEC=` les exécute directement sur la machine.
+Toutes les commandes tournent dans des conteneurs jetables : PHP par `docker compose run --rm php`, Node, Playwright et Lighthouse par `docker compose run --rm node` (image officielle Playwright à la version exacte de `@playwright/test`, profil Compose `dev`, réseau de l'hôte pour joindre les ports 8095 et 3230). Les `node_modules` vivent dans un volume nommé, et les conteneurs tournent avec l'UID et le GID de la machine.
 
 ## Architecture
 
@@ -239,7 +238,7 @@ Ajouter son nom Lucide à `icons.json`, lancer `make icons`, puis `{{ include('s
 
 ## Intégration continue
 
-`.github/workflows/ci.yml` lance `make qa` sur PHP installé par `setup-php`, puis les tests e2e, accessibilité et Lighthouse dans Docker, à chaque push sur `main` et sur chaque pull request. En cas d'échec, le rapport Playwright est joint au run.
+`.github/workflows/ci.yml` n'appelle que des cibles `make` (`make install`, `make qa`, `make test-e2e test-a11y`, `make metrics`), donc les mêmes conteneurs que le poste de dev, à chaque push sur `main` et sur chaque pull request. En cas d'échec, le rapport Playwright est joint au run.
 
 ## Licence
 

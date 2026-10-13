@@ -43,25 +43,25 @@ test: test-unit test-e2e test-a11y ## Tous les tests
 
 test-unit: ## Tests unitaires et fonctionnels (PHPUnit) et test du mode accessibilité (node:test)
 	$(EXEC) sh -c "rm -rf var/cache/test && vendor/bin/phpunit"
-	node --test 'tests/js/**/*.test.js'
+	$(NODE) --test 'tests/js/**/*.test.js'
 
 test-e2e: ## Tests end-to-end desktop et mobile : image de production, puis avec traceurs factices, puis serveur de dev (Playwright)
 	$(UP_PROD)
-	yarn playwright test tests/e2e --grep-invert "@dev|@observabilite"
+	$(RUN_NODE) yarn playwright test tests/e2e --grep-invert "@dev|@observabilite"
 	$(OBSERVABILITY_ENV) $(UP_PROD)
-	yarn playwright test tests/e2e --grep @observabilite
+	$(RUN_NODE) yarn playwright test tests/e2e --grep @observabilite
 	$(UP_DEV)
-	yarn playwright test tests/e2e --grep @dev
+	$(RUN_NODE) yarn playwright test tests/e2e --grep @dev
 
 test-a11y: ## Tests d'accessibilité WCAG 2.1 AA, deux modes, prod puis dev (axe-core + Playwright)
 	$(UP_PROD)
-	yarn playwright test tests/a11y --grep-invert @dev
+	$(RUN_NODE) yarn playwright test tests/a11y --grep-invert @dev
 	$(UP_DEV)
-	yarn playwright test tests/a11y --grep @dev
+	$(RUN_NODE) yarn playwright test tests/a11y --grep @dev
 
 metrics: docker-build ## Métriques Lighthouse CI sur l'image de production (perf ≥ 90, a11y et SEO = 100)
 	HTTP_PORT=$(LHCI_PORT) $(COMPOSE_PROD) -p $(LHCI_PROJECT) up -d --wait
-	CHROME_PATH=$$(node -e 'console.log(require("@playwright/test").chromium.executablePath())') yarn lhci autorun; \
+	$(RUN_NODE) sh -c 'CHROME_PATH=$$(node -e "console.log(require(\"@playwright/test\").chromium.executablePath())") yarn lhci autorun'; \
 		status=$$?; HTTP_PORT=$(LHCI_PORT) $(COMPOSE_PROD) -p $(LHCI_PROJECT) down; exit $$status
 
 .PHONY: qa qa-full lint arch arch-deptrac arch-wrappers arch-selftest icons-check format format-check typecheck test test-unit test-e2e test-a11y metrics

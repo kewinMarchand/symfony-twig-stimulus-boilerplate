@@ -13,7 +13,7 @@
     "@axe-core/playwright": "^4.13.0",
     "@iconify-json/lucide": "^1.2.143",
     "@lhci/cli": "^0.15.1",
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "1.64.0",
     "svgstore": "^3.0.1"
   }
 }

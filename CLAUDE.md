@@ -15,12 +15,13 @@ Boilerplate personnel. Les conventions générales sont dans `~/.claude/CLAUDE.m
 - **Config du site** : un seul fichier, `config/packages/site.yaml` (nom, URL, éditeur, hébergeur, audit d'accessibilité, navigation). La navigation alimente le menu, le sitemap, le plan du site et le fil d'Ariane.
 - **SEO** : `App\Shared\UI\Seo\SeoPageFactory` est le seul point de construction des métadonnées. Chaque vue commence par `{% set seo = seo_page({...}) %}`, le layout ne fait qu'afficher.
 - **Erreurs** : classes `XxxException` du domaine avec un message métier en français. PHP réserve le suffixe `Error` aux erreurs du moteur, d'où l'écart de nommage avec le front.
-- **Icônes** : sprite SVG tiré de Lucide (spec commune, section 17). `icons.json` liste les noms utilisés. `make icons` génère `public/icons.svg` (un `<symbol>` par ligne, ordre alphabétique) et `src/Shared/UI/IconNames.php`, la liste des noms lue par la charte graphique. `make icons-check`, lancé par `make qa`, échoue si l'un des deux ne correspond plus à `icons.json`. Le générateur (`tools/icons.js`) tourne en Node dans un conteneur `node:24-alpine` (variable `NODE` du Makefile, `NODE=node` en CI). Un seul partial affiche une icône : `templates/shared/ui/_icon.html.twig`, `<svg><use href="/icons.svg#nom">`, décorative par défaut, porteuse de sens avec `icon_label`. Le logo reste un SVG propre au projet, hors sprite.
+- **Icônes** : sprite SVG tiré de Lucide (spec commune, section 17). `icons.json` liste les noms utilisés. `make icons` génère `public/icons.svg` (un `<symbol>` par ligne, ordre alphabétique) et `src/Shared/UI/IconNames.php`, la liste des noms lue par la charte graphique. `make icons-check`, lancé par `make qa`, échoue si l'un des deux ne correspond plus à `icons.json`. Le générateur (`tools/icons.js`) tourne dans le service `node` (variable `NODE` du Makefile). Un seul partial affiche une icône : `templates/shared/ui/_icon.html.twig`, `<svg><use href="/icons.svg#nom">`, décorative par défaut, porteuse de sens avec `icon_label`. Le logo reste un SVG propre au projet, hors sprite.
 - **CSS** : maison, tokens en variables CSS dans `assets/styles/app.css`. Le mode renforcé ne fait que surcharger des tokens sous `:root[data-a11y-mode='enhanced']`. Les espacements WCAG 1.4.12 ne s'appliquent qu'au texte de contenu de `<main>`.
 - **Unité de police** : `px`. Police Inter variable (fontsource 5.3.0) servie localement depuis `assets/fonts/`, licence OFL jointe.
 - **Cibles tactiles** : 44 px minimum (`--touch-target`).
 - **Langue** : français uniquement, URL en français.
-- **Hook git** : aucun. Toutes les commandes passent par Docker, un hook de pré-commit imposerait la stack démarrée à chaque commit ou serait contourné. La CI fait foi.
+- **Développement en conteneur** (spec commune, section 18) : seuls prérequis, Docker, `make` et git. PHP passe par le service `php`, Node par le service `node` (`docker/node/Dockerfile`, image officielle Playwright à la version exacte de `@playwright/test`, épinglée dans `package.json`), sous le profil Compose `dev`. Le service `node` est en `network_mode: host` : Playwright et Lighthouse y joignent l'image de production et le serveur de dev sur 8095, Lighthouse sur 3230 (un autre projet Compose) et le faux GlitchTip du test sur 3231, sans configuration réseau. La CI n'appelle que des cibles `make`.
+- **Hook git** : aucun, et donc pas de lint-staged. Toutes les commandes passent par Docker, un hook de pré-commit imposerait la stack démarrée à chaque commit ou serait contourné. La CI fait foi.
 
 ## Versions retenues, et pourquoi
 
@@ -65,7 +66,7 @@ PHP-CS-Fixer : `@Symfony` plus `declare_strict_types` (règle risquée, activée
 
 ## Pièges connus, réellement rencontrés
 
-- **Port 8080 occupé** sur la machine de l'auteur (un serveur uvicorn), d'où 8095.
+- **Port 8080 occupé** sur la machine de l'auteur (un serveur uvicorn), d'où 8095. Depuis, 8095 peut lui aussi être pris par un autre service de la machine : `make up HTTP_PORT=18095` (ou `make test-e2e HTTP_PORT=…`) déplace le site, Playwright suit la variable.
 - **Clés répétées dans l'URL** : PHP écrase `?taille=S&taille=M` en ne gardant que la dernière valeur. `CatalogUrlState` lit la query string brute avec `HeaderUtils::parseQuery($query, true)`. Toute URL non canonique (ordre, valeurs vides ou invalides, défauts) est redirigée vers sa forme canonique.
 - **Variable d'environnement réelle contre `.env.test`** : Compose injecte `SITE_URL`, qui gagne sur `.env.test`. `phpunit.dist.xml` la force avec `force="true"`.
 - **WebTestCase redémarre le noyau entre deux requêtes** : un service remplacé par `getContainer()->set()` disparaît au second appel. `$client->disableReboot()` quand un test enchaîne GET puis POST.
