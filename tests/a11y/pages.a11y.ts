@@ -30,7 +30,7 @@ for (const mode of A11Y_MODES) {
       await page.getByTestId('layout-mobile-menu').getByRole('button', { name: 'Catalogue' }).click()
     } else {
       await page.getByTestId('layout-category-menu-toggle').click()
-      await page.getByTestId('layout-category-menu').getByRole('link', { name: "Plantes d'intérieur" }).hover()
+      await page.getByTestId('layout-category-menu').getByRole('link', { name: "Plantes d’intérieur" }).hover()
     }
 
     expect((await analyze(page)).violations).toEqual([])

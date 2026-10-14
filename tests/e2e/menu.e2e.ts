@@ -16,7 +16,7 @@ test.describe('Menu de catégories (desktop)', () => {
     await expect(menu).toBeVisible()
     await expect(toggle).toHaveAttribute('aria-expanded', 'true')
 
-    const parent = menu.getByRole('link', { name: "Plantes d'intérieur" })
+    const parent = menu.getByRole('link', { name: "Plantes d’intérieur" })
     await parent.hover()
     await expect(parent).toHaveAttribute('aria-expanded', 'true')
     await expect(menu.getByRole('link', { name: 'Feuillages' })).toBeVisible()
@@ -31,7 +31,7 @@ test.describe('Menu de catégories (desktop)', () => {
     await page.getByTestId('layout-category-menu-toggle').click()
     const menu = page.getByTestId('layout-category-menu')
 
-    await menu.getByRole('link', { name: "Plantes d'extérieur" }).focus()
+    await menu.getByRole('link', { name: "Plantes d’extérieur" }).focus()
     await expect(menu.getByRole('link', { name: 'Palmiers' })).toBeVisible()
     await expect(menu.getByRole('link', { name: 'Feuillages' })).toBeHidden()
   })
@@ -40,7 +40,7 @@ test.describe('Menu de catégories (desktop)', () => {
     await page.goto('/')
     await page.getByTestId('layout-category-menu-toggle').click()
     const menu = page.getByTestId('layout-category-menu')
-    await menu.getByRole('link', { name: "Plantes d'intérieur" }).hover()
+    await menu.getByRole('link', { name: "Plantes d’intérieur" }).hover()
     await menu.getByRole('link', { name: 'Feuillages' }).hover()
     await menu.getByRole('link', { name: 'Monstera' }).click()
 
@@ -89,8 +89,8 @@ test.describe('Menu mobile', () => {
     await menu.getByRole('button', { name: 'Catalogue' }).click()
     await expect(menu.getByRole('heading', { name: 'Catalogue' })).toBeFocused()
 
-    await menu.getByRole('button', { name: "Plantes d'intérieur" }).click()
-    await expect(menu.getByRole('heading', { name: "Plantes d'intérieur" })).toBeFocused()
+    await menu.getByRole('button', { name: "Plantes d’intérieur" }).click()
+    await expect(menu.getByRole('heading', { name: "Plantes d’intérieur" })).toBeFocused()
     await expect(menu.getByRole('link', { name: 'Voir toute la catégorie' })).toHaveAttribute('href', '/catalogue/plantes-interieur')
 
     await menu.getByTestId('layout-mobile-menu-back').filter({ visible: true }).click()
