@@ -17,6 +17,13 @@ services:
     App\Contact\Domain\ContactMessageSender: '@App\Contact\Infrastructure\Http\HttpContactMessageSender'
     App\Catalog\Domain\CatalogRepository: '@App\Catalog\Infrastructure\Http\HttpCatalogRepository'
 
+    Kewinmarchand\Csp\Symfony\CspResponseSubscriber:
+        factory: ['App\Shared\Infrastructure\Security\SiteCsp', 'subscriber']
+        arguments: ['%env(API_URL)%', '%env(MATOMO_URL)%', '%env(GLITCHTIP_DSN)%']
+
+    Kewinmarchand\Csp\Symfony\CspReportController:
+        tags: ['controller.service_arguments']
+
 when@test:
     services:
         logger:

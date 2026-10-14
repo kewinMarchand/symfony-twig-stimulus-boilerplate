@@ -229,6 +229,18 @@ Le pattern est dans le domaine Tasks :
 
 Ajouter son nom Lucide à `icons.json`, lancer `make icons`, puis `{{ include('shared/ui/_icon.html.twig', {name: '<nom>'}) }}`. Le sprite `public/icons.svg` et `src/Shared/UI/IconNames.php` sont régénérés et versionnés, et `make icons-check` vérifie en QA qu'ils restent à jour.
 
+### CSP et rapports de violation
+
+Chaque réponse porte un en-tête `Content-Security-Policy-Report-Only` construit par le paquet [`kewinmarchand/csp`](https://github.com/kewinMarchand/csp), dans `src/Shared/Infrastructure/Security/SiteCsp.php` : rien n'est bloqué, le navigateur signale chaque ressource qu'une CSP stricte refuserait à `POST /api/csp-report`, qui écrit une ligne lisible sur la sortie standard du conteneur :
+
+```
+[csp-report] https://cdn.exemple.com a besoin d'une autorisation de type script (script-src) — bloqué sur /contact
+```
+
+- **Lire les logs** : `docker compose logs -f php`, en local comme sur l'image de production, ou la console de l'hébergeur. Au démarrage, `[symfony-twig-stimulus-boilerplate] serveur démarré (prod)` permet de retrouver le bon fichier.
+- **Autoriser une origine** : l'ajouter à sa directive (le nom est entre parenthèses dans la ligne) dans `SiteCsp::extra()`. L'API (`API_URL`), Matomo et GlitchTip y sont déjà, quand leur variable est renseignée.
+- **Pourquoi Report-Only et `'unsafe-inline'`** : on collecte d'abord ce que le site charge vraiment avant de bloquer quoi que ce soit ; un nonce par réponse empêcherait la mise en cache des pages.
+
 ## Tests
 
 - **Unitaires et fonctionnels** : `tests/Unit` (domaine et fonctions pures, sans conteneur), `tests/Functional` (WebTestCase, avec des dépôts remplacés pour les états vide et erreur), `tests/js` (mode renforcé).

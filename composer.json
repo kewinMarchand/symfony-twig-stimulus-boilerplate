@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-intl": "*",
+        "kewinmarchand/csp": "^0.1",
         "sentry/sentry-symfony": "^5",
         "symfony/asset": "7.4.*",
         "symfony/asset-mapper": "7.4.*",
@@ -95,5 +96,10 @@
         "symfony/web-profiler-bundle": "7.4.*"
     },
     "description": "Boilerplate Symfony 7.4 LTS, Twig, Stimulus et Turbo, avec lint, analyse statique, tests unitaires, e2e, accessibilité et Lighthouse",
-    "name": "kewinmarchand/symfony-twig-stimulus-boilerplate"
+    "name": "kewinmarchand/symfony-twig-stimulus-boilerplate",
+    "repositories": [{
+        "name": "csp",
+        "type": "vcs",
+        "url": "https://github.com/kewinMarchand/csp"
+    }]
 }

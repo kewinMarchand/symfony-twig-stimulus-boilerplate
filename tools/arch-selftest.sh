@@ -10,6 +10,7 @@ src/Blog/Domain/ArchSelftestModuleToModule.php
 src/Shared/UI/ArchSelftestSharedToModule.php
 src/Catalog/UI/ArchSelftestUiToInfrastructure.php
 src/Catalog/UI/ArchSelftestUiToHttpClient.php
+src/Catalog/UI/ArchSelftestCspOutsideWrapper.php
 templates/home/_arch_selftest.html.twig
 assets/controllers/arch_selftest_controller.js"
 
@@ -37,6 +38,8 @@ php_class src/Catalog/UI/ArchSelftestUiToInfrastructure.php 'App\Catalog\UI' \
     ArchSelftestUiToInfrastructure 'App\Catalog\Infrastructure\InMemory\InMemoryCatalogRepository'
 php_class src/Catalog/UI/ArchSelftestUiToHttpClient.php 'App\Catalog\UI' \
     ArchSelftestUiToHttpClient 'Symfony\Contracts\HttpClient\HttpClientInterface'
+php_class src/Catalog/UI/ArchSelftestCspOutsideWrapper.php 'App\Catalog\UI' \
+    ArchSelftestCspOutsideWrapper 'Kewinmarchand\Csp\Csp'
 printf '%s\n' '<svg><use href="/icons.svg#x"></use></svg>' > templates/home/_arch_selftest.html.twig
 printf '%s\n' "import EmblaCarousel from 'embla-carousel';" '' 'export default EmblaCarousel;' \
     > assets/controllers/arch_selftest_controller.js
@@ -60,7 +63,8 @@ for marker in ArchSelftestDomainToInfrastructure ArchSelftestDomainToFramework A
         failed=1
     fi
 done
-for marker in templates/home/_arch_selftest.html.twig assets/controllers/arch_selftest_controller.js; do
+for marker in templates/home/_arch_selftest.html.twig assets/controllers/arch_selftest_controller.js \
+    src/Catalog/UI/ArchSelftestCspOutsideWrapper.php; do
     if printf '%s\n' "$wrappers_output" | grep -q "^$marker:"; then
         detected=$((detected + 1))
     else
@@ -73,4 +77,4 @@ if [ "$failed" -ne 0 ]; then
     printf '%s\n%s\n' "$deptrac_output" "$wrappers_output"
     exit 1
 fi
-echo "OK : $detected violations volontaires sur 8 détectées, fichiers retirés."
+echo "OK : $detected violations volontaires sur 9 détectées, fichiers retirés."

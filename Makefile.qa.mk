@@ -16,12 +16,14 @@ arch: arch-deptrac arch-wrappers ## Règles d'architecture : deptrac et biblioth
 arch-deptrac: ## Règles de dépendance entre modules et couches (deptrac.yaml)
 	$(EXEC) vendor/bin/deptrac analyse --no-progress
 
-arch-wrappers: ## Le sprite d'icônes et Embla ne sont utilisés que dans leur wrapper
+arch-wrappers: ## Le sprite d'icônes, Embla et le paquet CSP ne sont utilisés que dans leur wrapper
 	@status=0; \
 	if grep -rn "icons\.svg" templates assets --exclude-dir=vendor | grep -v "^templates/shared/ui/_icon.html.twig:"; then \
 		echo "Le sprite icons.svg ne s'utilise que dans templates/shared/ui/_icon.html.twig"; status=1; fi; \
 	if grep -rnE "from '(embla-carousel|wheel-gestures)" assets --exclude-dir=vendor | grep -v "^assets/controllers/carousel_controller.js:"; then \
 		echo "Embla ne s'importe que dans assets/controllers/carousel_controller.js"; status=1; fi; \
+	if grep -rn "Kewinmarchand\\\\Csp" src | grep -v "^src/Shared/Infrastructure/Security/"; then \
+		echo "Le paquet kewinmarchand/csp ne s'utilise que dans src/Shared/Infrastructure/Security/"; status=1; fi; \
 	exit $$status
 
 icons-check: ## Échoue si public/icons.svg ou src/Shared/UI/IconNames.php ne correspondent plus à icons.json

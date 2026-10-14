@@ -8,7 +8,7 @@ ENV COMPOSER_HOME=/tmp/composer \
     XDG_DATA_HOME=/tmp/caddy/data
 EXPOSE 8080
 HEALTHCHECK --interval=5s --timeout=3s --retries=20 CMD curl -fsS -o /dev/null http://${SERVER_ADDRESS:-localhost:8080}/robots.txt || exit 1
-CMD ["frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile"]
+CMD ["sh", "-c", "php docker/startup.php; exec frankenphp run --config /etc/frankenphp/Caddyfile"]
 
 FROM base AS dev
 ENV APP_ENV=dev

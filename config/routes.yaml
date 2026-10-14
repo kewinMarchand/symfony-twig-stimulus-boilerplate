@@ -9,3 +9,8 @@
 
 controllers:
     resource: routing.controllers
+
+csp_report:
+    path: /api/csp-report
+    controller: Kewinmarchand\Csp\Symfony\CspReportController
+    methods: [POST]
