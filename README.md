@@ -118,7 +118,7 @@ git cherry-pick <sha>
    - dans `_mobile_menu.html.twig`, la branche `catalog` et les niveaux du catalogue
    - dans `templates/home/index.html.twig`, la section des articles et le bouton vers `/taches`
    - dans `templates/legal/sitemap.html.twig`, la section Catalogue
-   - dans `templates/seo/sitemap.xml.twig`, la boucle `catalog_paths()` qui produisait les entrées de catégories
+   - dans `templates/seo/sitemap.xml.twig`, la boucle `catalog_paths()` qui produit les entrées de catégories
    - dans `templates/bundles/TwigBundle/Exception/error404.html.twig`, le lien vers le catalogue
    - dans `templates/styleguide/index.html.twig`, les liens `path('catalog')` et le filtre `price`.
 3. **Routes et services** : les routes disparaissent avec leurs contrôleurs. Retirer les entrées `catalog` et `tasks` de la navigation dans `config/packages/site.yaml` (menu, sitemap, plan du site, fil d'Ariane), et les alias des ports de `Task`, `Blog` et `Catalog` dans `config/services.yaml`.
@@ -139,7 +139,7 @@ git cherry-pick <sha>
 6. **Lighthouse** : retirer `/catalogue`, `/catalogue/plantes-interieur/feuillages` et `/taches` de `.lighthouserc.json`.
 7. **Facultatif** : les images `assets/images/product-*` et `blog-*`, et les styles du catalogue dans `assets/styles/app.css`.
 
-Terminer par `make qa`, puis `make test-e2e test-a11y`. Cette procédure a été déroulée sur une copie jetable du dépôt jusqu'à un `make qa` vert : 0 violation deptrac, 7 violations volontaires sur 7 détectées, 40 tests PHPUnit.
+Terminer par `make qa`, puis `make test-e2e test-a11y`. Déroulée sur une copie jetable du dépôt, cette procédure mène à un `make qa` vert : 0 violation deptrac, 7 violations volontaires sur 7 détectées, 40 tests PHPUnit.
 
 ## Commandes
 
