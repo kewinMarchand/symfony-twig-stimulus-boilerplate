@@ -4,12 +4,18 @@ LHCI_PORT := 3230
 # (tests/e2e/observability.e2e.ts), jamais une instance réelle.
 OBSERVABILITY_ENV := GLITCHTIP_DSN=http://clefactice@localhost:3231/1 MATOMO_URL=http://matomo.test/ MATOMO_SITE_ID=1
 
-qa: lint arch arch-selftest icons-check ui-check format-check typecheck test-unit ## QA rapide : lint, architecture, sprite d'icônes, format, analyse statique, tests unitaires
+qa: lint lint-js arch arch-selftest icons-check ui-check format-check typecheck test-unit ## QA rapide : lint, ordre des imports JS, architecture, sprite d'icônes, format, analyse statique, tests unitaires
 
 qa-full: qa test-e2e test-a11y metrics ## QA complète : QA rapide + e2e + a11y + Lighthouse
 
 lint: ## Composer, conteneur, Twig et YAML
 	$(EXEC) sh -c "composer validate --strict && bin/console lint:container && bin/console lint:twig templates && bin/console lint:yaml config --parse-tags"
+
+lint-js: ## Ordre des imports JavaScript (ESLint, simple-import-sort)
+	$(RUN_NODE) yarn -s eslint .
+
+lint-js-fix: ## Ordre des imports JavaScript, avec correction automatique
+	$(RUN_NODE) yarn -s eslint . --fix
 
 arch: arch-deptrac arch-wrappers ## Règles d'architecture : deptrac et bibliothèques tierces confinées à leur wrapper
 
@@ -69,4 +75,4 @@ metrics: docker-build ## Métriques Lighthouse CI sur l'image de production (per
 	$(RUN_NODE) sh -c 'CHROME_PATH=$$(node -e "console.log(require(\"@playwright/test\").chromium.executablePath())") yarn lhci autorun'; \
 		status=$$?; HTTP_PORT=$(LHCI_PORT) SITE_HOST=127.0.0.1 $(COMPOSE_PROD) -p $(LHCI_PROJECT) down; exit $$status
 
-.PHONY: qa qa-full lint arch arch-deptrac arch-wrappers arch-selftest icons-check ui-check format format-check typecheck test test-unit test-e2e test-a11y metrics
+.PHONY: qa qa-full lint lint-js lint-js-fix arch arch-deptrac arch-wrappers arch-selftest icons-check ui-check format format-check typecheck test test-unit test-e2e test-a11y metrics

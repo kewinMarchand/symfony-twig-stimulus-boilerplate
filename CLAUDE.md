@@ -45,6 +45,7 @@ Boilerplate personnel. Les conventions générales sont dans `~/.claude/CLAUDE.m
 | @iconify-json/lucide            | `^1.2`, dev      | source des icônes Lucide (licence ISC) lue par le générateur du sprite, absente de la production |
 | @kewinmarchand/boilerplates-ui  | `#v0.5.0`, dev   | tokens et composants communs aux boilerplates, dépendance git par étiquette, copiés par `make ui` dans `assets/boilerplates-ui/` |
 | svgstore                        | `^3.0`, dev      | assemble les icônes en `<symbol>` dans `public/icons.svg`, comme dans les autres boilerplates |
+| eslint, eslint-plugin-simple-import-sort | `^10.12` et `^14`, dev | ordre des imports JavaScript seulement (`make lint-js`, dans `make qa`), celui de standards-front comme dans les autres boilerplates. Environ 61 paquets installés côté Node, absents de la production |
 | deptrac/deptrac                 | `^4.7`, dev      | vérifie les règles de dépendance entre modules et couches (`deptrac.yaml`). Un `grep` ne voit ni un nom pleinement qualifié dans le code, ni une dépendance `Domain` vers `Infrastructure`, ni un module qui en importe un autre. Même version que l'API Platform des boilerplates |
 
 ## Ports et projet Docker
@@ -66,6 +67,8 @@ Vérifiées par `make arch`, lancé par `make qa` et donc en CI :
 - `AccessibilityExtension` (fonction Twig `accessibility_compliance()`) vit dans `Site/Legal/`, pas dans `Shared/UI/Twig/` : elle lit la règle de conformité de `Site/Legal`, et `Shared` ne dépend ni des modules ni de `Site`.
 - Les templates ne sont pas couverts par deptrac : les fonctions Twig sont globales, et l'en-tête partagé (`templates/shared/layout/_header.html.twig`) appelle `catalog_tree()` du module catalogue. C'est la composition faite par le layout du site, l'équivalent du menu passé en propriétés par la couche de routage des fronts JavaScript.
 - Pas de règle de couches pour les contrôleurs Stimulus : l'architecture ne découpe pas `assets/controllers/` en modules, seule R10 (une bibliothèque tierce dans son seul wrapper) s'y applique.
+
+ESLint (`eslint.config.js`) : seules `simple-import-sort/imports` et `simple-import-sort/exports`, en erreur, sur les fichiers `.js` (`assets/` hors copies tierces, `tools/`), corrigées par `make lint-js-fix`. Groupes : tiers (`node:`, paquets et noms de l'importmap), relatifs, puis effets de bord, que le plugin ne réordonne pas entre eux (les feuilles de style d'`app.js` gardent l'ordre de la cascade, vérifié). Pas de bibliothèque commune, de socle, de modules ni de vues à ranger côté JavaScript. Les tests Playwright en TypeScript n'y sont pas : il faudrait le parseur typescript-eslint.
 
 PHP-CS-Fixer : `@Symfony` plus `declare_strict_types` (règle risquée, activée pour garantir `declare(strict_types=1)` partout).
 

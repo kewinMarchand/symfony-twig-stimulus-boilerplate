@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+
 import { isA11yModeEnhanced, toggleA11yMode } from '../a11y_mode.js';
 
 export default class extends Controller {
