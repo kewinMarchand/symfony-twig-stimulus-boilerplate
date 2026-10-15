@@ -1,0 +1,54 @@
+{#- Thème de formulaire : balisage bui-field de boilerplates-ui (libellé, aide, champ, erreur, dans cet ordre).
+    Un champ obligatoire l'écrit dans son libellé, « (obligatoire) » (RGAA 11.10), sans astérisque. -#}
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_row_render -%}
+    <div{% with {attr: row_attr|merge({class: ('bui-field ' ~ row_attr.class|default(''))|trim})} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_label(form) -}}
+        {{- form_help(form) -}}
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row_render -%}
+
+{%- block form_label -%}
+    {%- if label is not same as(false) -%}
+        {%- set label_attr = label_attr|merge({class: ('bui-field__label ' ~ label_attr.class|default(''))|trim}) -%}
+        {%- if not compound %}{% set label_attr = label_attr|merge({for: id}) %}{% endif -%}
+        <label{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}>
+            {{- block('form_label_content') -}}
+            {%- if required %}<span class="bui-field__required"> (obligatoire)</span>{% endif -%}
+        </label>
+    {%- endif -%}
+{%- endblock form_label -%}
+
+{%- block form_help -%}
+    {%- if help -%}
+        <p id="{{ id }}_help" class="bui-field__hint">{{- block('form_help_content') -}}</p>
+    {%- endif -%}
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- if compound -%}
+        {%- for error in errors -%}
+            {{ include('shared/ui/_alert.html.twig', {variant: 'error', body: error.message}) }}
+        {%- endfor -%}
+    {%- else -%}
+        {%- for error in errors -%}
+            <p id="{{ id }}_error{{ loop.index }}" class="bui-field__error">
+                {{- include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) -}}
+                {{ error.message }}
+            </p>
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{%- block form_widget_simple -%}
+    {%- set attr = attr|merge({class: ('bui-field__input ' ~ attr.class|default(''))|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple -%}
+
+{%- block textarea_widget -%}
+    {%- set attr = attr|merge({class: ('bui-field__input bui-field__input--multiline ' ~ attr.class|default(''))|trim}) -%}
+    {{- parent() -}}
+{%- endblock textarea_widget -%}

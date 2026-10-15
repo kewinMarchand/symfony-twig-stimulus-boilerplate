@@ -1,33 +1,20 @@
-<nav class="pagination" aria-label="Pagination" data-testid="catalog-pagination">
-    <ul role="list">
-        <li>
-            {% if current > 1 %}
-                <a class="pagination__link" href="{{ category_path ~ state.withPage(current - 1).queryString() }}" rel="prev" data-catalog-focus="title">
-                    {{ include('shared/ui/_icon.html.twig', {name: 'chevron-left'}) }}<span>Précédent</span>
-                </a>
-            {% else %}
-                <span class="pagination__link is-disabled">{{ include('shared/ui/_icon.html.twig', {name: 'chevron-left'}) }}<span>Précédent</span></span>
-            {% endif %}
-        </li>
-        {% for number in pagination_window(current, page_count) %}
-            <li>
-                {% if number is null %}
-                    <span class="pagination__ellipsis">…</span>
-                {% elseif number == current %}
-                    <span class="pagination__link is-current" aria-current="page"><span class="visually-hidden">Page </span>{{ number }}</span>
-                {% else %}
-                    <a class="pagination__link" href="{{ category_path ~ state.withPage(number).queryString() }}" data-catalog-focus="title"><span class="visually-hidden">Page </span>{{ number }}</a>
-                {% endif %}
-            </li>
-        {% endfor %}
-        <li>
-            {% if current < page_count %}
-                <a class="pagination__link" href="{{ category_path ~ state.withPage(current + 1).queryString() }}" rel="next" data-catalog-focus="title">
-                    <span>Suivant</span>{{ include('shared/ui/_icon.html.twig', {name: 'chevron-right'}) }}
-                </a>
-            {% else %}
-                <span class="pagination__link is-disabled"><span>Suivant</span>{{ include('shared/ui/_icon.html.twig', {name: 'chevron-right'}) }}</span>
-            {% endif %}
-        </li>
+{#- Pagination bui-pagination de boilerplates-ui, balisage de référence de la bibliothèque. -#}
+<nav class="bui-pagination" aria-label="Pagination" data-testid="catalog-pagination">
+    <ul class="bui-pagination__list" role="list">
+        {%- if current > 1 %}
+            <li><a class="bui-pagination__link" href="{{ category_path ~ state.withPage(current - 1).queryString() }}" rel="prev" data-catalog-focus="title">
+                {{- include('shared/ui/_icon.html.twig', {name: 'chevron-left'}) }}<span class="bui-pagination__label">Précédent</span></a></li>
+        {%- endif %}
+        {%- for number in pagination_window(current, page_count) %}
+            {%- if number is null %}
+                <li class="bui-pagination__ellipsis" aria-hidden="true">…</li>
+            {%- else %}
+                <li><a class="bui-pagination__link" href="{{ category_path ~ state.withPage(number).queryString() }}"{% if number == current %} aria-current="page"{% endif %} data-catalog-focus="title"><span class="bui-visually-hidden">Page </span>{{ number }}</a></li>
+            {%- endif %}
+        {%- endfor %}
+        {%- if current < page_count %}
+            <li><a class="bui-pagination__link" href="{{ category_path ~ state.withPage(current + 1).queryString() }}" rel="next" data-catalog-focus="title">
+                <span class="bui-pagination__label">Suivant</span>{{ include('shared/ui/_icon.html.twig', {name: 'chevron-right'}) }}</a></li>
+        {%- endif %}
     </ul>
 </nav>

@@ -1,0 +1,19 @@
+{#- Alerte bui-alert de boilerplates-ui, balisage de référence de la bibliothèque. variant : info, success, warning ou error ;
+    body (texte), title et testid optionnels. Une action (bouton, lien, formulaire) se passe par `embed` dans le bloc action. -#}
+{%- set variants = {
+    info: {icon: 'info', prefix: 'Information :'},
+    success: {icon: 'circle-check', prefix: 'Succès :'},
+    warning: {icon: 'triangle-alert', prefix: 'Attention :'},
+    error: {icon: 'circle-alert', prefix: 'Erreur :'},
+} -%}
+{%- set variant = variants[variant|default('info')] is defined ? variant|default('info') : 'info' -%}
+{%- set action -%}{% block action %}{% endblock %}{%- endset -%}
+<div class="bui-alert bui-alert--{{ variant }}"{% if testid|default(false) %} data-testid="{{ testid }}"{% endif %}>
+    {{- include('shared/ui/_icon.html.twig', {name: variants[variant].icon, class: 'bui-alert__icon'}) -}}
+    <div class="bui-alert__content">
+        <span class="bui-visually-hidden">{{ variants[variant].prefix }}</span>
+        {%- if title|default(false) %}<p class="bui-alert__title">{{ title }}</p>{% endif -%}
+        <div class="bui-alert__body"><p>{{ body }}</p></div>
+    </div>
+    {%- if action|trim is not empty %}<div class="bui-alert__action">{{ action }}</div>{% endif -%}
+</div>

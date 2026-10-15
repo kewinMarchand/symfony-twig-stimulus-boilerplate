@@ -224,7 +224,7 @@ Le pattern est dans le domaine Tasks :
 ### Ajouter un champ de formulaire
 
 1. Ajouter la propriété et ses contraintes, avec leur message en français, dans `src/Contact/UI/Form/ContactFormData.php`.
-2. L'ajouter dans `ContactType.php`, puis dans `templates/contact/_form.html.twig` avec son `data-testid`. Symfony relie l'erreur au champ par `aria-describedby` et pose `aria-invalid`.
+2. L'ajouter dans `ContactType.php`, puis dans `templates/contact/_form.html.twig` avec son `data-testid`. Le thème `form/bui_layout.html.twig` produit le balisage `bui-field` de boilerplates-ui, écrit « (obligatoire) » dans le libellé d'un champ requis, et Symfony relie l'erreur au champ par `aria-describedby` et pose `aria-invalid`.
 
 ### Ajouter une icône
 

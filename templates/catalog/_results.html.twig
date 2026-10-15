@@ -5,19 +5,19 @@
     {% endif %}
     <div class="catalog__main">
         {% if error %}
-            <div class="alert alert--error" data-testid="catalog-error">
-                {{ include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) }}
-                <p>{{ error }}</p>
-                <a class="button button--outlined" href="{{ category_path ~ state.queryString() }}" data-testid="catalog-retry">
-                    {{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
-                    <span>Réessayer</span>
-                </a>
-            </div>
+            {% embed 'shared/ui/_alert.html.twig' with {variant: 'error', body: error, testid: 'catalog-error'} %}
+                {% block action %}
+                    <a class="bui-button bui-button--outline" href="{{ category_path ~ state.queryString() }}" data-testid="catalog-retry">
+                        {{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
+                        <span>Réessayer</span>
+                    </a>
+                {% endblock %}
+            {% endembed %}
         {% else %}
             <div class="catalog__toolbar">
-                <button type="button" class="button button--outlined catalog__filters-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="catalog-filters" data-catalog-target="opener" data-action="catalog#openFilters" data-testid="catalog-filters-open">
+                <button type="button" class="bui-button bui-button--outline catalog__filters-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="catalog-filters" data-catalog-target="opener" data-action="catalog#openFilters" data-testid="catalog-filters-open">
                     {{ include('shared/ui/_icon.html.twig', {name: 'sliders-horizontal'}) }}
-                    <span>Filtrer{% if filters.activeCount > 0 %} ({{ filters.activeCount }}<span class="visually-hidden"> filtres actifs</span>){% endif %}</span>
+                    <span>Filtrer{% if filters.activeCount > 0 %} ({{ filters.activeCount }}<span class="bui-visually-hidden"> filtres actifs</span>){% endif %}</span>
                 </button>
                 <p class="catalog__count" role="status" data-catalog-target="count" data-testid="catalog-results-count">{{ product_count }} produit{{ product_count > 1 ? 's' }}</p>
                 <div class="catalog__sort">
@@ -29,11 +29,11 @@
                     </select>
                 </div>
                 <nav class="catalog__views" aria-label="Affichage">
-                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\Catalog\\UI\\ListView').Grid).queryString() }}"{% if state.view.value == 'grille' %} aria-current="page"{% endif %} data-testid="catalog-view-grid">
+                    <a class="bui-button bui-button--outline" href="{{ category_path ~ state.withView(enum('App\\Catalog\\UI\\ListView').Grid).queryString() }}"{% if state.view.value == 'grille' %} aria-current="page"{% endif %} data-testid="catalog-view-grid">
                         {{ include('shared/ui/_icon.html.twig', {name: 'layout-grid'}) }}
                         <span>Grille</span>
                     </a>
-                    <a class="button button--outlined" href="{{ category_path ~ state.withView(enum('App\\Catalog\\UI\\ListView').List).queryString() }}"{% if state.view.value == 'liste' %} aria-current="page"{% endif %} data-testid="catalog-view-list">
+                    <a class="bui-button bui-button--outline" href="{{ category_path ~ state.withView(enum('App\\Catalog\\UI\\ListView').List).queryString() }}"{% if state.view.value == 'liste' %} aria-current="page"{% endif %} data-testid="catalog-view-list">
                         {{ include('shared/ui/_icon.html.twig', {name: 'list'}) }}
                         <span>Liste</span>
                     </a>
@@ -64,14 +64,15 @@
             {% endif %}
 
             <div class="catalog__loading" role="status" aria-label="Chargement des produits">
-                {% for i in 1..4 %}<span class="skeleton skeleton--card"></span>{% endfor %}
+                {% for i in 1..4 %}<span class="bui-skeleton skeleton--card" aria-hidden="true"></span>{% endfor %}
             </div>
 
             {% if result.page.items is empty %}
-                <div class="alert alert--info" data-testid="catalog-empty">
-                    <p>Aucun produit ne correspond à ces filtres.</p>
-                    <a class="button button--outlined" href="{{ category_path ~ state.cleared().queryString() }}" data-catalog-focus="title">Tout effacer</a>
-                </div>
+                {% embed 'shared/ui/_alert.html.twig' with {body: 'Aucun produit ne correspond à ces filtres.', testid: 'catalog-empty'} %}
+                    {% block action %}
+                        <a class="bui-button bui-button--outline" href="{{ category_path ~ state.cleared().queryString() }}" data-catalog-focus="title">Tout effacer</a>
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <ul class="product-list product-list--{{ state.view.value }}" role="list">
                     {% for product in result.page.items %}
@@ -91,7 +92,7 @@
                                         <div><dt>Taille</dt><dd>{{ product.size.label }}</dd></div>
                                     </dl>
                                     {% if not product.inStock %}
-                                        <p class="badge">Rupture de stock</p>
+                                        <p><span class="bui-badge bui-badge--error">Rupture de stock</span></p>
                                     {% endif %}
                                 </div>
                             </article>

@@ -53,15 +53,15 @@
 
     <section class="styleguide__section" aria-labelledby="sg-buttons" data-testid="styleguide-buttons">
         <h2 id="sg-buttons">Boutons</h2>
-        {% for variant in ['', 'button--outlined'] %}
+        {% for variant in ['', 'bui-button--outline'] %}
             <div class="styleguide__row">
-                <button type="button" class="button {{ variant }}">Défaut</button>
-                <button type="button" class="button {{ variant }} is-hover">Survol</button>
-                <button type="button" class="button {{ variant }} is-focus">Focus</button>
-                <button type="button" class="button {{ variant }} is-active">Actif</button>
-                <button type="button" class="button {{ variant }}" disabled>Désactivé</button>
-                <button type="button" class="button {{ variant }}" aria-busy="true" aria-disabled="true">
-                    <span class="spinner" aria-hidden="true"></span>
+                <button type="button" class="bui-button {{ variant }}">Défaut</button>
+                <button type="button" class="bui-button {{ variant }} bui-is-hover">Survol</button>
+                <button type="button" class="bui-button {{ variant }} bui-is-focus">Focus</button>
+                <button type="button" class="bui-button {{ variant }} bui-is-active">Actif</button>
+                <button type="button" class="bui-button {{ variant }}" disabled>Désactivé</button>
+                <button type="button" class="bui-button {{ variant }}" aria-busy="true" aria-disabled="true">
+                    {{ include('shared/ui/_icon.html.twig', {name: 'loader-circle', class: 'bui-button__spinner'}) }}
                     <span>Chargement</span>
                 </button>
             </div>
@@ -71,78 +71,80 @@
     <section class="styleguide__section" aria-labelledby="sg-forms" data-testid="styleguide-forms">
         <h2 id="sg-forms">Formulaires</h2>
         <div class="form">
-            <div class="field">
-                <label for="sg-text">Champ texte</label>
-                <input id="sg-text" type="text" aria-describedby="sg-text-help">
-                <p id="sg-text-help" class="field__help">Texte d’aide lié au champ.</p>
+            <div class="bui-field">
+                <label class="bui-field__label" for="sg-text">Champ texte</label>
+                <input class="bui-field__input" id="sg-text" type="text" aria-describedby="sg-text-help">
+                <p id="sg-text-help" class="bui-field__hint">Texte d’aide lié au champ.</p>
             </div>
-            <div class="field">
-                <label for="sg-email">E-mail</label>
-                <input id="sg-email" type="email" value="ada" aria-invalid="true" aria-describedby="sg-email-error">
-                <ul><li id="sg-email-error">Indiquez une adresse e-mail valide, par exemple nom@domaine.fr.</li></ul>
+            <div class="bui-field">
+                <label class="bui-field__label" for="sg-email">E-mail</label>
+                <input class="bui-field__input" id="sg-email" type="email" value="ada" aria-invalid="true" aria-describedby="sg-email-error">
+                <p id="sg-email-error" class="bui-field__error">{{ include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) }}Indiquez une adresse e-mail valide, par exemple nom@domaine.fr.</p>
             </div>
-            <div class="field">
-                <label for="sg-number">Nombre</label>
-                <input id="sg-number" type="number" inputmode="numeric">
+            <div class="bui-field">
+                <label class="bui-field__label" for="sg-number">Nombre</label>
+                <input class="bui-field__input" id="sg-number" type="number" inputmode="numeric">
             </div>
-            <div class="field">
-                <label for="sg-textarea">Zone de texte</label>
-                <textarea id="sg-textarea" rows="3"></textarea>
+            <div class="bui-field">
+                <label class="bui-field__label" for="sg-textarea">Zone de texte</label>
+                <textarea class="bui-field__input bui-field__input--multiline" id="sg-textarea" rows="3"></textarea>
             </div>
-            <div class="field">
-                <label for="sg-select">Liste</label>
-                <select id="sg-select"><option>Option 1</option><option>Option 2</option></select>
+            <div class="bui-field">
+                <label class="bui-field__label" for="sg-select">Liste</label>
+                <div class="bui-select"><select class="bui-field__input bui-select__control" id="sg-select"><option>Option 1</option><option>Option 2</option></select>{{ include('shared/ui/_icon.html.twig', {name: 'chevron-down', class: 'bui-select__icon'}) }}</div>
             </div>
-            <div class="check">
-                <input id="sg-checkbox" type="checkbox">
-                <label for="sg-checkbox">Case à cocher</label>
+            <div class="bui-checkbox">
+                <input class="bui-checkbox__input" id="sg-checkbox" type="checkbox">
+                <label class="bui-checkbox__label" for="sg-checkbox">Case à cocher</label>
             </div>
-            <div class="switch">
-                <input id="sg-switch" type="checkbox" role="switch">
-                <label for="sg-switch">Interrupteur</label>
+            <div class="bui-switch">
+                <input class="bui-switch__input" id="sg-switch" type="checkbox" role="switch">
+                <label class="bui-switch__label" for="sg-switch">Interrupteur</label>
             </div>
-            <fieldset>
-                <legend>Boutons radio</legend>
-                <div class="check"><input id="sg-radio-1" type="radio" name="sg-radio" checked><label for="sg-radio-1">Premier</label></div>
-                <div class="check"><input id="sg-radio-2" type="radio" name="sg-radio"><label for="sg-radio-2">Second</label></div>
+            <fieldset class="bui-fieldset">
+                <legend class="bui-fieldset__legend">Boutons radio</legend>
+                <div class="bui-fieldset__content">
+                    <div class="bui-radio"><input class="bui-radio__input" id="sg-radio-1" type="radio" name="sg-radio" checked><label class="bui-radio__label" for="sg-radio-1">Premier</label></div>
+                    <div class="bui-radio"><input class="bui-radio__input" id="sg-radio-2" type="radio" name="sg-radio"><label class="bui-radio__label" for="sg-radio-2">Second</label></div>
+                </div>
             </fieldset>
-            <div class="field">
-                <label for="sg-disabled">Champ désactivé</label>
-                <input id="sg-disabled" type="text" disabled value="Non modifiable">
+            <div class="bui-field">
+                <label class="bui-field__label" for="sg-disabled">Champ désactivé</label>
+                <input class="bui-field__input" id="sg-disabled" type="text" disabled value="Non modifiable">
             </div>
         </div>
     </section>
 
     <section class="styleguide__section" aria-labelledby="sg-feedback" data-testid="styleguide-feedback">
         <h2 id="sg-feedback">Retours</h2>
-        <p class="alert alert--info">{{ include('shared/ui/_icon.html.twig', {name: 'info'}) }} Information.</p>
-        <p class="alert alert--success">{{ include('shared/ui/_icon.html.twig', {name: 'circle-check'}) }} Succès.</p>
-        <p class="alert alert--warning">{{ include('shared/ui/_icon.html.twig', {name: 'triangle-alert'}) }} Avertissement.</p>
-        <p class="alert alert--error">{{ include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) }} Erreur.</p>
-        <div class="skeleton-list" role="status" aria-label="Exemple de chargement"><span class="skeleton"></span><span class="skeleton"></span></div>
-        <p class="alert alert--info">Aucune tâche pour l’instant. Tout est à jour.</p>
-        <div class="alert alert--error">
-            <p>Impossible de charger les tâches pour le moment.</p>
-            <button type="button" class="button button--outlined">{{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}<span>Réessayer</span></button>
-        </div>
+        {{ include('shared/ui/_alert.html.twig', {variant: 'info', body: 'Information.'}) }}
+        {{ include('shared/ui/_alert.html.twig', {variant: 'success', body: 'Succès.'}) }}
+        {{ include('shared/ui/_alert.html.twig', {variant: 'warning', body: 'Avertissement.'}) }}
+        {{ include('shared/ui/_alert.html.twig', {variant: 'error', body: 'Erreur.'}) }}
+        <div class="skeleton-list" role="status" aria-label="Exemple de chargement"><span class="bui-skeleton" aria-hidden="true"></span><span class="bui-skeleton" aria-hidden="true"></span></div>
+        {{ include('shared/ui/_alert.html.twig', {body: 'Aucune tâche pour l’instant. Tout est à jour.'}) }}
+        {% embed 'shared/ui/_alert.html.twig' with {variant: 'error', body: 'Impossible de charger les tâches pour le moment.'} %}
+            {% block action %}
+                <button type="button" class="bui-button bui-button--outline">{{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}<span>Réessayer</span></button>
+            {% endblock %}
+        {% endembed %}
     </section>
 
     <section class="styleguide__section" aria-labelledby="sg-navigation" data-testid="styleguide-navigation">
         <h2 id="sg-navigation">Navigation</h2>
-        <nav class="breadcrumb" aria-label="Exemple de fil d'Ariane">
-            <ol><li><a href="{{ path('home') }}">Accueil</a></li><li><a href="{{ path('catalog') }}">Catalogue</a></li><li><span aria-current="page">Feuillages</span></li></ol>
+        <nav class="bui-breadcrumb" aria-label="Exemple de fil d'Ariane">
+            <ol class="bui-breadcrumb__list"><li class="bui-breadcrumb__item"><a class="bui-link" href="{{ path('home') }}">Accueil</a></li><li class="bui-breadcrumb__item"><a class="bui-link" href="{{ path('catalog') }}">Catalogue</a></li><li class="bui-breadcrumb__item"><span class="bui-breadcrumb__current" aria-current="page">Feuillages</span></li></ol>
         </nav>
-        <nav class="pagination" aria-label="Exemple de pagination">
-            <ul role="list">
-                <li><span class="pagination__link is-disabled">Précédent</span></li>
-                <li><span class="pagination__link is-current" aria-current="page"><span class="visually-hidden">Page </span>1</span></li>
-                <li><a class="pagination__link" href="{{ path('catalog') }}"><span class="visually-hidden">Page </span>2</a></li>
-                <li><span class="pagination__ellipsis">…</span></li>
-                <li><a class="pagination__link" href="{{ path('catalog') }}">Suivant</a></li>
+        <nav class="bui-pagination" aria-label="Exemple de pagination">
+            <ul class="bui-pagination__list" role="list">
+                <li><a class="bui-pagination__link" href="{{ path('catalog') }}" aria-current="page"><span class="bui-visually-hidden">Page </span>1</a></li>
+                <li><a class="bui-pagination__link" href="{{ path('catalog') }}"><span class="bui-visually-hidden">Page </span>2</a></li>
+                <li class="bui-pagination__ellipsis" aria-hidden="true">…</li>
+                <li><a class="bui-pagination__link" href="{{ path('catalog') }}" rel="next"><span class="bui-pagination__label">Suivant</span>{{ include('shared/ui/_icon.html.twig', {name: 'chevron-right'}) }}</a></li>
             </ul>
         </nav>
         <ul class="chips" role="list" aria-label="Exemple de filtres actifs">
-            <li><a class="chip chip--removable" href="{{ path('catalog') }}"><span class="visually-hidden">Retirer le filtre : </span>Mi-ombre {{ include('shared/ui/_icon.html.twig', {name: 'x'}) }}</a></li>
+            <li><a class="chip chip--removable" href="{{ path('catalog') }}"><span class="bui-visually-hidden">Retirer le filtre : </span>Mi-ombre {{ include('shared/ui/_icon.html.twig', {name: 'x'}) }}</a></li>
         </ul>
         <p><a href="{{ path('home') }}">Lien interne</a> et <a href="https://symfony.com/">lien externe {{ include('shared/ui/_icon.html.twig', {name: 'external-link', icon_label: '(site externe)'}) }}</a></p>
     </section>
@@ -150,9 +152,9 @@
     <section class="styleguide__section" aria-labelledby="sg-media" data-testid="styleguide-media">
         <h2 id="sg-media">Médias et cartes</h2>
         <div class="styleguide__cards">
-            <article class="card">
-                {{ include('shared/ui/_picture.html.twig', {name: 'blog-1', widths: [480, 960], sizes: '320px', class: 'card__image'}) }}
-                <div class="card__body"><h3 class="card__title">Carte de blog</h3><p class="card__excerpt">Extrait de l’article.</p><time class="card__date" datetime="2026-09-24">24/09/2026</time></div>
+            <article class="bui-card">
+                <div class="bui-card__media">{{ include('shared/ui/_picture.html.twig', {name: 'blog-1', widths: [480, 960], sizes: '320px', class: 'card__image'}) }}</div>
+                <div class="bui-card__body"><h3 class="bui-card__title">Carte de blog</h3><p class="card__excerpt">Extrait de l’article.</p><time class="card__date" datetime="2026-09-24">24/09/2026</time></div>
             </article>
             {% for view in ['grille', 'liste'] %}
                 <ul class="product-list product-list--{{ view }}" role="list">
@@ -162,7 +164,7 @@
                             <div class="product__body">
                                 <h3 class="product__name">Carte produit ({{ view }})</h3>
                                 <p class="product__price">{{ 2990|price }}</p>
-                                <p class="badge">Rupture de stock</p>
+                                <p><span class="bui-badge bui-badge--error">Rupture de stock</span></p>
                             </div>
                         </article>
                     </li>

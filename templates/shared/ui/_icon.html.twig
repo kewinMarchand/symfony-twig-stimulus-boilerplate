@@ -1,6 +1,7 @@
-{#- Seul point d'utilisation du sprite public/icons.svg : name = nom de icons.json, icon_label optionnel pour une icône porteuse de sens -#}
+{#- Seul point d'utilisation du sprite public/icons.svg : name = nom de icons.json, icon_label optionnel pour une icône porteuse de sens, class optionnelle (balisage bui-icon de boilerplates-ui) -#}
+{%- set icon_class = ('bui-icon ' ~ class|default(''))|trim -%}
 {%- if icon_label|default(false) -%}
-    <svg width="1em" height="1em" role="img" aria-label="{{ icon_label }}"><use href="/icons.svg#{{ name }}"></use></svg>
+    <svg class="{{ icon_class }}" width="1em" height="1em" role="img" aria-label="{{ icon_label }}"><use href="/icons.svg#{{ name }}"></use></svg>
 {%- else -%}
-    <svg width="1em" height="1em" aria-hidden="true" focusable="false"><use href="/icons.svg#{{ name }}"></use></svg>
+    <svg class="{{ icon_class }}" width="1em" height="1em" aria-hidden="true" focusable="false"><use href="/icons.svg#{{ name }}"></use></svg>
 {%- endif -%}

@@ -16,9 +16,9 @@
     {% else %}
         <turbo-frame id="tasks" src="{{ path('tasks_list') }}" loading="lazy" aria-live="polite">
             <div class="skeleton-list tasks__loading" role="status" aria-busy="true" aria-label="Chargement des tâches" data-testid="tasks-loading">
-                <span class="skeleton"></span>
-                <span class="skeleton"></span>
-                <span class="skeleton"></span>
+                <span class="bui-skeleton" aria-hidden="true"></span>
+                <span class="bui-skeleton" aria-hidden="true"></span>
+                <span class="bui-skeleton" aria-hidden="true"></span>
             </div>
             <noscript>
                 <p><a href="{{ path('tasks_list') }}" data-testid="tasks-noscript-link">Afficher les tâches</a></p>

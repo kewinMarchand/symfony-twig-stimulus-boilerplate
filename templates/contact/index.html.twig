@@ -8,10 +8,10 @@
     {{ include('contact/_form.html.twig') }}
     <div id="contact-status" class="contact-status" aria-live="polite">
         {% for message in app.flashes('contact_success') %}
-            <p class="alert alert--success" data-testid="contact-success">{{ message }}</p>
+            {{ include('shared/ui/_alert.html.twig', {variant: 'success', body: message, testid: 'contact-success'}) }}
         {% endfor %}
         {% if send_error %}
-            <p class="alert alert--error" data-testid="contact-error">{{ send_error }}</p>
+            {{ include('shared/ui/_alert.html.twig', {variant: 'error', body: send_error, testid: 'contact-error'}) }}
         {% endif %}
     </div>
 {% endblock %}

@@ -6,7 +6,7 @@
     <h1>Une erreur est survenue</h1>
     <p class="lead">Nous n’avons pas pu afficher cette page. Réessayez dans quelques instants.</p>
     <ul class="error-links" role="list">
-        <li><a class="button" href="{{ app.request.requestUri }}" data-testid="error-retry">Réessayer</a></li>
-        <li><a class="button button--outlined" href="{{ path('home') }}" data-testid="error-home-link">Retour à l’accueil</a></li>
+        <li><a class="bui-button" href="{{ app.request.requestUri }}" data-testid="error-retry">Réessayer</a></li>
+        <li><a class="bui-button bui-button--outline" href="{{ path('home') }}" data-testid="error-home-link">Retour à l’accueil</a></li>
     </ul>
 {% endblock %}

@@ -19,11 +19,11 @@
             </ul>
         </nav>
         <div class="header__actions">
-            <button type="button" class="button button--ghost mobile-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-mobile-menu-target="toggle" data-action="mobile-menu#open" data-testid="layout-mobile-menu-toggle">
+            <button type="button" class="bui-button bui-button--inverse mobile-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-mobile-menu-target="toggle" data-action="mobile-menu#open" data-testid="layout-mobile-menu-toggle">
                 {{ include('shared/ui/_icon.html.twig', {name: 'menu'}) }}
                 <span class="header__action-label">Menu</span>
             </button>
-            <button type="button" class="button button--ghost a11y-toggle" aria-label="Accessibilité renforcée" aria-pressed="false" data-controller="a11y-mode" data-action="a11y-mode#toggle" data-testid="a11y-mode-toggle">
+            <button type="button" class="bui-button bui-button--inverse a11y-toggle" aria-label="Accessibilité renforcée" aria-pressed="false" data-controller="a11y-mode" data-action="a11y-mode#toggle" data-testid="a11y-mode-toggle">
                 {{ include('shared/ui/_icon.html.twig', {name: 'person-standing'}) }}
                 <span class="header__action-label">Accessibilité renforcée</span>
             </button>

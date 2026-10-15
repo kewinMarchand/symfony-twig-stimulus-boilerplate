@@ -12,8 +12,8 @@
             <h1 id="home-title" class="hero__title">{{ site.name }}</h1>
             <p class="hero__lead">{{ site.description }}</p>
             <div class="hero__actions">
-                <a class="button" href="{{ path('tasks') }}" data-testid="home-tasks-link">Voir la démo Turbo Frame</a>
-                <a class="button button--light" href="{{ path('contact') }}" data-testid="home-contact-link">Voir le formulaire</a>
+                <a class="bui-button" href="{{ path('tasks') }}" data-testid="home-tasks-link">Voir la démo Turbo Frame</a>
+                <a class="bui-button bui-button--inverse" href="{{ path('contact') }}" data-testid="home-contact-link">Voir le formulaire</a>
             </div>
         </div>
     </section>
@@ -29,20 +29,17 @@
         <section class="blog" aria-labelledby="home-blog-title" data-testid="home-blog">
             <h2 id="home-blog-title">Derniers articles</h2>
             {% if articles_error %}
-                <div class="alert alert--error" data-testid="home-blog-error">
-                    {{ include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) }}
-                    <p>{{ articles_error }}</p>
-                </div>
+                {{ include('shared/ui/_alert.html.twig', {variant: 'error', body: articles_error, testid: 'home-blog-error'}) }}
             {% elseif articles is empty %}
-                <p class="alert alert--info" data-testid="home-blog-empty">Aucun article pour l’instant. Revenez bientôt.</p>
+                {{ include('shared/ui/_alert.html.twig', {body: 'Aucun article pour l’instant. Revenez bientôt.', testid: 'home-blog-empty'}) }}
             {% else %}
                 <ul class="blog__grid" role="list">
                     {% for article in articles %}
                         <li class="blog__item">
-                            <article class="card" data-testid="home-blog-card">
-                                {{ include('shared/ui/_picture.html.twig', {name: 'blog-' ~ loop.index, widths: [480, 960], sizes: '(min-width: 1024px) 460px, (min-width: 640px) 50vw, 100vw', class: 'card__image'}) }}
-                                <div class="card__body">
-                                    <h3 class="card__title">{{ article.title }}</h3>
+                            <article class="bui-card" data-testid="home-blog-card">
+                                <div class="bui-card__media">{{ include('shared/ui/_picture.html.twig', {name: 'blog-' ~ loop.index, widths: [480, 960], sizes: '(min-width: 1024px) 460px, (min-width: 640px) 50vw, 100vw', class: 'card__image'}) }}</div>
+                                <div class="bui-card__body">
+                                    <h3 class="bui-card__title">{{ article.title }}</h3>
                                     <p class="card__excerpt">{{ article.excerpt }}</p>
                                     <time class="card__date" datetime="{{ article.publishedAt|date('Y-m-d') }}">{{ article.publishedAt|date('d/m/Y') }}</time>
                                 </div>

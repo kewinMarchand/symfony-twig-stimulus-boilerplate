@@ -2,7 +2,7 @@
 <aside id="catalog-filters" class="catalog__filters" aria-labelledby="catalog-filters-title" data-catalog-target="panel" data-action="keydown->catalog#trapFocus" data-testid="catalog-filters">
     <div class="catalog__filters-header">
         <h2 id="catalog-filters-title">Filtres</h2>
-        <button type="button" class="button button--outlined catalog__filters-close" data-action="catalog#closeFilters">
+        <button type="button" class="bui-button bui-button--outline catalog__filters-close" data-action="catalog#closeFilters">
             {{ include('shared/ui/_icon.html.twig', {name: 'x'}) }}
             <span>Fermer</span>
         </button>
@@ -24,13 +24,13 @@
         <details class="facet" open>
             <summary>Exposition</summary>
             <fieldset>
-                <legend class="visually-hidden">Exposition</legend>
+                <legend class="bui-visually-hidden">Exposition</legend>
                 {% for exposure in enum('App\\Catalog\\Domain\\Exposure').cases() %}
                     {% set count = facets.exposures[exposure.value] %}
                     {% set checked = exposure in filters.exposures %}
-                    <div class="check">
-                        <input type="checkbox" id="filter-exposure-{{ exposure.value }}" name="exposition" value="{{ exposure.value }}"{% if checked %} checked{% endif %}{% if count == 0 and not checked %} disabled{% endif %} data-action="catalog#apply" data-testid="catalog-filter-exposure-{{ exposure.value }}">
-                        <label for="filter-exposure-{{ exposure.value }}">{{ exposure.label }} <span class="facet__count">({{ count }})</span></label>
+                    <div class="bui-checkbox">
+                        <input class="bui-checkbox__input" type="checkbox" id="filter-exposure-{{ exposure.value }}" name="exposition" value="{{ exposure.value }}"{% if checked %} checked{% endif %}{% if count == 0 and not checked %} disabled{% endif %} data-action="catalog#apply" data-testid="catalog-filter-exposure-{{ exposure.value }}">
+                        <label class="bui-checkbox__label" for="filter-exposure-{{ exposure.value }}">{{ exposure.label }} <span class="facet__count">({{ count }})</span></label>
                     </div>
                 {% endfor %}
             </fieldset>
@@ -39,13 +39,13 @@
         <details class="facet" open>
             <summary>Taille</summary>
             <fieldset>
-                <legend class="visually-hidden">Taille</legend>
+                <legend class="bui-visually-hidden">Taille</legend>
                 {% for size in enum('App\\Catalog\\Domain\\Size').cases() %}
                     {% set count = facets.sizes[size.value] %}
                     {% set checked = size in filters.sizes %}
-                    <div class="check">
-                        <input type="checkbox" id="filter-size-{{ size.value }}" name="taille" value="{{ size.value }}"{% if checked %} checked{% endif %}{% if count == 0 and not checked %} disabled{% endif %} data-action="catalog#apply" data-testid="catalog-filter-size-{{ size.value }}">
-                        <label for="filter-size-{{ size.value }}">{{ size.label }} <span class="facet__count">({{ count }})</span></label>
+                    <div class="bui-checkbox">
+                        <input class="bui-checkbox__input" type="checkbox" id="filter-size-{{ size.value }}" name="taille" value="{{ size.value }}"{% if checked %} checked{% endif %}{% if count == 0 and not checked %} disabled{% endif %} data-action="catalog#apply" data-testid="catalog-filter-size-{{ size.value }}">
+                        <label class="bui-checkbox__label" for="filter-size-{{ size.value }}">{{ size.label }} <span class="facet__count">({{ count }})</span></label>
                     </div>
                 {% endfor %}
             </fieldset>
@@ -54,26 +54,26 @@
         <details class="facet" open>
             <summary>Prix</summary>
             <fieldset class="facet__price">
-                <legend class="visually-hidden">Prix en euros</legend>
-                <div class="field">
-                    <label for="filter-price-min">Minimum (€)</label>
-                    <input type="number" id="filter-price-min" name="prix_min" min="0" step="1" inputmode="numeric" value="{{ filters.priceMin ? filters.priceMin.euros }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-min">
+                <legend class="bui-visually-hidden">Prix en euros</legend>
+                <div class="bui-field">
+                    <label class="bui-field__label" for="filter-price-min">Minimum (€)</label>
+                    <input class="bui-field__input" type="number" id="filter-price-min" name="prix_min" min="0" step="1" inputmode="numeric" value="{{ filters.priceMin ? filters.priceMin.euros }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-min">
                 </div>
-                <div class="field">
-                    <label for="filter-price-max">Maximum (€)</label>
-                    <input type="number" id="filter-price-max" name="prix_max" min="0" step="1" inputmode="numeric" value="{{ filters.priceMax ? filters.priceMax.euros }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-max">
+                <div class="bui-field">
+                    <label class="bui-field__label" for="filter-price-max">Maximum (€)</label>
+                    <input class="bui-field__input" type="number" id="filter-price-max" name="prix_max" min="0" step="1" inputmode="numeric" value="{{ filters.priceMax ? filters.priceMax.euros }}" data-action="change->catalog#apply" data-testid="catalog-filter-price-max">
                 </div>
             </fieldset>
         </details>
 
-        <div class="switch">
-            <input type="checkbox" role="switch" id="filter-in-stock" name="en_stock" value="1"{% if filters.inStockOnly %} checked{% endif %} data-action="catalog#apply" data-testid="catalog-filter-in-stock">
-            <label for="filter-in-stock">En stock uniquement</label>
+        <div class="bui-switch">
+            <input class="bui-switch__input" type="checkbox" role="switch" id="filter-in-stock" name="en_stock" value="1"{% if filters.inStockOnly %} checked{% endif %} data-action="catalog#apply" data-testid="catalog-filter-in-stock">
+            <label class="bui-switch__label" for="filter-in-stock">En stock uniquement</label>
         </div>
 
-        <button type="submit" class="button catalog__apply">Appliquer les filtres</button>
+        <button type="submit" class="bui-button catalog__apply">Appliquer les filtres</button>
     </form>
     <div class="catalog__filters-footer">
-        <button type="button" class="button" data-action="catalog#closeFilters">Voir les {{ result.page.total }} produits</button>
+        <button type="button" class="bui-button" data-action="catalog#closeFilters">Voir les {{ result.page.total }} produits</button>
     </div>
 </aside>

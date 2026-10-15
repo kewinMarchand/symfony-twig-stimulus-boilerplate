@@ -1,17 +1,17 @@
 <turbo-frame id="tasks">
     {% if error %}
-        <div class="alert alert--error" data-testid="tasks-error">
-            {{ include('shared/ui/_icon.html.twig', {name: 'circle-alert'}) }}
-            <p>{{ error }}</p>
-            <form method="get" action="{{ path('tasks_list') }}">
-                <button type="submit" class="button button--outlined" data-testid="tasks-retry">
-                    {{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
-                    <span>Réessayer</span>
-                </button>
-            </form>
-        </div>
+        {% embed 'shared/ui/_alert.html.twig' with {variant: 'error', body: error, testid: 'tasks-error'} %}
+            {% block action %}
+                <form method="get" action="{{ path('tasks_list') }}">
+                    <button type="submit" class="bui-button bui-button--outline" data-testid="tasks-retry">
+                        {{ include('shared/ui/_icon.html.twig', {name: 'rotate-cw'}) }}
+                        <span>Réessayer</span>
+                    </button>
+                </form>
+            {% endblock %}
+        {% endembed %}
     {% elseif tasks is empty %}
-        <p class="alert alert--info" data-testid="tasks-empty">Aucune tâche pour l’instant. Tout est à jour.</p>
+        {{ include('shared/ui/_alert.html.twig', {body: 'Aucune tâche pour l’instant. Tout est à jour.', testid: 'tasks-empty'}) }}
     {% else %}
         <ul class="task-list" role="list" data-testid="tasks-list">
             {% for task in tasks %}

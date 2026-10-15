@@ -20,6 +20,7 @@ final class IconNames
         'layout-grid',
         'list',
         'list-todo',
+        'loader-circle',
         'mail',
         'menu',
         'person-standing',
