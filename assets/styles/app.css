@@ -7,57 +7,58 @@
 }
 
 :root {
-    --color-primary: #1d4ed8;
-    --color-primary-contrast: #ffffff;
-    --color-secondary: #6d28d9;
-    --color-text: #111827;
-    --color-text-muted: #4b5563;
-    --color-background: #ffffff;
-    --color-surface: #f3f4f6;
+    /* Alias des tokens de boilerplates-ui (assets/boilerplates-ui/boilerplates-ui.css), qui portent aussi
+       les valeurs du mode renforcé. Seules les valeurs propres au site sont écrites ici. */
+    --color-primary: var(--bui-color-primary);
+    --color-primary-contrast: var(--bui-color-on-primary);
+    --color-secondary: var(--bui-color-secondary);
+    --color-text: var(--bui-color-text);
+    --color-text-muted: var(--bui-color-text-muted);
+    --color-background: var(--bui-color-surface);
+    --color-surface: var(--bui-color-surface-muted);
     --color-surface-dark: #111827;
-    --color-border: #6b7280;
-    --color-focus: #1d4ed8;
-    --color-error: #991b1b;
-    --color-error-surface: #fef2f2;
-    --color-success: #166534;
-    --color-success-surface: #f0fdf4;
-    --color-info: #1e40af;
-    --color-info-surface: #eff6ff;
-    --color-warning: #92400e;
-    --color-warning-surface: #fffbeb;
+    --color-border: var(--bui-color-border);
+    --color-focus: var(--bui-color-primary);
+    --color-error: var(--bui-color-error);
+    --color-error-surface: var(--bui-color-error-surface);
+    --color-success: var(--bui-color-success);
+    --color-success-surface: var(--bui-color-success-surface);
+    --color-info: var(--bui-color-info);
+    --color-info-surface: var(--bui-color-info-surface);
+    --color-warning: var(--bui-color-warning);
+    --color-warning-surface: var(--bui-color-warning-surface);
 
     --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --font-scale: 1;
-    --font-size-small: calc(14px * var(--font-scale));
-    --font-size-base: calc(16px * var(--font-scale));
-    --font-size-lead: calc(18px * var(--font-scale));
-    --font-size-h3: calc(20px * var(--font-scale));
-    --font-size-h2: calc(24px * var(--font-scale));
-    --font-size-h1: calc(32px * var(--font-scale));
-    --line-height: 1.5;
+    --font-size-small: var(--bui-font-size-body-sm);
+    --font-size-base: var(--bui-font-size-body);
+    --font-size-lead: var(--bui-font-size-lead);
+    --font-size-h3: var(--bui-font-size-h3);
+    --font-size-h2: var(--bui-font-size-h2);
+    --font-size-h1: var(--bui-font-size-h1);
+    --line-height: var(--bui-font-line-height-normal);
     --content-line-height: 1.5;
     --content-letter-spacing: normal;
     --content-word-spacing: normal;
     --paragraph-spacing: 1em;
     --text-max-width: none;
 
-    --space-1: 4px;
-    --space-2: 8px;
-    --space-3: 12px;
-    --space-4: 16px;
-    --space-6: 24px;
-    --space-8: 32px;
-    --space-12: 48px;
+    --space-1: var(--bui-space-1);
+    --space-2: var(--bui-space-2);
+    --space-3: var(--bui-space-3);
+    --space-4: var(--bui-space-4);
+    --space-6: var(--bui-space-6);
+    --space-8: var(--bui-space-8);
+    --space-12: var(--bui-space-12);
 
-    --radius: 8px;
-    --radius-pill: 999px;
-    --touch-target: 44px;
-    --container-width: 1440px;
+    --radius: var(--bui-radius-md);
+    --radius-pill: var(--bui-radius-full);
+    --touch-target: var(--bui-size-touch);
+    --container-width: var(--bui-container-content);
     --gutter: 16px;
     --column-width: 240px;
     --filters-width: 280px;
-    --focus-width: 3px;
-    --focus-offset: 2px;
+    --focus-width: var(--bui-focus-width);
+    --focus-offset: var(--bui-focus-offset);
     --shadow: 0 8px 24px rgb(17 24 39 / 0.18);
     --z-menu: 50;
     --z-panel: 90;
@@ -69,8 +70,6 @@
 @media (min-width: 768px) {
     :root {
         --gutter: 24px;
-        --font-size-h2: calc(28px * var(--font-scale));
-        --font-size-h1: calc(40px * var(--font-scale));
     }
 }
 
@@ -81,18 +80,13 @@
 }
 
 :root[data-a11y-mode='enhanced'] {
-    --font-scale: 1.25;
-    --color-primary: #1e3a8a;
-    --color-text: #000000;
     --color-text-muted: #000000;
-    --color-background: #ffffff;
     --color-focus: #000000;
     --content-line-height: 1.8;
     --content-letter-spacing: 0.12em;
     --content-word-spacing: 0.16em;
     --paragraph-spacing: 2em;
     --text-max-width: 70ch;
-    --focus-width: 4px;
     --hero-veil-start: 0.85;
     --hero-veil-end: 0.85;
 }

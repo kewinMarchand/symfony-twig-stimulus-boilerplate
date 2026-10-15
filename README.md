@@ -25,7 +25,7 @@ Un bouton « Accessibilité renforcée » dans l'en-tête agrandit le texte, esp
 | Stimulus (stimulus-bundle), Turbo (ux-turbo) | Comportements ciblés, navigation et formulaires sans rechargement        |
 | Embla Carousel 8                            | Carrousel (glisser, swipe, molette), derrière un seul contrôleur          |
 | Sprite SVG tiré de Lucide                   | Icônes, générées par `make icons`, derrière un seul partial Twig          |
-| CSS maison, tokens en variables CSS         | Thème, mode renforcé, aucune dépendance CSS                               |
+| CSS maison sur les tokens de boilerplates-ui | Thème et mode renforcé par les variables `--bui-*`, copiées par `make ui` |
 | PHP-CS-Fixer, PHPStan (niveau max)          | Style et analyse statique                                                |
 | PHPUnit 12, node:test                       | Tests unitaires (domaine, fonctions pures) et fonctionnels (WebTestCase) |
 | Playwright + axe-core                       | Tests end-to-end et accessibilité, desktop et mobile, deux modes         |
@@ -152,6 +152,7 @@ Terminer par `make qa`, puis `make test-e2e test-a11y`. Cette procédure a été
 | `make arch`                            | Règles d'architecture : deptrac (`deptrac.yaml`) et bibliothèques tierces confinées à leur wrapper |
 | `make arch-selftest`                   | Écrit une violation volontaire de chaque règle, exige qu'elles soient toutes détectées, puis les retire |
 | `make icons`                          | Génère le sprite `public/icons.svg` et la liste des noms depuis `icons.json`                |
+| `make ui`                             | Copie boilerplates-ui (tokens, composants, comportements) dans `assets/boilerplates-ui/` |
 | `make qa-full`                         | QA complète : QA rapide, e2e, accessibilité, Lighthouse                                    |
 | `make format`                          | PHP-CS-Fixer en écriture                                                                   |
 | `make typecheck`                       | PHPStan niveau max                                                                         |

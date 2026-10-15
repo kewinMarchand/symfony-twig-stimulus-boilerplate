@@ -39,6 +39,9 @@ down: ## Arrête les conteneurs
 icons: ## Génère public/icons.svg et src/Shared/UI/IconNames.php depuis icons.json (noms Lucide)
 	$(NODE) tools/icons.js
 
+ui: ## Copie boilerplates-ui (tokens, composants CSS, comportements JS) dans assets/boilerplates-ui/ depuis node_modules
+	$(NODE) tools/ui.js
+
 docker-build: ## Construit l'image Docker de production
 	$(COMPOSE_PROD) build
 
@@ -48,4 +51,4 @@ docker-up: ## Lance l'image de production à la place du serveur de dev (port HT
 docker-down: ## Arrête les conteneurs
 	$(COMPOSE) --profile dev down --remove-orphans
 
-.PHONY: help install up down icons docker-build docker-up docker-down
+.PHONY: help install up down icons ui docker-build docker-up docker-down

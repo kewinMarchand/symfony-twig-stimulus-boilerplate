@@ -4,7 +4,7 @@ LHCI_PORT := 3230
 # (tests/e2e/observability.e2e.ts), jamais une instance réelle.
 OBSERVABILITY_ENV := GLITCHTIP_DSN=http://clefactice@localhost:3231/1 MATOMO_URL=http://matomo.test/ MATOMO_SITE_ID=1
 
-qa: lint arch arch-selftest icons-check format-check typecheck test-unit ## QA rapide : lint, architecture, sprite d'icônes, format, analyse statique, tests unitaires
+qa: lint arch arch-selftest icons-check ui-check format-check typecheck test-unit ## QA rapide : lint, architecture, sprite d'icônes, format, analyse statique, tests unitaires
 
 qa-full: qa test-e2e test-a11y metrics ## QA complète : QA rapide + e2e + a11y + Lighthouse
 
@@ -18,7 +18,7 @@ arch-deptrac: ## Règles de dépendance entre modules et couches (deptrac.yaml)
 
 arch-wrappers: ## Le sprite d'icônes, Embla et le paquet CSP ne sont utilisés que dans leur wrapper
 	@status=0; \
-	if grep -rn "icons\.svg" templates assets --exclude-dir=vendor | grep -v "^templates/shared/ui/_icon.html.twig:"; then \
+	if grep -rn "icons\.svg" templates assets --exclude-dir=vendor --exclude-dir=boilerplates-ui | grep -v "^templates/shared/ui/_icon.html.twig:"; then \
 		echo "Le sprite icons.svg ne s'utilise que dans templates/shared/ui/_icon.html.twig"; status=1; fi; \
 	if grep -rnE "from '(embla-carousel|wheel-gestures)" assets --exclude-dir=vendor | grep -v "^assets/controllers/carousel_controller.js:"; then \
 		echo "Embla ne s'importe que dans assets/controllers/carousel_controller.js"; status=1; fi; \
@@ -28,6 +28,9 @@ arch-wrappers: ## Le sprite d'icônes, Embla et le paquet CSP ne sont utilisés 
 
 icons-check: ## Échoue si public/icons.svg ou src/Shared/UI/IconNames.php ne correspondent plus à icons.json
 	$(NODE) tools/icons.js --check
+
+ui-check: ## Échoue si assets/boilerplates-ui/ ne correspond plus à la version de boilerplates-ui installée
+	$(NODE) tools/ui.js --check
 
 arch-selftest: ## Écrit des violations volontaires, exige que make arch les détecte toutes, puis les retire
 	@sh tools/arch-selftest.sh
@@ -66,4 +69,4 @@ metrics: docker-build ## Métriques Lighthouse CI sur l'image de production (per
 	$(RUN_NODE) sh -c 'CHROME_PATH=$$(node -e "console.log(require(\"@playwright/test\").chromium.executablePath())") yarn lhci autorun'; \
 		status=$$?; HTTP_PORT=$(LHCI_PORT) SITE_HOST=127.0.0.1 $(COMPOSE_PROD) -p $(LHCI_PROJECT) down; exit $$status
 
-.PHONY: qa qa-full lint arch arch-deptrac arch-wrappers arch-selftest icons-check format format-check typecheck test test-unit test-e2e test-a11y metrics
+.PHONY: qa qa-full lint arch arch-deptrac arch-wrappers arch-selftest icons-check ui-check format format-check typecheck test test-unit test-e2e test-a11y metrics
