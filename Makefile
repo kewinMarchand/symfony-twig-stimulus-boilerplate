@@ -3,7 +3,7 @@
 COMPOSE := docker compose
 COMPOSE_PROD := docker compose -f compose.yaml
 UP_PROD := $(COMPOSE_PROD) up -d --build --wait
-UP_DEV := $(COMPOSE) up -d --wait
+UP_DEV := $(COMPOSE) up -d --build --wait
 EXEC ?= $(COMPOSE) run --rm php
 RUN_NODE := $(COMPOSE) run --rm node
 NODE ?= $(RUN_NODE) node

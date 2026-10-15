@@ -71,6 +71,8 @@ PHP-CS-Fixer : `@Symfony` plus `declare_strict_types` (règle risquée, activée
 
 ## Pièges connus, réellement rencontrés
 
+- **Image de dev périmée** : `make up` reconstruit l'image de dev (`--build`, rapide grâce au cache). Sans cela, elle restait celle du dernier `make install` : le 15/10/2026, son Caddyfile écoutait encore sur `:8080` au lieu de `SERVER_ADDRESS`, et la passe e2e en dev échouait dès qu'un autre service occupait ce port sur la machine.
+
 - **Port 8080 occupé** sur la machine de l'auteur (un serveur uvicorn), d'où 8095. Depuis, 8095 peut lui aussi être pris par un autre service de la machine : `make up HTTP_PORT=18095` (ou `make test-e2e HTTP_PORT=…`) déplace le site, Playwright suit la variable.
 - **Clés répétées dans l'URL** : PHP écrase `?taille=S&taille=M` en ne gardant que la dernière valeur. `CatalogUrlState` lit la query string brute avec `HeaderUtils::parseQuery($query, true)`. Toute URL non canonique (ordre, valeurs vides ou invalides, défauts) est redirigée vers sa forme canonique.
 - **Variable d'environnement réelle contre `.env.test`** : Compose injecte `SITE_URL`, qui gagne sur `.env.test`. `phpunit.dist.xml` la force avec `force="true"`.
