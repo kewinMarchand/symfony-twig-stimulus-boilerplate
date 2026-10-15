@@ -62,9 +62,9 @@
   resolved "https://registry.yarnpkg.com/@iconify/types/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
   integrity sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==
 
-"@kewinmarchand/boilerplates-ui@github:kewinMarchand/boilerplates-ui#v0.3.0":
-  version "0.3.0"
-  resolved "https://codeload.github.com/kewinMarchand/boilerplates-ui/tar.gz/cf248d0d67746e2c57ee95f05bb98f6d768559e5"
+"@kewinmarchand/boilerplates-ui@github:kewinMarchand/boilerplates-ui#v0.5.0":
+  version "0.5.0"
+  resolved "https://codeload.github.com/kewinMarchand/boilerplates-ui/tar.gz/e4908582c1d5230bebb0654936312242f391c0d0"
 
 "@lhci/cli@^0.15.1":
   version "0.15.1"
