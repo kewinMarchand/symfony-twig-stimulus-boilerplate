@@ -855,31 +855,7 @@ fieldset {
 }
 
 .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
     margin-bottom: var(--space-4);
-}
-
-.chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-height: var(--touch-target);
-    padding-inline: var(--space-4);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-pill);
-    color: var(--color-text);
-    text-decoration: none;
-}
-
-.chip:hover {
-    background: var(--color-surface);
-}
-
-.chip svg {
-    width: 16px;
-    height: 16px;
 }
 
 .catalog__title:focus {

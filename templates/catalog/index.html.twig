@@ -41,9 +41,9 @@
     <div class="catalog" data-controller="catalog" data-action="click->catalog#trackClick turbo:before-fetch-request->catalog#rememberFocus turbo:frame-load->catalog#restoreFocus">
         <h1 class="catalog__title" tabindex="-1" data-catalog-target="title">{{ category.name }}</h1>
         {% if category.children is not empty %}
-            <ul class="chips" role="list" aria-label="Sous-catégories">
+            <ul class="bui-chip-list chips" role="list" aria-label="Sous-catégories">
                 {% for child in category.children %}
-                    <li><a class="chip" href="{{ path('catalog', {path: categoryPath.child(child).value}) }}">{{ child.name }}</a></li>
+                    <li><a class="bui-chip" href="{{ path('catalog', {path: categoryPath.child(child).value}) }}">{{ child.name }}</a></li>
                 {% endfor %}
             </ul>
         {% endif %}

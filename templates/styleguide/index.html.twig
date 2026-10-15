@@ -143,8 +143,8 @@
                 <li><a class="bui-pagination__link" href="{{ path('catalog') }}" rel="next"><span class="bui-pagination__label">Suivant</span>{{ include('shared/ui/_icon.html.twig', {name: 'chevron-right'}) }}</a></li>
             </ul>
         </nav>
-        <ul class="chips" role="list" aria-label="Exemple de filtres actifs">
-            <li><a class="chip chip--removable" href="{{ path('catalog') }}"><span class="bui-visually-hidden">Retirer le filtre : </span>Mi-ombre {{ include('shared/ui/_icon.html.twig', {name: 'x'}) }}</a></li>
+        <ul class="bui-chip-list chips" role="list" aria-label="Exemple de filtres actifs">
+            <li><a class="bui-chip" href="{{ path('catalog') }}"><span class="bui-visually-hidden">Retirer le filtre : </span>Mi-ombre {{ include('shared/ui/_icon.html.twig', {name: 'x'}) }}</a></li>
         </ul>
         <p><a href="{{ path('home') }}">Lien interne</a> et <a href="https://symfony.com/">lien externe {{ include('shared/ui/_icon.html.twig', {name: 'external-link', icon_label: '(site externe)'}) }}</a></p>
     </section>

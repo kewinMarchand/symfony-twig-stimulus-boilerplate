@@ -42,7 +42,7 @@
 
             {% if filters.activeCount > 0 %}
                 <div class="catalog__active" data-testid="catalog-active-filters">
-                    <ul class="chips" role="list" aria-label="Filtres actifs">
+                    <ul class="bui-chip-list chips" role="list" aria-label="Filtres actifs">
                         {% for exposure in filters.exposures %}
                             {{ include('catalog/_active_filter.html.twig', {label: exposure.label, href: category_path ~ state.withoutExposure(exposure).queryString()}) }}
                         {% endfor %}
