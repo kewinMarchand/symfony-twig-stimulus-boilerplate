@@ -88,6 +88,25 @@ test.describe('Mesure d’audience Matomo, avec un traceur factice @observabilit
 
     await expect(page.getByTestId('legal-audience-measurement')).toContainText('sans cookie')
   })
+
+  test('un visiteur qui s’oppose à la mesure n’est plus mesuré, même après rechargement', async ({ page }) => {
+    const pageViews = await interceptMatomo(page)
+    await page.goto('/donnees-personnelles')
+    await expect.poll(() => pageViews.length).toBe(1)
+
+    await page.getByTestId('legal-opposition-mesure').check()
+    await expect(page.getByTestId('legal-opposition-etat')).toHaveText(/ne sont plus mesurées/)
+
+    // Le refus est lu avant la première commande : la file Matomo n'est jamais créée, donc aucun
+    // traceur chargé ni aucune requête, sans dépendre d'un délai d'attente.
+    await page.reload()
+    await expect(page.getByTestId('legal-opposition-etat')).toHaveText(/ne sont plus mesurées/)
+    expect(await page.evaluate(() => (window as unknown as { _paq?: unknown })._paq)).toBeUndefined()
+    expect(pageViews).toHaveLength(1)
+
+    await page.getByTestId('legal-opposition-mesure').uncheck()
+    await expect(page.getByTestId('legal-opposition-etat')).toHaveText(/sont mesurées, de façon/)
+  })
 })
 
 test.describe('Suivi des erreurs GlitchTip, avec un DSN factice @observabilite', () => {

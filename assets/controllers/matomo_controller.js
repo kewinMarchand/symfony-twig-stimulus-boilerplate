@@ -1,6 +1,8 @@
 /* stimulusFetch: 'lazy' */
 import { Controller } from '@hotwired/stimulus';
 
+import { isMesureRefusee } from '../opposition_mesure.js';
+
 let started = false;
 let lastUrl = null;
 
@@ -18,6 +20,10 @@ export default class extends Controller {
     static values = { scriptUrl: String, trackerUrl: String, siteId: String };
 
     connect() {
+        // Refus lu avant la première commande (section 16 de la spec) : ni file, ni script, ni requête.
+        if (isMesureRefusee()) {
+            return;
+        }
         if (!started) {
             started = true;
             push('disableCookies');
@@ -32,7 +38,7 @@ export default class extends Controller {
     }
 
     trackPageView() {
-        if (window.location.href === lastUrl) {
+        if (!started || isMesureRefusee() || window.location.href === lastUrl) {
             return;
         }
         if (lastUrl) {
