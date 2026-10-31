@@ -2,14 +2,17 @@
 /**
  * Menu déroulant, motif ARIA menu button. Entrée, Espace ou flèche basse ouvrent sur le premier
  * élément, flèche haute sur le dernier. Dans le menu : flèches, Début, Fin, Échap et Tab ferment.
- * Choisir un élément émet `bui-menu-select` (detail : identifiant) sur `[data-bui-menu]`.
+ * Choisir un élément émet `bui-menu-select` (detail : identifiant) sur `[data-bui-menu]` ; un choix exclusif
+ * (`menuitemradio`) est d'abord coché (`aria-checked`), les autres décochés.
  */
+
+const ITEM = '[role="menuitem"], [role="menuitemradio"]'
 
 /** @param {Element} menu */
 const parts = (menu) => {
   const trigger = /** @type {HTMLButtonElement} */ (menu.querySelector('.bui-menu__trigger'))
   const list = /** @type {HTMLElement} */ (menu.querySelector('[role="menu"]'))
-  const items = /** @type {HTMLElement[]} */ ([...list.querySelectorAll('[role="menuitem"]')])
+  const items = /** @type {HTMLElement[]} */ ([...list.querySelectorAll(ITEM)])
   return { trigger, list, items }
 }
 
@@ -37,8 +40,12 @@ const handleClick = (event) => {
     if (open !== menu && open.querySelector('[aria-expanded="true"]')) closeMenu(open, false)
   }
   if (!menu) return
-  const item = event.target.closest('[role="menuitem"]')
+  const item = event.target.closest(ITEM)
   if (item) {
+    if (item.getAttribute('role') === 'menuitemradio') {
+      for (const choice of parts(menu).items)
+        choice.setAttribute('aria-checked', String(choice === item))
+    }
     menu.dispatchEvent(
       new CustomEvent('bui-menu-select', {
         detail: item.getAttribute('data-bui-menu-item'),

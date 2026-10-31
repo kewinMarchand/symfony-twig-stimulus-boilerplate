@@ -3,6 +3,7 @@
  * Comportement de la modale sur `<dialog>` natif : `showModal()` rend le reste de la page inerte
  * (piège du focus) et ferme sur Échap. Le focus revient au déclencheur à la fermeture.
  * Ouverture : `<button data-bui-modal-open="id-de-la-modale">`. Fermeture : `data-bui-modal-close`.
+ * Un titre focalisable (`tabindex="-1"`) reçoit le focus à l'ouverture.
  */
 
 /** @param {HTMLDialogElement} dialog */
@@ -16,6 +17,10 @@ export const openModal = (dialog) => {
     { once: true },
   )
   dialog.showModal()
+  const title = /** @type {HTMLElement | null} */ (
+    dialog.querySelector('.bui-modal__title[tabindex="-1"]')
+  )
+  title?.focus()
 }
 
 /** @param {Event} event */

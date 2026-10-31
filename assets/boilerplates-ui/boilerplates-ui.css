@@ -218,6 +218,104 @@
   }
 }
 @layer components {
+  /* Espacement des briques de mise en page, pris dans l'échelle des jetons */
+  .bui-gap-1 {
+    --bui-gap: var(--bui-space-1);
+  }
+
+  .bui-gap-2 {
+    --bui-gap: var(--bui-space-2);
+  }
+
+  .bui-gap-3 {
+    --bui-gap: var(--bui-space-3);
+  }
+
+  .bui-gap-4 {
+    --bui-gap: var(--bui-space-4);
+  }
+
+  .bui-gap-6 {
+    --bui-gap: var(--bui-space-6);
+  }
+
+  .bui-gap-8 {
+    --bui-gap: var(--bui-space-8);
+  }
+
+  .bui-gap-12 {
+    --bui-gap: var(--bui-space-12);
+  }
+
+  .bui-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-gap, var(--bui-space-4));
+  }
+
+  .bui-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--bui-gap, var(--bui-space-2));
+  }
+
+  .bui-cluster--start {
+    align-items: flex-start;
+  }
+
+  .bui-cluster--between {
+    justify-content: space-between;
+  }
+
+  .bui-cluster--end {
+    justify-content: flex-end;
+  }
+
+  /* Colonnes aussi nombreuses que la largeur le permet, chacune d'au moins --bui-grid-min */
+  .bui-grid {
+    --bui-grid-min: 220px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--bui-grid-min), 100%), 1fr));
+    gap: var(--bui-gap, var(--bui-space-6));
+  }
+
+  .bui-grid--sm {
+    --bui-grid-min: 160px;
+  }
+
+  .bui-grid--lg {
+    --bui-grid-min: 280px;
+  }
+
+  :is(.bui-stack, .bui-cluster, .bui-grid):is(ul, ol) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Conteneur large de la spec commune (section 1) : 1440 px, gouttières de 16, 24 puis 32 px */
+  .bui-container {
+    width: 100%;
+    max-width: var(--bui-container-content);
+    margin-inline: auto;
+    padding-inline: var(--bui-space-4);
+  }
+
+  @media (min-width: 768px) {
+    .bui-container {
+      padding-inline: var(--bui-space-6);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .bui-container {
+      padding-inline: var(--bui-space-8);
+    }
+  }
+}
+@layer components {
   .bui-text {
     margin: 0;
     color: var(--bui-color-text);
@@ -448,6 +546,10 @@
     padding: var(--bui-space-3) var(--bui-space-6);
   }
 
+  .bui-button--full-width {
+    width: 100%;
+  }
+
   .bui-button:disabled,
   .bui-button[aria-disabled='true'] {
     cursor: not-allowed;
@@ -510,6 +612,10 @@
     font: inherit;
     text-align: start;
     cursor: pointer;
+  }
+
+  .bui-link--full-width {
+    width: 100%;
   }
 }
 @layer components {
@@ -1576,6 +1682,16 @@
     text-align: start;
     white-space: nowrap;
     cursor: pointer;
+  }
+
+  /* Choix exclusifs : la coche garde sa place sur chaque option, visible sur l'option cochée seulement */
+  .bui-menu__check {
+    flex-shrink: 0;
+    margin-inline-end: var(--bui-space-2);
+  }
+
+  .bui-menu__item[aria-checked='false'] .bui-menu__check {
+    visibility: hidden;
   }
 
   .bui-menu__item:is(:hover, .bui-is-hover) {
