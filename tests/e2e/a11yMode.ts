@@ -6,4 +6,7 @@ export const useA11yMode = async (page: Page, mode: A11yMode) => {
   if (mode === 'enhanced') {
     await page.addInitScript(() => window.localStorage.setItem('a11y-mode', 'enhanced'))
   }
+  if (mode === 'dark') {
+    await page.addInitScript(() => window.localStorage.setItem('color-scheme', 'dark'))
+  }
 }

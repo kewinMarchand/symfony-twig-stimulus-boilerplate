@@ -23,6 +23,7 @@
                 {{ include('shared/ui/_icon.html.twig', {name: 'menu'}) }}
                 <span class="header__action-label">Menu</span>
             </button>
+            {{ include('shared/layout/_color_scheme_toggle.html.twig') }}
             <button type="button" class="bui-button bui-button--inverse a11y-toggle" aria-label="Accessibilité renforcée" aria-pressed="false" data-controller="a11y-mode" data-action="a11y-mode#toggle" data-testid="a11y-mode-toggle">
                 {{ include('shared/ui/_icon.html.twig', {name: 'person-standing'}) }}
                 <span class="header__action-label">Accessibilité renforcée</span>

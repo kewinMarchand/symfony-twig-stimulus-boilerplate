@@ -10,6 +10,6 @@ export const ROUTES = [
   '/plan-du-site',
 ] as const
 
-export const A11Y_MODES = ['standard', 'enhanced'] as const
+export const A11Y_MODES = ['standard', 'dark', 'enhanced'] as const
 
 export type A11yMode = (typeof A11Y_MODES)[number]

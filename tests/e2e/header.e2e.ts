@@ -15,25 +15,28 @@ test.describe('Header mobile compact', () => {
   test.skip(({ isMobile }) => !isMobile, 'header compact réservé au mobile')
 
   for (const mode of A11Y_MODES) {
-    test(`logo et deux boutons icône sur une seule ligne à 375 px en mode ${mode}`, async ({ page }) => {
+    test(`logo et trois boutons icône sur une seule ligne à 375 px en mode ${mode}`, async ({ page }) => {
       await useA11yMode(page, mode)
       await page.setViewportSize({ width: 375, height: 800 })
       await page.goto('/')
 
       const logo = await box(page.getByTestId('layout-logo'))
       const menu = page.getByTestId('layout-mobile-menu-toggle')
+      const theme = page.getByTestId('color-scheme-toggle')
       const a11y = page.getByTestId('a11y-mode-toggle')
       const menuBox = await box(menu)
+      const themeBox = await box(theme)
       const a11yBox = await box(a11y)
 
-      for (const button of [menuBox, a11yBox]) {
+      for (const button of [menuBox, themeBox, a11yBox]) {
         expect(button.width).toBeGreaterThanOrEqual(44)
         expect(button.height).toBeGreaterThanOrEqual(44)
         expect(button.y).toBeLessThan(logo.y + logo.height)
         expect(button.y + button.height).toBeGreaterThan(logo.y)
       }
       expect(menuBox.x).toBeGreaterThan(logo.x + logo.width - 1)
-      expect(a11yBox.x).toBeGreaterThan(menuBox.x)
+      expect(themeBox.x).toBeGreaterThan(menuBox.x)
+      expect(a11yBox.x).toBeGreaterThan(themeBox.x)
 
       await expect(menu).toHaveAccessibleName('Menu')
       await expect(a11y).toHaveAccessibleName('Accessibilité renforcée')

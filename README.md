@@ -15,6 +15,8 @@ Les pages de démonstration montrent chaque brique en situation :
 
 Un bouton « Accessibilité renforcée » dans l'en-tête agrandit le texte, espace le contenu (WCAG 1.4.12), renforce les contrastes et coupe les animations. Le choix est mémorisé dans le navigateur.
 
+Le site suit le thème clair ou sombre du système. Un bouton « Thème » dans l'en-tête permet de le forcer en clair ou en sombre, choix lui aussi mémorisé et appliqué dès le premier affichage. Le mode renforcé garde toujours la page en clair.
+
 ## Stack
 
 | Brique                                      | Rôle                                                                    |
@@ -156,9 +158,9 @@ Terminer par `make qa`, puis `make test-e2e test-a11y`. Déroulée sur une copie
 | `make qa-full`                         | QA complète : QA rapide, e2e, accessibilité, Lighthouse                                    |
 | `make format`                          | PHP-CS-Fixer en écriture                                                                   |
 | `make typecheck`                       | PHPStan niveau max                                                                         |
-| `make test-unit`                       | PHPUnit et test du mode renforcé                                                           |
+| `make test-unit`                       | PHPUnit et tests du mode renforcé et du thème                                              |
 | `make test-e2e`                        | Playwright sur l'image de production, puis les tests `@dev` sur le serveur de développement |
-| `make test-a11y`                       | axe-core, WCAG 2.1 AA, chaque page dans les deux modes                                     |
+| `make test-a11y`                       | axe-core, WCAG 2.1 AA, chaque page en standard, sombre et renforcé                         |
 | `make metrics`                         | Lighthouse CI sur l'image de production (port 3230) : échoue sous 90 en performance ou sous 100 en accessibilité et SEO |
 | `make docker-build` / `make docker-up` | Image de production, sur le port `HTTP_PORT`                                               |
 
@@ -244,10 +246,10 @@ Chaque réponse porte un en-tête `Content-Security-Policy-Report-Only` construi
 
 ## Tests
 
-- **Unitaires et fonctionnels** : `tests/Unit` (domaine et fonctions pures, sans conteneur), `tests/Functional` (WebTestCase, avec des dépôts remplacés pour les états vide et erreur), `tests/js` (mode renforcé).
+- **Unitaires et fonctionnels** : `tests/Unit` (domaine et fonctions pures, sans conteneur), `tests/Functional` (WebTestCase, avec des dépôts remplacés pour les états vide et erreur), `tests/js` (mode renforcé et thème).
 - **End-to-end** : Playwright sur l'image de production servie sur le port 8095. Les éléments sont ciblés par `data-testid`, préfixé par le domaine (`catalog-product`, `contact-submit`). Chaque rendu conditionnel est testé présent et absent. Les tests marqués `@dev` (page 500, charte graphique) tournent ensuite sur le serveur de développement.
-- **Accessibilité** : `tests/a11y/` passe axe-core sur chaque route, en mode standard et renforcé, desktop et mobile, menus ouverts compris. Axe ne couvre qu'une partie du RGAA, un audit manuel reste nécessaire.
-- **Captures** : `tests/e2e/layout.e2e.ts` enregistre l'accueil et le catalogue dans les deux modes, à 375, 768 et 1280 px, dans `screenshots/`.
+- **Accessibilité** : `tests/a11y/` passe axe-core sur chaque route, en mode standard, sombre et renforcé, desktop et mobile, menus ouverts compris. Axe ne couvre qu'une partie du RGAA, un audit manuel reste nécessaire.
+- **Captures** : `tests/e2e/layout.e2e.ts` enregistre l'accueil et le catalogue dans les trois modes, à 375, 768 et 1280 px, dans `screenshots/`.
 
 ## Intégration continue
 

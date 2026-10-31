@@ -10,6 +10,7 @@ namespace App\Shared\UI;
 final class IconNames
 {
     public const array ALL = [
+        'check',
         'chevron-down',
         'chevron-left',
         'chevron-right',
@@ -23,9 +24,12 @@ final class IconNames
         'loader-circle',
         'mail',
         'menu',
+        'monitor',
+        'moon',
         'person-standing',
         'rotate-cw',
         'sliders-horizontal',
+        'sun',
         'triangle-alert',
         'x',
     ];
