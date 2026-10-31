@@ -1,3 +1,4 @@
+/* stimulusFetch: 'lazy' */
 import { Controller } from '@hotwired/stimulus';
 
 import { isA11yModeEnhanced } from '../a11y_mode.js';
