@@ -5,7 +5,7 @@ parameters:
         compliance_rate: null
         auditor: null
     site:
-        name: Symfony Twig Stimulus Boilerplate
+        name: Boilerplate Symfony
         description: Boilerplate Symfony avec Twig, Stimulus et Turbo, rendu serveur, outillé pour la QA, les tests end-to-end et l’accessibilité.
         url: '%env(SITE_URL)%'
         locale: fr_FR
