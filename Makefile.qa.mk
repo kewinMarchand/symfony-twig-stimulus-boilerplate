@@ -70,9 +70,9 @@ test-a11y: ## Tests d'accessibilité WCAG 2.1 AA, deux modes, prod puis dev (axe
 	$(UP_DEV)
 	$(RUN_NODE) yarn playwright test tests/a11y --grep @dev
 
-metrics: docker-build ## Métriques Lighthouse CI sur l'image de production (perf ≥ 90, a11y et SEO = 100)
+metrics: docker-build ## Métriques Lighthouse CI sur l'image de production, en clair puis en sombre (perf ≥ 90, a11y et SEO = 100)
 	HTTP_PORT=$(LHCI_PORT) SITE_HOST=127.0.0.1 $(COMPOSE_PROD) -p $(LHCI_PROJECT) up -d --wait
-	$(RUN_NODE) sh -c 'CHROME_PATH=$$(node -e "console.log(require(\"@playwright/test\").chromium.executablePath())") yarn lhci autorun'; \
+	$(RUN_NODE) sh -c 'export CHROME_PATH=$$(node -e "console.log(require(\"@playwright/test\").chromium.executablePath())") && yarn lhci autorun && yarn lhci autorun --collect.settings.chromeFlags="--headless=new --no-sandbox --blink-settings=preferredColorScheme=0" --upload.outputDir=.lighthouseci/reports-sombre'; \
 		status=$$?; HTTP_PORT=$(LHCI_PORT) SITE_HOST=127.0.0.1 $(COMPOSE_PROD) -p $(LHCI_PROJECT) down; exit $$status
 
 .PHONY: qa qa-full lint lint-js lint-js-fix arch arch-deptrac arch-wrappers arch-selftest icons-check ui-check format format-check typecheck test test-unit test-e2e test-a11y metrics

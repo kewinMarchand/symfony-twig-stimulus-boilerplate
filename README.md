@@ -161,7 +161,7 @@ Terminer par `make qa`, puis `make test-e2e test-a11y`. Déroulée sur une copie
 | `make test-unit`                       | PHPUnit et tests du mode renforcé et du thème                                              |
 | `make test-e2e`                        | Playwright sur l'image de production, puis les tests `@dev` sur le serveur de développement |
 | `make test-a11y`                       | axe-core, WCAG 2.1 AA, chaque page en standard, sombre et renforcé                         |
-| `make metrics`                         | Lighthouse CI sur l'image de production (port 3230) : échoue sous 90 en performance ou sous 100 en accessibilité et SEO |
+| `make metrics`                         | Lighthouse CI sur l'image de production (port 3230) en clair puis en sombre : échoue sous 90 en performance ou sous 100 en accessibilité et SEO |
 | `make docker-build` / `make docker-up` | Image de production, sur le port `HTTP_PORT`                                               |
 
 Toutes les commandes tournent dans des conteneurs jetables : PHP par `docker compose run --rm php`, Node, Playwright et Lighthouse par `docker compose run --rm node` (image officielle Playwright à la version exacte de `@playwright/test`, profil Compose `dev`, réseau de l'hôte pour joindre les ports 8095 et 3230). Les `node_modules` vivent dans un volume nommé, et les conteneurs tournent avec l'UID et le GID de la machine.
