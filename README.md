@@ -1,4 +1,4 @@
-# symfony-twig-stimulus-boilerplate
+# boilerplate-symfony
 
 Point de départ pour une application **Symfony 7.4 LTS** rendue côté serveur avec **Twig**, enrichie par **Stimulus** et **Turbo**, avec toute la chaîne qualité : lint, format, analyse statique, tests unitaires et fonctionnels, end-to-end, accessibilité et Lighthouse. Tout tourne dans Docker : aucun PHP ni Composer n'est nécessaire sur le poste.
 
@@ -38,8 +38,8 @@ Un bouton « Accessibilité renforcée » dans l'en-tête agrandit le texte, esp
 ## Démarrage
 
 ```sh
-git clone https://github.com/kewinMarchand/symfony-twig-stimulus-boilerplate.git
-cd symfony-twig-stimulus-boilerplate
+git clone https://github.com/kewinMarchand/boilerplate-symfony.git
+cd boilerplate-symfony
 make install   # images de dev (PHP, Node et Chromium), dépendances installées dans les conteneurs
 make up        # http://localhost:8095
 ```
@@ -64,7 +64,7 @@ Variables d'environnement (`.env`, à surcharger dans `.env.local` non versionn�
 La voie recommandée est le template GitHub : le nouveau dépôt part d'un historique neuf, sans lien avec celui-ci. Bouton « Use this template » sur GitHub, ou en ligne de commande :
 
 ```sh
-gh repo create mon-projet --template kewinMarchand/symfony-twig-stimulus-boilerplate --private --clone
+gh repo create mon-projet --template kewinMarchand/boilerplate-symfony --private --clone
 cd mon-projet
 make install
 make up
@@ -73,7 +73,7 @@ make up
 Pour suivre les évolutions du boilerplate ou y contribuer, passer plutôt par un fork, qui garde l'historique commun :
 
 ```sh
-gh repo fork kewinMarchand/symfony-twig-stimulus-boilerplate --clone --fork-name mon-projet
+gh repo fork kewinMarchand/boilerplate-symfony --clone --fork-name mon-projet
 ```
 
 GitHub n'autorise pas un fork dans le compte qui possède déjà le dépôt : depuis ce compte, passer par le template, ou forker vers une organisation avec `--org`.
@@ -90,7 +90,7 @@ git merge upstream/main
 Avec un template, l'historique n'est pas commun et une fusion n'a pas de sens. On reprend les commits utiles un par un :
 
 ```sh
-git remote add upstream https://github.com/kewinMarchand/symfony-twig-stimulus-boilerplate.git
+git remote add upstream https://github.com/kewinMarchand/boilerplate-symfony.git
 git fetch upstream
 git log --oneline upstream/main
 git cherry-pick <sha>
@@ -238,7 +238,7 @@ Chaque réponse porte un en-tête `Content-Security-Policy-Report-Only` construi
 [csp-report] https://cdn.exemple.com a besoin d'une autorisation de type script (script-src) — bloqué sur /contact
 ```
 
-- **Lire les logs** : `docker compose logs -f php`, en local comme sur l'image de production, ou la console de l'hébergeur. Au démarrage, `[symfony-twig-stimulus-boilerplate] serveur démarré (prod)` permet de retrouver le bon fichier.
+- **Lire les logs** : `docker compose logs -f php`, en local comme sur l'image de production, ou la console de l'hébergeur. Au démarrage, `[boilerplate-symfony] serveur démarré (prod)` permet de retrouver le bon fichier.
 - **Autoriser une origine** : l'ajouter à sa directive (le nom est entre parenthèses dans la ligne) dans `SiteCsp::extra()`. L'API (`API_URL`), Matomo et GlitchTip y sont déjà, quand leur variable est renseignée.
 - **Pourquoi Report-Only et `'unsafe-inline'`** : on collecte d'abord ce que le site charge vraiment avant de bloquer quoi que ce soit ; un nonce par réponse empêcherait la mise en cache des pages.
 

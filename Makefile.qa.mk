@@ -1,4 +1,4 @@
-LHCI_PROJECT := symfony-twig-stimulus-boilerplate-lhci
+LHCI_PROJECT := boilerplate-symfony-lhci
 LHCI_PORT := 3230
 # Valeurs factices de la phase @observabilite : un faux GlitchTip local et un traceur Matomo intercepté
 # (tests/e2e/observability.e2e.ts), jamais une instance réelle.

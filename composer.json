@@ -96,7 +96,7 @@
         "symfony/web-profiler-bundle": "7.4.*"
     },
     "description": "Boilerplate Symfony 7.4 LTS, Twig, Stimulus et Turbo, avec lint, analyse statique, tests unitaires, e2e, accessibilité et Lighthouse",
-    "name": "kewinmarchand/symfony-twig-stimulus-boilerplate",
+    "name": "kewinmarchand/boilerplate-symfony",
     "repositories": [{
         "name": "csp",
         "type": "vcs",

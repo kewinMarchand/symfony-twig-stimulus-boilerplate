@@ -13,7 +13,7 @@ use Kewinmarchand\Csp\Symfony\CspResponseSubscriber;
  */
 final class SiteCsp
 {
-    private const string APP = 'symfony-twig-stimulus-boilerplate';
+    private const string APP = 'boilerplate-symfony';
 
     /**
      * Fabrique de l'abonné qui pose l'en-tête (config/services.yaml) : l'API, plus Matomo (script, appels, pixel) et GlitchTip

@@ -40,7 +40,7 @@ final class SiteCspTest extends TestCase
 
     public function testStartupLine(): void
     {
-        self::assertSame('[symfony-twig-stimulus-boilerplate] serveur démarré (prod)', SiteCsp::startupLine('prod'));
+        self::assertSame('[boilerplate-symfony] serveur démarré (prod)', SiteCsp::startupLine('prod'));
     }
 
     private function policy(CspResponseSubscriber $subscriber): string
